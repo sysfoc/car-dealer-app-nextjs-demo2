@@ -20,7 +20,7 @@ const CustomerTestimonials = () => {
       name: "Michael Chen",
       location: "Seattle, WA",
       rating: 5,
-      quote: "Best car buying experience I've ever had. No pressure, honest pricing, and excellent financing options. My new SUV runs perfectly!",
+      quote: "Best car buying experience I have ever had. No pressure, honest pricing, and excellent financing options. My new SUV runs perfectly!",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face&facepad=2",
       purchaseDate: "January 2024",
       verified: true
