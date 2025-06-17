@@ -93,7 +93,7 @@ const CustomerTestimonials = () => {
           </h2>
           
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Don&apos;t just take our word for it. Here&apos;s what our satisfied customers have to say about their experience.
+            Do not just take our word for it. Here is what our satisfied customers have to say about their experience.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ const CustomerTestimonials = () => {
 
               {/* Quote */}
               <blockquote className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4 text-sm">
-                "{testimonial.quote}"
+                {testimonial.quote}
               </blockquote>
 
               {/* Customer Info */}

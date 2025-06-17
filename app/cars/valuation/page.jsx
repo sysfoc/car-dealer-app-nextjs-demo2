@@ -107,7 +107,7 @@ export default function Home() {
               {/* Header Section */}
               <div className="text-center mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 leading-tight">
-                  Get Your Car's
+                  Get Your Cars
                   <span className="text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text">
                     True Value
                   </span>
@@ -144,7 +144,7 @@ export default function Home() {
                         }`}
                       >
                         <AiOutlineDollar className="mr-2 text-lg" />
-                        I'm Selling
+                        I&apos;m Selling
                       </button>
 
                       <button
@@ -157,7 +157,7 @@ export default function Home() {
                         }`}
                       >
                         <MdSell className="mr-2 text-lg" />
-                        I'm Buying
+                        I&apos;m Buying
                       </button>
 
                       <button
@@ -170,7 +170,7 @@ export default function Home() {
                         }`}
                       >
                         <FaExchangeAlt className="mr-2 text-lg" />
-                        I'm Trading
+                        I&apos;m Trading
                       </button>
                     </div>
                   </div>
