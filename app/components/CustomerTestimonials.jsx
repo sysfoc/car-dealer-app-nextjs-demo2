@@ -93,7 +93,7 @@ const CustomerTestimonials = () => {
           </h2>
           
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what our satisfied customers have to say about their experience.
+            Don&apos;t just take our word for it. Here&apos;s what our satisfied customers have to say about their experience.
           </p>
         </div>
 
