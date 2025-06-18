@@ -9,61 +9,61 @@ export default function Home() {
       name: "BMW",
       image: "/bmw.avif",
       alt: "bmw cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Bentley",
       image: "/bentley.avif",
       alt: "bentley cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Honda",
       image: "/honda.avif",
       alt: "honda cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Hyundai",
       image: "/hyundai.avif",
       alt: "hyundai cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Kia",
       image: "/kia.avif",
       alt: "Kia cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "BMW",
       image: "/bmw.avif",
       alt: "bmw cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Bentley",
       image: "/bentley.avif",
       alt: "bentley cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Honda",
       image: "/honda.avif",
       alt: "honda cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Hyundai",
       image: "/hyundai.avif",
       alt: "hyundai cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
     {
       name: "Kia",
       image: "/kia.avif",
       alt: "Kia cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
     },
   ];
   return (
@@ -86,7 +86,7 @@ export default function Home() {
                     width={200}
                     height={200}
                     className="size-full"
-                    style={{ objectPosition: 'center' }}
+                    style={{ objectPosition: "center" }}
                   />
                 </div>
                 <div className="mt-3">

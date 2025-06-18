@@ -217,7 +217,7 @@ const VehicalsList = ({ loadingState }) => {
 
                 {/* CTA Button */}
                 <Link
-                  href="https://www.petbazar.com.pk/car-for-sale"
+                  href="https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale"
                   className="group/cta block w-full"
                 >
                   <div className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 dark:from-slate-100 dark:to-slate-300 dark:hover:from-white dark:hover:to-slate-200 text-white dark:text-slate-900 px-6 py-3.5 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl text-center">

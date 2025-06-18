@@ -5,7 +5,7 @@ import { Pagination } from "flowbite-react";
 
 export default function Home() {
   return (
-    <section className="mx-4 my-10 sm:mx-8">
+    <section className="mx-4 my-16 sm:mx-8">
       <div className="relative mt-5 flex flex-wrap justify-between gap-5 md:flex-nowrap">
         <div className="w-full md:w-2/5">
           <SidebarFilters />

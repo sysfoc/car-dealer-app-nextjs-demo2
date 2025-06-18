@@ -24,7 +24,7 @@ const BrandsList = () => {
       name: "BMW",
       image: "/bmw.avif",
       alt: "bmw cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "luxury",
       founded: "1916",
       country: "Germany",
@@ -33,7 +33,7 @@ const BrandsList = () => {
       name: "Audi",
       image: "/audi.png",
       alt: "audi cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "luxury",
       founded: "1909",
       country: "Germany",
@@ -42,7 +42,7 @@ const BrandsList = () => {
       name: "BYD",
       image: "/byd.png",
       alt: "byd cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "electric",
       founded: "2003",
       country: "China",
@@ -51,7 +51,7 @@ const BrandsList = () => {
       name: "Ford",
       image: "/ford.png",
       alt: "ford cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "mainstream",
       founded: "1903",
       country: "USA",
@@ -60,7 +60,7 @@ const BrandsList = () => {
       name: "GWM",
       image: "/gwm.png",
       alt: "gwm cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "mainstream",
       founded: "1984",
       country: "China",
@@ -69,7 +69,7 @@ const BrandsList = () => {
       name: "Jaguar",
       image: "/jaguar.png",
       alt: "jaguar cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "luxury",
       founded: "1922",
       country: "UK",
@@ -78,7 +78,7 @@ const BrandsList = () => {
       name: "Lexus",
       image: "/lexus.jpg",
       alt: "lexus cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "luxury",
       founded: "1989",
       country: "Japan",
@@ -87,7 +87,7 @@ const BrandsList = () => {
       name: "Mercedes",
       image: "/mercedes.jpg",
       alt: "mercedes cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "luxury",
       founded: "1926",
       country: "Germany",
@@ -96,7 +96,7 @@ const BrandsList = () => {
       name: "Porsche",
       image: "/porsche.png",
       alt: "porsche cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "luxury",
       founded: "1931",
       country: "Germany",
@@ -105,7 +105,7 @@ const BrandsList = () => {
       name: "Tesla",
       image: "/tesla.png",
       alt: "tesla cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "electric",
       founded: "2003",
       country: "USA",
@@ -114,7 +114,7 @@ const BrandsList = () => {
       name: "Toyota",
       image: "/toyota.png",
       alt: "toyota cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "mainstream",
       founded: "1937",
       country: "Japan",
@@ -123,7 +123,7 @@ const BrandsList = () => {
       name: "Bentley",
       image: "/bentley.avif",
       alt: "bentley cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "luxury",
       founded: "1919",
       country: "UK",
@@ -132,7 +132,7 @@ const BrandsList = () => {
       name: "Honda",
       image: "/honda.avif",
       alt: "honda cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "mainstream",
       founded: "1948",
       country: "Japan",
@@ -141,7 +141,7 @@ const BrandsList = () => {
       name: "Hyundai",
       image: "/hyundai.avif",
       alt: "hyundai cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "mainstream",
       founded: "1967",
       country: "South Korea",
@@ -150,7 +150,7 @@ const BrandsList = () => {
       name: "Kia",
       image: "/kia.avif",
       alt: "Kia cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "mainstream",
       founded: "1944",
       country: "South Korea",
@@ -159,7 +159,7 @@ const BrandsList = () => {
       name: "Volvo",
       image: "/volvo.png",
       alt: "volvo cars",
-      url: "https://car-dealer-app-nextjs-demo1.vercel.app/car-for-sale",
+      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
       category: "mainstream",
       founded: "1927",
       country: "Sweden",
@@ -413,22 +413,21 @@ const BrandsList = () => {
                 </div>
               </div>
             </Link>
-
-            
           ))}
-
         </div>
 
         {filteredBrands.length > visibleCount && (
-  <div className={`${viewMode === "grid" ? "col-span-full" : "w-full"} mt-6 text-center`}>
-    <button
-      onClick={() => setVisibleCount((prev) => prev + 6)}
-      className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:from-blue-700 hover:to-purple-700"
-    >
-      See More
-    </button>
-  </div>
-)}
+          <div
+            className={`${viewMode === "grid" ? "col-span-full" : "w-full"} mt-6 text-center`}
+          >
+            <button
+              onClick={() => setVisibleCount((prev) => prev + 6)}
+              className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:from-blue-700 hover:to-purple-700"
+            >
+              See More
+            </button>
+          </div>
+        )}
 
         {/* Empty State */}
         {filteredBrands.length === 0 && (

@@ -93,8 +93,8 @@ export default function Home() {
     <div>
       <Herosection />
       <WebFeatures />
-      <BrandsList />
       <BrowseCars />
+      <BrandsList />
       <VehicalsList loadingState={loading} />
       <CustomerTestimonials />
       <Services />
