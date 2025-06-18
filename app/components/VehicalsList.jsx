@@ -71,9 +71,9 @@ const VehicalsList = ({ loadingState }) => {
             {t("exploreVehical")}
           </h2>
           
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+          {/* <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
             Discover exceptional vehicles crafted for performance, luxury, and reliability. Each car represents the pinnacle of automotive excellence.
-          </p>
+          </p> */}
           
           <Link href={"/car-for-sale"}>
             <div className="group inline-flex items-center gap-3 bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 dark:from-slate-100 dark:to-slate-300 dark:hover:from-white dark:hover:to-slate-200 text-white dark:text-slate-900 px-8 py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg">

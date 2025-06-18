@@ -213,7 +213,7 @@ const BrandsList = () => {
   };
 
   return (
-    <section className="dark:via-gray-850 relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 px-4 py-20 dark:from-gray-900 dark:to-black sm:px-8">
+    <section className="dark:via-gray-850 relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 px-4 py-5 dark:from-gray-900 dark:to-black sm:px-8">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -right-32 -top-40 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br from-orange-200/30 to-red-200/30 blur-3xl dark:from-orange-900/20 dark:to-red-900/20"></div>
@@ -454,7 +454,7 @@ const BrandsList = () => {
         )}
 
         {/* Bottom Stats */}
-        <div className="mt-20 grid grid-cols-2 gap-6 md:grid-cols-4">
+        {/* <div className="mt-20 grid grid-cols-2 gap-6 md:grid-cols-4">
           {categories
             .filter((cat) => cat.id !== "all")
             .map((category, index) => (
@@ -477,7 +477,7 @@ const BrandsList = () => {
                 </p>
               </div>
             ))}
-        </div>
+        </div> */}
       </div>
 
       <style jsx>{`

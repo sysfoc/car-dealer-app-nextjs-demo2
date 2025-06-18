@@ -52,7 +52,7 @@ const Services = () => {
   ];
 
   return (
-    <section className="py-12 bg-white dark:bg-gray-900">
+    <section className="py-7 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-10">
@@ -107,7 +107,7 @@ const Services = () => {
         </div>
 
         {/* Bottom CTA Section */}
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 text-center">
+        {/* <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 text-center">
           <div className="max-w-3xl mx-auto">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
               Need Help Deciding?
@@ -125,10 +125,10 @@ const Services = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Stats Section */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* <div className="mt-10 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center p-3">
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">500+</div>
             <div className="text-gray-600 dark:text-gray-300 text-sm">Cars Available</div>
@@ -145,7 +145,7 @@ const Services = () => {
             <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">24/7</div>
             <div className="text-gray-600 dark:text-gray-300 text-sm">Support Available</div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
