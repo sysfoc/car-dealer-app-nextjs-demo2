@@ -1,0 +1,508 @@
+'use client';
+
+import Image from "next/image";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { MdOutlineArrowOutward, MdFavorite, MdLogin } from "react-icons/md";
+import { IoSpeedometer } from "react-icons/io5";
+import { GiGasPump } from "react-icons/gi";
+import { TbManualGearboxFilled } from "react-icons/tb";
+import { FaHeart, FaEye, FaRegHeart, FaUser, FaLock } from "react-icons/fa";
+import { BiTachometer } from "react-icons/bi";
+import { HiOutlineLocationMarker } from "react-icons/hi";
+import { AiOutlineDelete } from "react-icons/ai";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+const LikedCarsPage = () => {
+  const [likedCars, setLikedCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  const [removingCarId, setRemovingCarId] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Check if user is authenticated by verifying token in cookies
+  const checkAuthentication = () => {
+    try {
+      // Get all cookies
+      const cookies = document.cookie.split(';');
+      
+      // Look for token cookie
+      const tokenCookie = cookies.find(cookie => 
+        cookie.trim().startsWith('token=')
+      );
+      
+      if (tokenCookie) {
+        const token = tokenCookie.split('=')[1];
+        // Basic check if token exists and is not empty
+        if (token && token.trim() !== '') {
+          setIsAuthenticated(true);
+          return true;
+        }
+      }
+      
+      setIsAuthenticated(false);
+      return false;
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      setIsAuthenticated(false);
+      return false;
+    }
+  };
+
+  // Fetch user data
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch("/api/users/me");
+      if (!response.ok) {
+        // If unauthorized, set authentication to false
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+          throw new Error("User not authenticated");
+        }
+        throw new Error("Failed to fetch user data");
+      }
+      const data = await response.json();
+      setUser(data.user);
+      setIsAuthenticated(true);
+      return data.user.likedCars || [];
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      if (error.message === "User not authenticated") {
+        setIsAuthenticated(false);
+      }
+      throw error;
+    }
+  };
+
+  // Fetch liked cars using optimized endpoint
+  const fetchLikedCars = async () => {
+    try {
+      const response = await fetch("/api/users/liked-cars/cars");
+      if (!response.ok) {
+        // If unauthorized, set authentication to false
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+          throw new Error("User not authenticated");
+        }
+        throw new Error("Failed to fetch liked cars");
+      }
+      const data = await response.json();
+      setLikedCars(data.likedCars || []);
+    } catch (error) {
+      console.error("Error fetching liked cars:", error);
+      if (error.message === "User not authenticated") {
+        setIsAuthenticated(false);
+      }
+      throw error;
+    }
+  };
+
+  // Handle removing car from liked list
+  const handleRemoveLike = async (carId) => {
+    setRemovingCarId(carId);
+    try {
+      const response = await fetch("/api/users/liked-cars", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ carId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Remove the car from the displayed list
+        setLikedCars(prev => prev.filter(car => car._id !== carId));
+        // Update user data
+        setUser(prev => ({
+          ...prev,
+          likedCars: data.likedCars
+        }));
+      } else {
+        console.error("Failed to remove car from liked list");
+      }
+    } catch (error) {
+      console.error("Error removing liked car:", error);
+    } finally {
+      setRemovingCarId(null);
+    }
+  };
+
+  // Initialize data fetch
+  useEffect(() => {
+    const initializePage = async () => {
+      try {
+        setAuthLoading(true);
+        setLoading(true);
+        
+        // First check authentication
+        const isAuth = checkAuthentication();
+        
+        if (isAuth) {
+          // If authenticated, fetch user data and liked cars
+          await Promise.all([
+            fetchUserData(),
+            fetchLikedCars()
+          ]);
+        } else {
+          // If not authenticated, just set the states
+          setIsAuthenticated(false);
+          setError(null);
+        }
+      } catch (err) {
+        if (err.message !== "User not authenticated") {
+          setError(err.message);
+        }
+      } finally {
+        setLoading(false);
+        setAuthLoading(false);
+      }
+    };
+
+    initializePage();
+  }, []);
+
+  // Show loading state during authentication check
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="container mx-auto px-4 py-20">
+          <div className="flex items-center justify-center">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-300 border-t-slate-900 dark:border-slate-600 dark:border-t-slate-100"></div>
+              <p className="text-lg text-slate-600 dark:text-slate-400">
+                Checking authentication...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login prompt if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="container mx-auto px-4 py-8 mt-16">
+          <div className="mx-auto max-w-md text-center">
+            {/* Login Icon */}
+            <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 shadow-lg dark:from-blue-900/30 dark:to-blue-800/30">
+              <FaLock className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+            </div>
+
+            {/* Login Required Message */}
+            <h2 className="mb-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-3xl font-bold text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300">
+              Login Required
+            </h2>
+            
+            <p className="mb-8 text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+              Please log in to view your liked cars and manage your favorites collection.
+            </p>
+
+            {/* Login Button */}
+            <Link href="/login">
+              <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-500 hover:to-blue-400 hover:shadow-xl">
+                <MdLogin className="h-5 w-5" />
+                <span>Login to Continue</span>
+                <MdOutlineArrowOutward className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
+              </div>
+            </Link>
+
+            {/* Alternative Actions */}
+            <div className="mt-6 space-y-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+                <Link href="/car-for-sale">
+                  <div className="group flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-6 py-3 font-medium text-slate-700 transition-all duration-300 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-700">
+                    <span>Browse Cars</span>
+                    <MdOutlineArrowOutward className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state (only for authenticated users)
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="container mx-auto px-4 py-16">
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-8 text-center text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-200">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40">
+              <span className="text-2xl text-red-600 dark:text-red-400">⚠</span>
+            </div>
+            <h3 className="mb-2 text-xl font-bold">Error Loading Liked Cars</h3>
+            <p className="text-red-700 dark:text-red-300">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main component content (only shown for authenticated users)
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-red-50 px-4 py-2 text-sm font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                <MdFavorite className="h-4 w-4" />
+                <span>Favorites Collection</span>
+              </div>
+              
+              <h1 className="mb-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-4xl font-bold leading-tight text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300 md:text-5xl">
+                My Liked Cars
+              </h1>
+              
+              <p className="text-lg text-slate-600 dark:text-slate-400">
+                {loading 
+                  ? "Loading your favorite vehicles..." 
+                  : `${likedCars.length} ${likedCars.length === 1 ? 'vehicle' : 'vehicles'} in your collection`
+                }
+              </p>
+            </div>
+
+            {/* Back to Browse Button */}
+            <Link href="/car-for-sale">
+              <div className="group hidden transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200 sm:inline-flex">
+                <span>Browse More Cars</span>
+                <MdOutlineArrowOutward className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        {/* Cars Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array(6).fill().map((_, index) => (
+              <div
+                className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800"
+                key={index}
+              >
+                <div className="relative">
+                  <Skeleton className="h-64 w-full" />
+                </div>
+                <div className="space-y-4 p-6">
+                  <div className="space-y-3">
+                    <Skeleton height={28} />
+                    <Skeleton height={16} width="70%" />
+                  </div>
+                  <div className="space-y-3">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <Skeleton circle width={32} height={32} />
+                        <Skeleton height={16} width="60%" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
+                    <Skeleton height={32} width="50%" />
+                    <Skeleton height={40} className="mt-3" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : likedCars.length === 0 ? (
+          // Empty State
+          <div className="py-16 text-center">
+            <div className="mx-auto mb-8 flex h-32 w-32 items-center justify-center rounded-full bg-slate-100 shadow-inner dark:bg-slate-800">
+              <FaHeart className="h-16 w-16 text-slate-400" />
+            </div>
+            <h3 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white">
+              No Liked Cars Yet
+            </h3>
+            <p className="mx-auto mb-8 max-w-md text-lg text-slate-600 dark:text-slate-400">
+              Start exploring our premium collection and save your favorite vehicles to see them here.
+            </p>
+            <Link href="/car-for-sale">
+              <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
+                <span>Browse Vehicles</span>
+                <MdOutlineArrowOutward className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
+              </div>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {likedCars.map((vehicle) => (
+              <div
+                className="group transform overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl transition-all duration-500 hover:-translate-y-1 hover:border-slate-300 hover:shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
+                key={vehicle._id}
+              >
+                {/* Image Section */}
+                <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-900">
+                  <div className="relative aspect-[16/10]">
+                    <Image
+                      src={vehicle.imageUrls?.[0] || "/placeholder-car.jpg"}
+                      fill
+                      alt={`${vehicle?.makeName} ${vehicle?.modelName}`}
+                      className="object-cover transition-all duration-700 group-hover:scale-110"
+                    />
+
+                    {/* Premium overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+
+                    {/* Liked Badge */}
+                    <div className="absolute left-4 top-4">
+                      <div className="rounded-full bg-red-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
+                        <div className="flex items-center gap-1.5">
+                          <FaHeart className="h-3 w-3" />
+                          Liked
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRemoveLike(vehicle._id);
+                        }}
+                        disabled={removingCarId === vehicle._id}
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-red-500 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl disabled:opacity-50"
+                      >
+                        {removingCarId === vehicle._id ? (
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent"></div>
+                        ) : (
+                          <AiOutlineDelete className="h-4 w-4" />
+                        )}
+                      </button>
+                      <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:text-blue-500 hover:shadow-xl">
+                        <FaEye className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    {/* Price Tag */}
+                    <div className="absolute bottom-4 right-4 rounded-2xl bg-white/95 px-4 py-2 shadow-lg backdrop-blur-md dark:bg-slate-800/95">
+                      <div className="text-right">
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          Price
+                        </p>
+                        <p className="bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-lg font-bold text-transparent dark:from-white dark:to-slate-300">
+                          ${vehicle?.price?.toLocaleString() || 'N/A'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content Section */}
+                <div className="p-6">
+                  {/* Title */}
+                  <div className="mb-4">
+                    <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+                      {vehicle?.makeName} {vehicle?.modelName}
+                    </h3>
+                    <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                      {vehicle?.description?.slice(0, 80)}...
+                    </p>
+                  </div>
+
+                  {/* Specifications */}
+                  <div className="mb-6 space-y-3">
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30">
+                        <IoSpeedometer className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <span className="text-slate-600 dark:text-slate-400">
+                        Mileage:
+                      </span>
+                      <span className="font-semibold text-slate-900 dark:text-white">
+                        {vehicle?.kms || 'N/A'} KM
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30">
+                        <GiGasPump className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <span className="text-slate-600 dark:text-slate-400">
+                        Fuel Type:
+                      </span>
+                      <span className="font-semibold text-slate-900 dark:text-white">
+                        {vehicle?.fuelType || 'N/A'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-900/30">
+                        <TbManualGearboxFilled className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <span className="text-slate-600 dark:text-slate-400">
+                        Transmission:
+                      </span>
+                      <span className="font-semibold text-slate-900 dark:text-white">
+                        {vehicle?.gearbox || 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* CTA Buttons */}
+                  <div className="space-y-3">
+                    <Link
+                      href={`/car-details/${vehicle.slug || vehicle._id}`}
+                      className="group/cta block w-full"
+                    >
+                      <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
+                        <div className="flex items-center justify-center gap-2">
+                          <span>View Details</span>
+                          <MdOutlineArrowOutward className="h-4 w-4 transition-transform duration-300 group-hover/cta:-translate-y-1 group-hover/cta:translate-x-1" />
+                        </div>
+                      </div>
+                    </Link>
+
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleRemoveLike(vehicle._id);
+                      }}
+                      disabled={removingCarId === vehicle._id}
+                      className="group/remove flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-red-200 bg-red-50 px-6 py-3 font-semibold text-red-600 transition-all duration-300 hover:border-red-300 hover:bg-red-100 hover:shadow-md disabled:opacity-50 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:border-red-700 dark:hover:bg-red-900/30"
+                    >
+                      {removingCarId === vehicle._id ? (
+                        <>
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
+                          <span>Removing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <AiOutlineDelete className="h-4 w-4 transition-transform duration-300 group-hover/remove:scale-110" />
+                          <span>Remove from Liked</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Mobile Browse Button */}
+        {likedCars.length > 0 && (
+          <div className="mt-12 text-center sm:hidden">
+            <Link href="/car-for-sale">
+              <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
+                <span>Browse More Cars</span>
+                <MdOutlineArrowOutward className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
+              </div>
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default LikedCarsPage;

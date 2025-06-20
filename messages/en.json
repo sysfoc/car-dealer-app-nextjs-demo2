@@ -44,6 +44,8 @@
     "fuel": "Fuel Type",
     "color": "Color",
     "doors": "Doors",
+    "perMonthIncVat": "Per month inc. VAT",
+    "noCarsAvailable": "No lease cars available",
     "seats": "Seats",
     "battery": "Battery Range",
     "charging": "Charging Time",

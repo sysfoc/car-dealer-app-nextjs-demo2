@@ -6,6 +6,7 @@ import { SiCmake, SiGoogleearthengine } from "react-icons/si";
 import { useRouter } from "next/navigation";
 import { IoIosSpeedometer } from "react-icons/io";
 import { IoPricetag, IoArrowDownSharp, IoArrowUpSharp } from "react-icons/io5";
+import { usePathname } from "next/navigation";
 import {
   FaLocationDot,
   FaRecycle,
@@ -28,12 +29,15 @@ import {
 import { MdOutlineCo2 } from "react-icons/md";
 import { useTranslations } from "next-intl";
 import { useDebouncedCallback } from "use-debounce";
+import { FaHandshake } from "react-icons/fa";
 
 const SidebarFilters = () => {
   const t = useTranslations("Filters");
   const router = useRouter();
   const [localFilters, setLocalFilters] = useState<Record<string, any>>({});
   const [openSections, setOpenSections] = useState<string[]>([]);
+  const pathname = usePathname();
+  const isLeasingPage = pathname.includes("/leasing");
 
   const activeInputRef = useRef<string | null>(null);
   const inputRefs = useRef<
@@ -276,36 +280,6 @@ const SidebarFilters = () => {
   };
 
   const sections = [
-    // {
-    //   label: t("keyword"),
-    //   content: "keyword",
-    //   symbol: <VscSymbolKeyword />,
-    //   render: (
-    //     <div className="space-y-5">
-    //       <div className="flex items-center gap-3 mb-4">
-    //         <div className="w-1 h-6 bg-gradient-to-b from-violet-500 to-purple-500 rounded-full"></div>
-    //         <label htmlFor="keyword" className="text-lg font-bold text-gray-800 dark:text-gray-200">
-    //           Search Keywords
-    //         </label>
-    //       </div>
-    //       <div className="relative group">
-    //         <TextInput
-    //           type="text"
-    //           id="keyword"
-    //           name="keyword"
-    //           ref={setInputRef("keyword")}
-    //           value={localFilters.keyword || ""}
-    //           placeholder="e.g., Toyota, BMW, Sedan..."
-    //           onChange={(e) => handleInputChange("keyword", e.target.value, "keyword")}
-    //           className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/50 text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 text-base font-medium shadow-lg transition-all duration-300"
-    //         />
-    //         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-violet-500 text-xl">
-    //           <VscSymbolKeyword />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   ),
-    // },
     {
       label: t("year"),
       content: "year",
@@ -355,6 +329,36 @@ const SidebarFilters = () => {
                 className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 font-medium text-gray-800 placeholder-gray-500 shadow-lg transition-all duration-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 dark:focus:ring-violet-900/50"
               />
             </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: "Lease",
+      content: "lease",
+      symbol: <FaHandshake />,
+      render: !isLeasingPage && (
+        <div className="space-y-4">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="lease-filter"
+              checked={localFilters.lease === "true"}
+              onChange={(e) =>
+                handleInputChange(
+                  "lease",
+                  e.target.checked ? "true" : "false",
+                  "lease-filter",
+                )
+              }
+              className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+            />
+            <label
+              htmlFor="lease-filter"
+              className="ml-3 text-sm text-gray-700 dark:text-gray-300"
+            >
+              Show Lease Cars Only
+            </label>
           </div>
         </div>
       ),
@@ -1040,7 +1044,10 @@ const SidebarFilters = () => {
       ),
     },
   ];
-  const isLightColor = (colorId:any) => ["white", "silver"].includes(colorId);
+  const isLightColor = (colorId: any) => ["white", "silver"].includes(colorId);
+  const visibleSections = sections.filter(section => 
+    section.content !== 'lease' || section.render !== false
+  );
   return (
     <div className="scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-transparent max-h-screen overflow-y-auto rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
       <h2 className="mb-6 border-b border-gray-200 pb-4 text-2xl font-bold text-gray-800 dark:border-gray-800 dark:text-white">
@@ -1163,7 +1170,7 @@ const SidebarFilters = () => {
 
       {/* Filter Sections */}
       <div className="space-y-6">
-        {sections.map((section, index) => (
+        {visibleSections.map((section, index) => (
           <div
             key={index}
             className="border-b border-gray-200 pb-4 last:border-0 dark:border-gray-800"

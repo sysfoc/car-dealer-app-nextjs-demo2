@@ -3,6 +3,8 @@ import connectToMongoDB from "../../../lib/mongodb";
 import User from "../../../models/User";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { verifyToken } from "../../../lib/auth";
 
 connectToMongoDB();
 
@@ -10,6 +12,13 @@ export async function POST(request: NextRequest) {
   try {
     const contentType = request.headers.get('content-type');
     let email, password, role, pin, profilePicture;
+     const token = request.cookies.get("token")?.value;
+    const user = verifyToken(token as string) as jwt.JwtPayload;
+
+     if (user?.role !== "superadmin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
 
     if (contentType && contentType.includes('multipart/form-data')) {
       const formData = await request.formData();

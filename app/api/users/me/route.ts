@@ -35,8 +35,7 @@ export async function GET(request: NextRequest) {
       return response;
     }
 
-    const user = await User.findById(decoded.id, "username email role");
-    // const user = await User.findById(decoded.id, "username email role profilePicture");
+    const user = await User.findById(decoded.id, "username email role likedCars");
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -51,3 +50,4 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+

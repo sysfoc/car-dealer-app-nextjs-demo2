@@ -1,5 +1,6 @@
 import { jwtVerify } from "jose";
 import { NextRequest } from "next/server";
+import jwt , { JwtPayload } from 'jsonwebtoken'
 
 export async function verifyUserToken(request: NextRequest) {
   try {
@@ -30,5 +31,13 @@ export async function verifyUserToken(request: NextRequest) {
     }
 
     return { error: "Invalid token", status: 403 };
+  }
+}
+
+export function verifyToken(token: string): string | JwtPayload {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET as string)
+  } catch (error) {
+    throw new Error('Invalid token')
   }
 }

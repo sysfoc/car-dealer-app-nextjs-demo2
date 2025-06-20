@@ -11,6 +11,7 @@ import {
   FaRandom,
   FaInfoCircle
 } from 'react-icons/fa';
+import { useRouter } from 'next/navigation'
 
 export default function CreateUser() {
   const [formData, setFormData] = useState({
@@ -25,6 +26,8 @@ export default function CreateUser() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const router = useRouter()
+  const [userRole, setUserRole] = useState('')
 
   useEffect(() => generateRandomPin(), []);
 
@@ -169,6 +172,27 @@ export default function CreateUser() {
       // Don't clear errors here - only clear on success
     }
   };
+
+  
+  useEffect(() => {
+    // Fetch user role from API or context
+    const fetchUserRole = async () => {
+      const res = await fetch('/api/users/me')
+      const data = await res.json()
+      
+      if (data.user.role !== 'superadmin') {
+        router.replace('/admin/dashboard')
+      } else {
+        setUserRole(data.user.role)
+      }
+    }
+
+    fetchUserRole()
+  }, [router])
+
+   if (!userRole) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-100">

@@ -143,7 +143,7 @@ const BrowseCars = () => {
 
   const CategoryCard = ({ item, index }) => (
     <div
-      className="group relative cursor-pointer overflow-hidden rounded-xl border border-gray-200/60 bg-white/80 p-4 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-300/60 hover:shadow-lg hover:shadow-blue-500/10 dark:border-gray-700/60 dark:bg-gray-800/80 dark:hover:border-blue-600/60"
+      className="group relative overflow-hidden rounded-xl border border-gray-200/60 bg-white/80 p-4 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-300/60 hover:shadow-lg hover:shadow-blue-500/10 dark:border-gray-700/60 dark:bg-gray-800/80 dark:hover:border-blue-600/60"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Gradient background on hover */}
@@ -173,7 +173,7 @@ const BrowseCars = () => {
         </div>
 
         {/* Arrow indicator */}
-        <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 transition-colors duration-300 group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/50">
+        {/* <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 transition-colors duration-300 group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/50">
           <svg
             className="h-3 w-3 text-gray-400 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400"
             fill="none"
@@ -187,7 +187,7 @@ const BrowseCars = () => {
               d="M9 5l7 7-7 7"
             />
           </svg>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -34,6 +34,7 @@ const CarSchema = new mongoose.Schema(
     enginePower: Number,
     fuelConsumption: Number,
     isFinance: String,
+    isLease: { type: Boolean, default: false },
     slug: String,
     co2Emission: Number,
     driveType: String,

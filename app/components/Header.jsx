@@ -90,6 +90,17 @@ const Header = () => {
     );
   };
 
+  useEffect(() => {
+  if (isSidebarOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'auto';
+  }
+  return () => {
+    document.body.style.overflow = 'auto';
+  };
+}, [isSidebarOpen]);
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     if (document.documentElement.classList.contains("dark")) {
@@ -248,15 +259,16 @@ const Header = () => {
   const quickLinks = [
     // { name: "New & Used Cars", href: "/car-for-sale", icon: FaCar },
     { name: "Sell my car", href: "/cars/sell-my-car", icon: FaHandshake },
-    { name: "Value Your Car", href: "/cars/valuation", icon: FaCalculator },
-    { name: "Car Leasing", href: "/cars/leasing", icon: FaTags },
+    { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
+     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
     { name: "Car Finance", href: "/cars/finance", icon: FaCreditCard },
+    // { name: "Add ons", href: "/cars/add-ons", icon: FaCreditCard },
   ];
 
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg transition-all duration-300 dark:border-gray-700 dark:bg-gray-900/95">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Logo Section */}
             <Link href="/" className="flex items-center space-x-3">
@@ -299,16 +311,7 @@ const Header = () => {
               </button>
 
               <div className="hidden items-center space-x-3 md:flex">
-                {/* {!topSettings.hideFavourite && (
-                  <Link
-                    href="/user/saved"
-                    className="group relative rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200/80 hover:text-gray-900 hover:ring-gray-400/70 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 dark:hover:bg-gray-600/80 dark:hover:text-white dark:hover:ring-gray-500/70"
-                    aria-label="Saved-ads"
-                  >
-                    <FaRegHeart className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
-                  </Link>
-                )} */}
-
+              
                 {!topSettings.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}

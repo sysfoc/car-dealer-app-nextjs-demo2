@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       // default: "/public/userPicture.jpg",
     },
+    likedCars: [{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Car' // Assuming your car model is named 'Car'
+}],
   },
   { timestamps: true },
 );

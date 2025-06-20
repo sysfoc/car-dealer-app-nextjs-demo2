@@ -1,9 +1,98 @@
+// "use client";
+// import { useEffect, useState } from "react";
+// import { Trash2, Users, Crown, User } from "lucide-react";
+// import axios from "axios";
+// import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { useRouter } from 'next/navigation'
+
+
+// export default function Page() {
+//   const [users, setUsers] = useState([]);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [totalPages, setTotalPages] = useState(1);
+//   const [loading, setLoading] = useState(false);
+//   const limit = 5;
+
+//    const router = useRouter()
+//   const [userRole, setUserRole] = useState('')
+
+//   useEffect(() => {
+//     const fetchUserRole = async () => {
+//       const res = await fetch('/api/users/me')
+//       const data = await res.json()
+      
+//       if (data.user.role !== 'superadmin') {
+//         router.replace('/admin/dashboard')
+//       } else {
+//         setUserRole(data.user.role)
+//       }
+//     }
+
+//     fetchUserRole()
+//   }, [router])
+
+//   if (!userRole) {
+//     return <div>Loading...</div>
+//   }
+
+
+
+//   const handleDelete = async (userId) => {
+//     if (!confirm("Are you sure you want to delete this user?")) return;
+
+//     try {
+//       const response = await axios.delete("/api/users/delete", {
+//         data: { userId },
+//         withCredentials: true,
+//       });
+
+//       if (response.status === 200) {
+//         toast.success("User deleted successfully!");
+//         setUsers((prevUsers) =>
+//           prevUsers.filter((user) => user._id !== userId),
+//         );
+//       }
+//     } catch (error) {
+//       if (error.response) {
+//         toast.error(`Error: ${error.response.data.error}`);
+//       } else {
+//         toast.error("An unexpected error occurred.");
+//       }
+//     }
+//   };
+
+//   useEffect(() => {
+//     const fetchUsers = async () => {
+//       try {
+//         const response = await axios.get(
+//           `/api/users?page=${currentPage}&limit=${limit}`,
+//           {
+//             withCredentials: true,
+//           },
+//         );
+
+//         console.log("API Response:", response.data);
+//         setUsers(response.data.users || []);
+//         setTotalPages(response.data.totalPages || 1);
+//       } catch (error) {
+//         console.error("Error fetching users:", error);
+//         setUsers([]);
+//         toast.error("Error fetching users.");
+//       }
+//     };
+
+//     fetchUsers();
+//   }, [currentPage]);
+
+
 "use client";
 import { useEffect, useState } from "react";
 import { Trash2, Users, Crown, User } from "lucide-react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from 'next/navigation'
 
 export default function Page() {
   const [users, setUsers] = useState([]);
@@ -12,8 +101,59 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const limit = 5;
 
+  const router = useRouter();
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [initialCheck, setInitialCheck] = useState(true);
 
+  // Effect for checking user role
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const res = await fetch('/api/users/me');
+        const data = await res.json();
+        
+        if (data.user.role !== 'superadmin') {
+          router.replace('/admin/dashboard');
+        } else {
+          setIsSuperAdmin(true);
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+        router.replace('/admin/dashboard');
+      } finally {
+        setInitialCheck(false);
+      }
+    };
 
+    fetchUserRole();
+  }, [router]);
+
+  // Effect for fetching users (only for superadmin)
+  useEffect(() => {
+    if (isSuperAdmin) {
+      const fetchUsers = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get(
+            `/api/users?page=${currentPage}&limit=${limit}`,
+            { withCredentials: true }
+          );
+          setUsers(response.data.users || []);
+          setTotalPages(response.data.totalPages || 1);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+          setUsers([]);
+          toast.error("Error fetching users.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchUsers();
+    }
+  }, [currentPage, isSuperAdmin, limit]);
+
+  // Handle user deletion
   const handleDelete = async (userId) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
@@ -25,9 +165,7 @@ export default function Page() {
 
       if (response.status === 200) {
         toast.success("User deleted successfully!");
-        setUsers((prevUsers) =>
-          prevUsers.filter((user) => user._id !== userId),
-        );
+        setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
       }
     } catch (error) {
       if (error.response) {
@@ -38,44 +176,19 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          `/api/users?page=${currentPage}&limit=${limit}`,
-          {
-            withCredentials: true,
-          },
-        );
+  // Loading and redirect states
+  if (initialCheck) {
+    return <div>Loading...</div>;
+  }
 
-        console.log("API Response:", response.data);
-        setUsers(response.data.users || []);
-        setTotalPages(response.data.totalPages || 1);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        setUsers([]);
-        toast.error("Error fetching users.");
-      }
-    };
-
-    fetchUsers();
-  }, [currentPage]);
+  if (!isSuperAdmin) {
+    return <div>Redirecting to dashboard...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
-        {/* Header Section */}
-        {/* <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <Users className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-slate-800">User Management</h1>
-          </div>
-          <p className="text-slate-600 text-lg">Manage and monitor user accounts across your platform</p>
-        </div> */}
-
-        {/* Main Content Card */}
+     
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
           {/* Card Header */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">

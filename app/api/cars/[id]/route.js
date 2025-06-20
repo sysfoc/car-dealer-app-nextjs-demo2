@@ -72,6 +72,10 @@ export async function PATCH(req, { params }) {
       }
     }
 
+    if (formEntries.isLease !== undefined) {
+  formEntries.isLease = formEntries.isLease === 'true';
+}
+
    let slug = existingCar.slug;
 
 if (
@@ -88,7 +92,8 @@ if (
       video: videoUrl,
       slug,
       status: existingCar.status,
-      description: formEntries.description || existingCar.description
+      description: formEntries.description || existingCar.description,
+      isLease: formEntries.isLease
     };
 
     delete updatedData._id;
@@ -182,6 +187,7 @@ export async function GET(req, { params }) {
       dealerId: car.dealerId?.toString(),
       makeName: makeDoc?.name || "Unknown Make",
       modelName: modelDoc?.name || "Unknown Model",
+      isLease: car.isLease
     };
 
     return NextResponse.json({ car: enrichedCar }, { status: 200 });

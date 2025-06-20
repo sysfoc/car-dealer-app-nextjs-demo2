@@ -59,6 +59,7 @@ const CarEditPage = ({ params }) => {
     imageUrls: [],
     video: "",
     isFinance: "",
+    isLease: false,
     slug: "",
   });
 
@@ -118,11 +119,11 @@ const CarEditPage = ({ params }) => {
 
     if (name === "make") {
       const selectedMake = makes.find((make) => make._id === value);
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         make: value,
         makeName: selectedMake ? selectedMake.name : "",
-        model: ""
+        model: "",
       }));
     }
     if (type === "checkbox") {
@@ -140,10 +141,18 @@ const CarEditPage = ({ params }) => {
       }));
     }
   };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const { name, value, type, checked } = e.target;
+  setFormData(prev => ({
+    ...prev,
+    [name]: type === 'checkbox' ? checked : value
+  }));
+};
 
   const handleFeatureChange = (e) => {
     const feature = e.target.value;
@@ -171,8 +180,8 @@ const CarEditPage = ({ params }) => {
       } else if (key === "features") {
         formDataToSend.append(key, JSON.stringify(formData[key]));
       } else if (key === "description") {
-        formDataToSend.append(key, formData[key] || "")}
-       else {
+        formDataToSend.append(key, formData[key] || "");
+      } else {
         formDataToSend.append(key, formData[key]);
       }
     }
@@ -559,6 +568,17 @@ const CarEditPage = ({ params }) => {
               onChange={handleInputChange}
             />
           </div>
+          <div className="flex items-center">
+            <Checkbox
+              id="isLease"
+              name="isLease"
+              checked={formData.isLease || false}
+              onChange={handleInputChange}
+            />
+            <Label htmlFor="isLease" className="ml-2">
+              Available for Lease
+            </Label>
+          </div>
         </div>
         <div className="mt-5">
           <h3 className="text-sm font-semibold">Features:</h3>
@@ -583,11 +603,17 @@ const CarEditPage = ({ params }) => {
         <div className="mt-5">
           <Label>Existing Images:</Label>
           <div className="flex gap-2">
-            {formData.images && Array.isArray(formData.images) && formData.images.length > 0 ? (
+            {formData.images &&
+            Array.isArray(formData.images) &&
+            formData.images.length > 0 ? (
               formData.images.map((image, index) => (
                 <Image
                   key={index}
-                  src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+                  src={
+                    typeof image === "string"
+                      ? image
+                      : URL.createObjectURL(image)
+                  }
                   alt={`Car Image ${index}`}
                   width={100}
                   height={100}
@@ -599,7 +625,6 @@ const CarEditPage = ({ params }) => {
             )}
           </div>
         </div>
-
 
         <div className="mt-5">
           <Label>Existing Video:</Label>

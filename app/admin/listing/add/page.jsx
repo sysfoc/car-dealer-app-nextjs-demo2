@@ -101,6 +101,7 @@ const Page = () => {
     slug: "",
     co2Emission: 0,
     driveType: "",
+    isLease: false,
     dealerId: "",
   });
 
@@ -151,13 +152,12 @@ const Page = () => {
     const { name, value, type, checked } = e.target;
 
     if (name === "make") {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         make: value,
-        model: ""
+        model: "",
       }));
     }
-
 
     if (type === "checkbox") {
       setFormData((prev) => ({
@@ -196,7 +196,6 @@ const Page = () => {
 
     formData.set("features", JSON.stringify(selectedFeatures));
 
-
     try {
       const response = await fetch("/api/cars", {
         method: "POST",
@@ -231,7 +230,8 @@ const Page = () => {
             </h3>
             <div className="mb-3 mt-1 border border-gray-300"></div>
           </div>
-          <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
+
+          {/* <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
             <div>
               <Label htmlFor="brand-make">Vehicle Make:</Label>
               <Select
@@ -290,18 +290,120 @@ const Page = () => {
               </Select>
             </div>
 
-              <div>
-                <Label htmlFor="description">Description:</Label>
-                <Textarea
-                  id="description"
-                  className="mb-4 h-28"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Enter a detailed description of the vehicle..."
+            <div>
+              <Label htmlFor="description">Description:</Label>
+              <Textarea
+                id="description"
+                className="mb-4 h-28"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Enter a detailed description of the vehicle..."
+              />
+            </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="isLease"
+                  name="isLease"
+                  checked={formData.isLease}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      isLease: e.target.checked,
+                    }))
+                  }
                 />
+                <Label htmlFor="isLease">Available for Lease</Label>
               </div>
+          </div> */}
+
+          <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
+            <div>
+              <Label htmlFor="brand-make">Vehicle Make:</Label>
+              <Select
+                id="brand-make"
+                name="make"
+                value={formData.make}
+                onChange={handleChange}
+              >
+                <option>Select Make</option>
+                {makes.map((make) => (
+                  <option key={make._id} value={make._id}>
+                    {make.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="brand-Model">Brand Model:</Label>
+              <Select
+                id="brand-Model"
+                name="model"
+                value={formData.model}
+                onChange={handleChange}
+              >
+                <option>Select Model</option>
+                {models.map((model) => (
+                  <option key={model._id} value={model._id}>
+                    {model.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="price">Price:</Label>
+              <TextInput
+                id="price"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="type">Type:</Label>
+              <Select
+                id="type"
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+              >
+                <option value="used">Used</option>
+                <option value="new">New</option>
+              </Select>
+              <div className="mt-4 flex items-center gap-2">
+                <Checkbox
+                  id="isLease"
+                  name="isLease"
+                  checked={formData.isLease}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      isLease: e.target.checked,
+                    }))
+                  }
+                />
+                <Label htmlFor="isLease">Available for Lease</Label>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="description">Description:</Label>
+              <Textarea
+                id="description"
+                className="mb-4 h-28"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Enter a detailed description of the vehicle..."
+              />
+            </div>
           </div>
+
           <div className="mt-5">
             <div>
               <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">
