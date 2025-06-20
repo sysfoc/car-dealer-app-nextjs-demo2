@@ -176,7 +176,7 @@ return (
                 <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Smarter</span>
               </h1>
               <p className="text-xl text-blue-100 lg:text-2xl">
-                Join millions who've discovered the fastest, safest way to sell their vehicles. 
+                Join millions who have discovered the fastest, safest way to sell their vehicles. 
                 Get your free valuation and list in minutes.
               </p>
                <button
