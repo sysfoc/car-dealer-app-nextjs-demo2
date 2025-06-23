@@ -37,13 +37,79 @@ const CardetailCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(3); // You can make this configurable
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+
   const parseBooleanParam = (param) => {
     return param === "true";
   };
 
-  // 2. ADD THESE PAGINATION CALCULATIONS (after your existing useMemo declarations)
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+  const handleEnquirySubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setSubmitMessage("");
 
-  // Get all filters at once
+  const enquiryData = {
+    carId: selectedCar?._id,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    phone: formData.phone,
+    message: formData.message,
+  };
+
+  try {
+    const response = await fetch("/api/enquiry", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(enquiryData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      setSubmitMessage("Enquiry submitted successfully! We will contact you soon.");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+
+      setTimeout(() => {
+        setOpenModal(false);
+        setSubmitMessage("");
+        setSelectedCar(null);
+      }, 2000);
+    } else {
+      setSubmitMessage(result.error || "Failed to submit enquiry. Please try again.");
+    }
+  } catch (error) {
+    console.error("Enquiry submission error:", error);
+    setSubmitMessage("Something went wrong. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
   const filters = useMemo(() => {
     return Object.fromEntries(searchParams.entries());
   }, [searchParams]);
@@ -975,7 +1041,10 @@ const CardetailCard = () => {
               {/* Action Buttons */}
               <div className="mt-auto flex gap-2">
                 <button
-                  onClick={() => setOpenModal(true)}
+                  onClick={() => {
+                    setSelectedCar(car); 
+                    setOpenModal(true);
+                  }}
                   className={`flex-1 rounded-xl border-2 border-blue-600 text-center font-semibold text-blue-600 transition-all duration-200 hover:bg-blue-600 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-400 dark:hover:text-white ${
                     isGridView ? "px-3 py-2 text-sm" : "px-6 py-3"
                   }`}
@@ -1143,37 +1212,55 @@ const CardetailCard = () => {
         </ModalHeader>
 
         <ModalBody className="p-6">
-          <form className="space-y-6">
+          <form onSubmit={handleEnquirySubmit} className="space-y-6">
+            {submitMessage && (
+              <div
+                className={`rounded-lg p-4 text-sm ${
+                  submitMessage.includes("success")
+                    ? "border border-green-200 bg-green-50 text-green-800"
+                    : "border border-red-200 bg-red-50 text-red-800"
+                }`}
+              >
+                {submitMessage}
+              </div>
+            )}
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label
-                  htmlFor="fname"
+                  htmlFor="firstName"
                   className="text-sm font-semibold text-gray-700 dark:text-gray-300"
                 >
                   First Name *
                 </Label>
                 <TextInput
                   type="text"
-                  id="fname"
+                  id="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
                   placeholder="Enter your first name"
                   className="rounded-xl border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
-                  htmlFor="lname"
+                  htmlFor="lastName"
                   className="text-sm font-semibold text-gray-700 dark:text-gray-300"
                 >
                   Last Name *
                 </Label>
                 <TextInput
                   type="text"
-                  id="lname"
+                  id="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
                   placeholder="Enter your last name"
                   className="rounded-xl border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -1187,9 +1274,12 @@ const CardetailCard = () => {
                 <TextInput
                   type="email"
                   id="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="your.email@example.com"
                   className="rounded-xl border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -1203,23 +1293,30 @@ const CardetailCard = () => {
                 <TextInput
                   type="tel"
                   id="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   placeholder="+92 300 1234567"
                   className="rounded-xl border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
               <div className="space-y-2 sm:col-span-2">
                 <Label
-                  htmlFor="comment"
+                  htmlFor="message"
                   className="text-sm font-semibold text-gray-700 dark:text-gray-300"
                 >
                   Your Message
                 </Label>
                 <Textarea
+                  id="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
                   rows={4}
                   placeholder="Tell us about your requirements, budget, or any specific questions..."
                   className="resize-none rounded-xl border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -1227,9 +1324,21 @@ const CardetailCard = () => {
             <div className="border-t border-gray-200 pt-4 dark:border-gray-700">
               <button
                 type="submit"
-                className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
+                disabled={isSubmitting}
+                className={`w-full rounded-xl py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 ${
+                  isSubmitting
+                    ? "cursor-not-allowed bg-gray-400"
+                    : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
+                }`}
               >
-                Send Enquiry
+                {isSubmitting ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Spinner size="sm" />
+                    Sending...
+                  </div>
+                ) : (
+                  "Send Enquiry"
+                )}
               </button>
             </div>
           </form>

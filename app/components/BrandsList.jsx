@@ -416,15 +416,21 @@ const BrandsList = () => {
           ))}
         </div>
 
-        {filteredBrands.length > visibleCount && (
+        {filteredBrands.length > 8 && (
           <div
             className={`${viewMode === "grid" ? "col-span-full" : "w-full"} mt-6 text-center`}
           >
             <button
-              onClick={() => setVisibleCount((prev) => prev + 6)}
+              onClick={() => {
+                if (visibleCount >= filteredBrands.length) {
+                  setVisibleCount(8);
+                } else {
+                  setVisibleCount((prev) => prev + 6);
+                }
+              }}
               className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:from-blue-700 hover:to-purple-700"
             >
-              See More
+              {visibleCount >= filteredBrands.length ? "See Less" : "See More"}
             </button>
           </div>
         )}

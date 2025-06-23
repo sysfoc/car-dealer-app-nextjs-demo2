@@ -13,12 +13,7 @@ export default function Home() {
         <div className="w-full md:w-5/6">
           <CardetailCard />
           <div className="mt-5 flex overflow-x-auto sm:justify-center">
-            {/* <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(filteredCars.length / 10)}
-              onPageChange={onPageChange}
-              showIcons
-            /> */}
+           
           </div>
         </div>
       </div>

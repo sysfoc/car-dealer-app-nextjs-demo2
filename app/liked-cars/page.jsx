@@ -7,9 +7,7 @@ import { MdOutlineArrowOutward, MdFavorite, MdLogin } from "react-icons/md";
 import { IoSpeedometer } from "react-icons/io5";
 import { GiGasPump } from "react-icons/gi";
 import { TbManualGearboxFilled } from "react-icons/tb";
-import { FaHeart, FaEye, FaRegHeart, FaUser, FaLock } from "react-icons/fa";
-import { BiTachometer } from "react-icons/bi";
-import { HiOutlineLocationMarker } from "react-icons/hi";
+import { FaHeart, FaEye , FaLock } from "react-icons/fa";
 import { AiOutlineDelete } from "react-icons/ai";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -23,66 +21,54 @@ const LikedCarsPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // Check if user is authenticated by verifying token in cookies
-  const checkAuthentication = () => {
-    try {
-      // Get all cookies
-      const cookies = document.cookie.split(';');
-      
-      // Look for token cookie
-      const tokenCookie = cookies.find(cookie => 
-        cookie.trim().startsWith('token=')
-      );
-      
-      if (tokenCookie) {
-        const token = tokenCookie.split('=')[1];
-        // Basic check if token exists and is not empty
-        if (token && token.trim() !== '') {
-          setIsAuthenticated(true);
-          return true;
-        }
-      }
-      
-      setIsAuthenticated(false);
-      return false;
-    } catch (error) {
-      console.error("Error checking authentication:", error);
-      setIsAuthenticated(false);
-      return false;
-    }
-  };
 
-  // Fetch user data
-  const fetchUserData = async () => {
+  useEffect(() => {
+  const initializePage = async () => {
     try {
-      const response = await fetch("/api/users/me");
-      if (!response.ok) {
-        // If unauthorized, set authentication to false
-        if (response.status === 401) {
-          setIsAuthenticated(false);
-          throw new Error("User not authenticated");
-        }
-        throw new Error("Failed to fetch user data");
-      }
-      const data = await response.json();
-      setUser(data.user);
+      setAuthLoading(true);
+      setLoading(true);
+      
+      const user = await fetchUserData();
       setIsAuthenticated(true);
-      return data.user.likedCars || [];
+      
+      await fetchLikedCars();
     } catch (error) {
-      console.error("Error fetching user data:", error);
       if (error.message === "User not authenticated") {
         setIsAuthenticated(false);
+      } else {
+        setError(error.message);
       }
-      throw error;
+    } finally {
+      setLoading(false);
+      setAuthLoading(false);
     }
   };
 
-  // Fetch liked cars using optimized endpoint
+  initializePage();
+}, []);
+
+  const fetchUserData = async () => {
+  try {
+    const response = await fetch("/api/users/me");
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("User not authenticated");
+      }
+      throw new Error("Failed to fetch user data");
+    }
+    const data = await response.json();
+    setUser(data.user);
+    return data.user;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+};
+
   const fetchLikedCars = async () => {
     try {
       const response = await fetch("/api/users/liked-cars/cars");
       if (!response.ok) {
-        // If unauthorized, set authentication to false
         if (response.status === 401) {
           setIsAuthenticated(false);
           throw new Error("User not authenticated");
@@ -100,7 +86,6 @@ const LikedCarsPage = () => {
     }
   };
 
-  // Handle removing car from liked list
   const handleRemoveLike = async (carId) => {
     setRemovingCarId(carId);
     try {
@@ -131,41 +116,6 @@ const LikedCarsPage = () => {
     }
   };
 
-  // Initialize data fetch
-  useEffect(() => {
-    const initializePage = async () => {
-      try {
-        setAuthLoading(true);
-        setLoading(true);
-        
-        // First check authentication
-        const isAuth = checkAuthentication();
-        
-        if (isAuth) {
-          // If authenticated, fetch user data and liked cars
-          await Promise.all([
-            fetchUserData(),
-            fetchLikedCars()
-          ]);
-        } else {
-          // If not authenticated, just set the states
-          setIsAuthenticated(false);
-          setError(null);
-        }
-      } catch (err) {
-        if (err.message !== "User not authenticated") {
-          setError(err.message);
-        }
-      } finally {
-        setLoading(false);
-        setAuthLoading(false);
-      }
-    };
-
-    initializePage();
-  }, []);
-
-  // Show loading state during authentication check
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">

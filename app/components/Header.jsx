@@ -5,21 +5,16 @@ import Link from "next/link";
 import { Spinner } from "flowbite-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { FaHeart } from "react-icons/fa";
 import {
   FaSearch,
   FaTimes,
-  FaCar,
-  FaPhone,
-  FaEnvelope,
-  FaMapMarkerAlt,
   FaTags,
   FaCalculator,
   FaHandshake,
   FaCreditCard,
-  FaRegHeart,
   FaSun,
   FaMoon,
-  FaRecycle,
 } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 
@@ -37,23 +32,6 @@ const colorMap = {
 const isLightColor = (colorId) => {
   const lightColors = ["white", "yellow", "beige", "silver"];
   return lightColors.includes(colorId);
-};
-
-const ConditionButton = ({ condition, selected, onClick }) => {
-  const t = useTranslations("HomePage");
-
-  return (
-    <button
-      onClick={onClick}
-      className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-all duration-200 ${
-        selected
-          ? "border-violet-600 bg-violet-600 text-white shadow-lg"
-          : "border-gray-300 bg-white text-gray-700 hover:border-violet-400 hover:bg-violet-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-violet-500 dark:hover:bg-gray-700"
-      }`}
-    >
-      {t(condition)}
-    </button>
-  );
 };
 
 const Header = () => {
@@ -91,15 +69,15 @@ const Header = () => {
   };
 
   useEffect(() => {
-  if (isSidebarOpen) {
-    document.body.style.overflow = 'hidden';
-  } else {
-    document.body.style.overflow = 'auto';
-  }
-  return () => {
-    document.body.style.overflow = 'auto';
-  };
-}, [isSidebarOpen]);
+    if (isSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isSidebarOpen]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -260,7 +238,7 @@ const Header = () => {
     // { name: "New & Used Cars", href: "/car-for-sale", icon: FaCar },
     { name: "Sell my car", href: "/cars/sell-my-car", icon: FaHandshake },
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
-     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
+    { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
     { name: "Car Finance", href: "/cars/finance", icon: FaCreditCard },
     // { name: "Add ons", href: "/cars/add-ons", icon: FaCreditCard },
   ];
@@ -306,12 +284,19 @@ const Header = () => {
                 onClick={toggleSidebar}
                 className="group relative rounded-xl bg-gray-100 p-3 transition-all duration-300 hover:scale-105 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700"
               >
-                <FaSearch className="h-5 w-5 text-gray-600 transition-colors duration-300 group-hover:text-blue-600 dark:text-gray-300 dark:group-hover:text-blue-400" />
+                <FaSearch className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:group-hover:text-blue-400" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 group-hover:from-blue-500/10 group-hover:to-purple-500/10"></div>
+              </button>
+              
+              <button
+                onClick={() => router.push('/liked-cars')}
+                className="group hidden md:flex relative rounded-xl bg-gray-100 p-3 transition-all duration-300 hover:scale-105 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700"
+              >
+                <FaHeart className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:group-hover:text-blue-400" />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 group-hover:from-blue-500/10 group-hover:to-purple-500/10"></div>
               </button>
 
               <div className="hidden items-center space-x-3 md:flex">
-              
                 {!topSettings.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}

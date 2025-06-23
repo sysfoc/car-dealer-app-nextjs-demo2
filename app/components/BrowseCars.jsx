@@ -171,23 +171,6 @@ const BrowseCars = () => {
             {item.count} available
           </p>
         </div>
-
-        {/* Arrow indicator */}
-        {/* <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 transition-colors duration-300 group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/50">
-          <svg
-            className="h-3 w-3 text-gray-400 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </div> */}
       </div>
     </div>
   );
@@ -325,13 +308,21 @@ const BrowseCars = () => {
           ) : null}
         </div>
 
-        {filteredItems.length > visibleCount && (
-          <div className="mt-6 text-center">
+        {filteredItems.length > 6 && (
+          <div
+            className={`${viewMode === "grid" ? "col-span-full" : "w-full"} mt-6 text-center`}
+          >
             <button
-              onClick={() => setVisibleCount((prev) => prev + 6)} // load next 2 rows
+              onClick={() => {
+                if (visibleCount >= filteredItems.length) {
+                  setVisibleCount(6);
+                } else {
+                  setVisibleCount((prev) => prev + 6);
+                }
+              }}
               className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:from-blue-700 hover:to-purple-700"
             >
-              See More
+              {visibleCount >= filteredItems.length ? "See Less" : "See More"}
             </button>
           </div>
         )}

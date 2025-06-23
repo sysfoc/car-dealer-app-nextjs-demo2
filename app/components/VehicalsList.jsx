@@ -48,7 +48,6 @@ const VehicalsList = ({ loadingState }) => {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
-        // Ensure likedCars is always an array
         setUserLikedCars(
           Array.isArray(data.user?.likedCars) ? data.user.likedCars : [],
         );
@@ -72,7 +71,6 @@ const VehicalsList = ({ loadingState }) => {
       if (response.ok) {
         const data = await response.json();
         console.log("Response:", data);
-        // Ensure the response data is an array
         setUserLikedCars(Array.isArray(data.likedCars) ? data.likedCars : []);
 
         setUser((prev) => ({
@@ -87,7 +85,6 @@ const VehicalsList = ({ loadingState }) => {
     }
   };
 
-  // Combine both function calls in a single useEffect
   useEffect(() => {
     fetchVehicles();
     fetchUserData();
@@ -110,7 +107,6 @@ const VehicalsList = ({ loadingState }) => {
 
   return (
     <section className="mx-4 my-10 sm:mx-8 md:my-16">
-      {/* Header Section */}
       <div className="mb-16">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
@@ -130,7 +126,6 @@ const VehicalsList = ({ loadingState }) => {
         </div>
       </div>
 
-      {/* Vehicle Grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4">
         {loading
           ? Array(4)
@@ -140,12 +135,10 @@ const VehicalsList = ({ loadingState }) => {
                   className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800"
                   key={index}
                 >
-                  {/* Image Skeleton */}
                   <div className="relative">
                     <Skeleton className="h-64 w-full" />
                   </div>
 
-                  {/* Content Skeleton */}
                   <div className="space-y-4 p-6">
                     <div className="space-y-3">
                       <Skeleton height={28} />
@@ -168,12 +161,11 @@ const VehicalsList = ({ loadingState }) => {
                   </div>
                 </div>
               ))
-          : vehicles.map((vehicle) => (
+          : vehicles.slice(0,4).map((vehicle) => (
               <div
                 className="group transform overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl transition-all duration-500 hover:-translate-y-1 hover:border-slate-300 hover:shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
                 key={vehicle._id}
               >
-                {/* Image Section */}
                 <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-900">
                   <div className="relative aspect-[16/10]">
                     <Image
@@ -183,10 +175,8 @@ const VehicalsList = ({ loadingState }) => {
                       className="object-cover transition-all duration-700 group-hover:scale-110"
                     />
 
-                    {/* Premium overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 
-                    {/* Status Badge */}
                     <div className="absolute left-4 top-4">
                       <div className="rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
                         <div className="flex items-center gap-1.5">
@@ -196,7 +186,6 @@ const VehicalsList = ({ loadingState }) => {
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                       <button
                         onClick={(e) => {
@@ -205,7 +194,6 @@ const VehicalsList = ({ loadingState }) => {
                         }}
                         className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
                       >
-                        {/* Added null check and array validation */}
                         {userLikedCars &&
                         Array.isArray(userLikedCars) &&
                         userLikedCars.includes(vehicle._id) ? (
@@ -233,9 +221,7 @@ const VehicalsList = ({ loadingState }) => {
                   </div>
                 </div>
 
-                {/* Content Section */}
                 <div className="p-6">
-                  {/* Title */}
                   <div className="mb-4">
                     <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
                       {vehicle?.makeName} {vehicle?.modelName}
@@ -245,7 +231,6 @@ const VehicalsList = ({ loadingState }) => {
                     </p>
                   </div>
 
-                  {/* Specifications */}
                   <div className="mb-6 space-y-3">
                     <div className="flex items-center gap-3 text-sm">
                       <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30">
