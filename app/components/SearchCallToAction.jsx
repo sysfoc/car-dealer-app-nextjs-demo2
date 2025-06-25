@@ -79,7 +79,7 @@ const SearchCallToAction = ({ onSearchClick }) => {
             </button>
 
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Use our advanced filters to find exactly what you're looking for
+              Use our advanced filters to find exactly what you&apos;re looking for
             </p>
           </div>
 
