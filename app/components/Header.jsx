@@ -34,9 +34,13 @@ const isLightColor = (colorId) => {
   return lightColors.includes(colorId);
 };
 
-const Header = () => {
+const Header = ({ 
+  isSidebarOpen, 
+  setIsSidebarOpen, 
+  onSidebarClose // Optional callback when sidebar closes
+}) => {
   const t = useTranslations("HomePage");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  //const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
   const [selectedMake, setSelectedMake] = useState("");
@@ -232,6 +236,9 @@ const Header = () => {
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
+    if (onSidebarClose) {
+      onSidebarClose();
+    }
   };
 
   const quickLinks = [
@@ -261,7 +268,6 @@ const Header = () => {
               </div>
             </Link>
 
-            {/* Quick Links - Center */}
             <div className="hidden items-center space-x-6 lg:flex">
               {quickLinks.map((link, index) => {
                 const IconComponent = link.icon;
@@ -278,10 +284,10 @@ const Header = () => {
               })}
             </div>
 
-            {/* Right Side Controls */}
             <div className="flex items-center space-x-3">
               <button
                 onClick={toggleSidebar}
+                aria-label="Open Search"
                 className="group relative rounded-xl bg-gray-100 p-3 transition-all duration-300 hover:scale-105 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700"
               >
                 <FaSearch className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:group-hover:text-blue-400" />
@@ -339,7 +345,6 @@ const Header = () => {
         />
       )}
 
-      {/* Search Sidebar */}
       <div
         className={`fixed right-0 top-0 z-50 h-full w-full max-w-md transform overflow-y-auto bg-white shadow-2xl transition-transform duration-300 dark:bg-gray-900 ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
@@ -353,6 +358,7 @@ const Header = () => {
             </h2>
             <button
               onClick={closeSidebar}
+              aria-label="Close Sidebar"
               className="rounded-lg p-1.5 transition-colors duration-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-gray-800"
             >
               <FaTimes className="h-4 w-4 text-gray-600 dark:text-gray-300" />
@@ -364,7 +370,9 @@ const Header = () => {
             {/* Make and Model Selection */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <label 
+                htmlFor="make"
+                className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Make
                 </label>
                 <div className="relative">
@@ -390,7 +398,9 @@ const Header = () => {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <label 
+                htmlFor="model"
+                className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Model
                 </label>
                 <div className="relative">
@@ -447,6 +457,7 @@ const Header = () => {
                     max="100000"
                     step="100"
                     value={minPrice}
+                    aria-label="Minimum price range"
                     onChange={(e) => {
                       const value = parseInt(e.target.value);
                       if (value < maxPrice) setMinPrice(value);
@@ -459,6 +470,7 @@ const Header = () => {
                     max="100000"
                     step="100"
                     value={maxPrice}
+                    aria-label="Maximum price range"
                     onChange={(e) => {
                       const value = parseInt(e.target.value);
                       if (value > minPrice) setMaxPrice(value);
@@ -486,6 +498,7 @@ const Header = () => {
                       min="100"
                       max="100000"
                       value={minPrice}
+                      aria-label="Minimum price range"
                       onChange={(e) => {
                         const value = parseInt(e.target.value) || 100;
                         if (value < maxPrice && value >= 100)
@@ -503,6 +516,7 @@ const Header = () => {
                       min="100"
                       max="100000"
                       value={maxPrice}
+                      aria-label="Maximum price range"
                       onChange={(e) => {
                         const value = parseInt(e.target.value) || 100000;
                         if (value > minPrice && value <= 100000)

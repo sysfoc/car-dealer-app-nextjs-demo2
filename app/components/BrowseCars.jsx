@@ -184,9 +184,9 @@ const BrowseCars = () => {
       <div className="relative mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h3 className="mb-2 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-2xl font-bold text-transparent dark:from-white dark:via-blue-100 dark:to-purple-100 md:text-3xl">
+          <h2 className="mb-2 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-2xl font-bold text-transparent dark:from-white dark:via-blue-100 dark:to-purple-100 md:text-3xl">
             Browse Cars by Category
-          </h3>
+          </h2>
           <p className="mx-auto max-w-lg text-sm text-gray-600 dark:text-gray-400">
             Find your perfect vehicle from our curated collection
           </p>

@@ -178,7 +178,7 @@ const VehicalsList = ({ loadingState }) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 
                     <div className="absolute left-4 top-4">
-                      <div className="rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
+                      <div className="rounded-full bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
                         <div className="flex items-center gap-1.5">
                           <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
                           Available
@@ -192,6 +192,7 @@ const VehicalsList = ({ loadingState }) => {
                           e.preventDefault();
                           handleLikeToggle(vehicle._id);
                         }}
+                         aria-label={userLikedCars?.includes(vehicle._id) ? "Unlike Car" : "Like Car"}
                         className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
                       >
                         {userLikedCars &&

@@ -65,7 +65,6 @@ const HeroSection = () => {
                 <span className="relative z-10 mr-2">Explore Add-Ons</span>
                 <FaArrowRight className="relative z-10 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1" />
               </button>
-
               <button
                 onClick={() => router.push("/liked-cars")}
                 className="text-md sm:hidden group relative inline-flex transform items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-6 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800"

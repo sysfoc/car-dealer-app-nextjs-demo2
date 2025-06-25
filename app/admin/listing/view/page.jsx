@@ -132,6 +132,7 @@ export default function Listing() {
               <div className="flex bg-slate-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode("grid")}
+                  aria-label="Switch to Grid View"
                   className={`p-2 rounded-md transition-all duration-200 ${
                     viewMode === "grid" ? "bg-white shadow-sm text-blue-600" : "text-slate-400 hover:text-slate-600"
                   }`}

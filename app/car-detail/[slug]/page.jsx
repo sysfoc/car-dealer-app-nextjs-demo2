@@ -237,7 +237,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   onClick={() => setOpenModal(true)}
-                  className="flex-1 bg-transparent border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white dark:border-red-500 dark:text-red-500 dark:hover:bg-red-500 dark:hover:text-white transition-all duration-200 font-semibold py-3 px-6 rounded-lg"
+                  className="flex-1 border-2 bg-gray-700 text-white hover:bg-gray-600 hover:text-white dark:text-white dark:hover:bg-red-500 dark:hover:text-white transition-all duration-200 font-semibold py-3 px-6 rounded-lg"
                 >
                   <LuMail className="w-5 h-5 mr-2" />
                   {t("enquireNow")}

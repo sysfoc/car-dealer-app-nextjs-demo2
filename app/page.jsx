@@ -2,7 +2,6 @@
 import Herosection from "./components/Herosection";
 import VehicalsList from "./components/VehicalsList";
 import BrandsList from "./components/BrandsList";
-import ChooseUs from "./components/ChooseUs";
 import Services from "./components/Services";
 import BrowseCars from "./components/BrowseCars";
 import Blog from "./components/Blog";
@@ -16,7 +15,7 @@ import { FaPinterest } from "react-icons/fa";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import WebFeatures from "./components/WebFeatures";
+import MainLayout from "./components/MainLayout.jsx";
 
 export default function Home() {
   const t = useTranslations("HomePage");
@@ -83,8 +82,9 @@ export default function Home() {
 
   return (
     <div>
+      <MainLayout>
       <Herosection />
-      {/* <WebFeatures /> */}
+    </MainLayout>
       <BrowseCars />
       <BrandsList />
       <VehicalsList loadingState={loading} />
@@ -108,12 +108,11 @@ export default function Home() {
                   key={index}
                   href="#"
                   target="_blank"
+                  aria-label="Follow us on our platform"
                   className="group relative w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 bg-gray-50 dark:bg-slate-800 shadow-sm hover:shadow-lg border border-gray-100 dark:border-slate-700/80"
                 >
                   <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${platform.color} opacity-0 group-hover:opacity-15 transition-all duration-300`}></div>
                   <platform.icon className={`w-6 h-6 ${platform.textColor} relative z-10 transition-all duration-300`} />
-                  
-                  {/* Subtle glow effect on hover */}
                   <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${platform.color} opacity-0 group-hover:opacity-25 blur-xl transition-all duration-300 -z-10`}></div>
                 </Link>
               ))}

@@ -338,6 +338,7 @@ export default function BrandsPage() {
                 <div className="flex items-center gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
                   <button
                     onClick={() => setViewMode("grid")}
+                    aria-label="Switch to Grid View"
                     className={`rounded-md p-2 transition-all duration-300 ${
                       viewMode === "grid"
                         ? "bg-blue-600 text-white shadow-sm"

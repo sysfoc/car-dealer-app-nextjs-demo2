@@ -13,7 +13,6 @@ export default function Home() {
         <div className="w-full md:w-5/6">
           <CardetailCard />
           <div className="mt-5 flex overflow-x-auto sm:justify-center">
-           
           </div>
         </div>
       </div>

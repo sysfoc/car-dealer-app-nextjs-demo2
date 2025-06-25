@@ -252,8 +252,12 @@ const BrandsList = () => {
             {/* Category Filter */}
             <div className="flex items-center gap-2">
               <MdFilterList className="h-5 w-5 text-gray-500" />
+              {/* <label htmlFor="category" className="sr-only">
+                Filter by category
+              </label> */}
               <select
                 value={selectedCategory}
+                aria-label="Filter by category"
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
               >
@@ -265,10 +269,10 @@ const BrandsList = () => {
               </select>
             </div>
 
-            {/* View Toggle */}
             <div className="flex items-center gap-2 rounded-xl bg-gray-100 p-1 dark:bg-gray-700">
               <button
                 onClick={() => setViewMode("grid")}
+                aria-label="Switch to Grid View"
                 className={`rounded-lg p-2 transition-all duration-300 ${
                   viewMode === "grid"
                     ? "bg-blue-700 text-white shadow-lg"
@@ -280,6 +284,7 @@ const BrandsList = () => {
               <div className="from-blue-700 via-purple-700 to-blue-800"></div>
               <button
                 onClick={() => setViewMode("list")}
+                aria-label="Switch to List View"
                 className={`rounded-lg p-2 transition-all duration-300 ${
                   viewMode === "list"
                     ? "bg-blue-700 text-white shadow-lg"

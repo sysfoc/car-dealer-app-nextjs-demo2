@@ -315,6 +315,7 @@ const LikedCarsPage = () => {
                     {/* Action Buttons */}
                     <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                       <button
+                      aria-label="Remove from Liked Cars"
                         onClick={(e) => {
                           e.preventDefault();
                           handleRemoveLike(vehicle._id);
@@ -328,7 +329,9 @@ const LikedCarsPage = () => {
                           <AiOutlineDelete className="h-4 w-4" />
                         )}
                       </button>
-                      <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:text-blue-500 hover:shadow-xl">
+                      <button 
+                      aria-label="View Car Details"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:text-blue-500 hover:shadow-xl">
                         <FaEye className="h-4 w-4" />
                       </button>
                     </div>

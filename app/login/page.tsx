@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -26,13 +25,15 @@ export default function LoginPage() {
     try {
       setError("");
       setLoading(true);
+      toast.info("Authenticating your credentials...");
       const response = await axios.post("/api/users/login", user, {
         withCredentials: true,
       });
 
       console.log("Login Response:", response.data);
-      alert(`User Role: ${response.data.role}`);
-
+      toast.success(`${response.data.role.charAt(0).toUpperCase() + response.data.role?.slice(1)} Login successful!`);
+      // alert(`User Role: ${response.data.role}`);
+      
       const receivedRole = response.data.role?.toLowerCase()?.trim();
       console.log("Processed Role:", receivedRole);
 
@@ -48,8 +49,7 @@ export default function LoginPage() {
         error.response?.data?.error || "Login failed. Please try again.";
       setError(errorMessage);
       console.error("Login error:", error);
-
-      toast.error(`Login Failed: ${errorMessage}`);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
