@@ -19,7 +19,7 @@ const HeroSection = () => {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-20 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid min-h-[calc(100vh-6rem)] grid-cols-1 items-start gap-12 lg:grid-cols-2">
           {/* Left Section - Text Content */}
           <div className="space-y-8 lg:pr-8">

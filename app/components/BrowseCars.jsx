@@ -164,9 +164,9 @@ const BrowseCars = () => {
 
         {/* Content */}
         <div className="min-w-0 flex-1">
-          <h4 className="truncate text-sm font-semibold text-gray-800 transition-colors duration-300 group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
+          <h3 className="truncate text-sm font-semibold text-gray-800 transition-colors duration-300 group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
             {item.category}
-          </h4>
+          </h3>
           <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
             {item.count} available
           </p>
@@ -289,9 +289,9 @@ const BrowseCars = () => {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                 <FaSearch className="h-6 w-6 text-gray-400" />
               </div>
-              <h4 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+              <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
                 No categories found
-              </h4>
+              </h3>
               <p className="mb-4 text-gray-600 dark:text-gray-400">
                 Try adjusting your search or filter criteria
               </p>

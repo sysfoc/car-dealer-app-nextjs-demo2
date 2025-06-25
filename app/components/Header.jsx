@@ -379,6 +379,7 @@ const Header = ({
                   <select
                     value={selectedMake}
                     onChange={(e) => setSelectedMake(e.target.value)}
+                    aria-label="Select Make"
                     className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 transition-all duration-200 hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-blue-400 dark:focus:border-blue-400 dark:focus:ring-blue-800"
                     disabled={loading}
                   >
@@ -406,6 +407,7 @@ const Header = ({
                 <div className="relative">
                   <select
                     value={selectedModel}
+                    aria-label="Select Model"
                     onChange={(e) => setSelectedModel(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 transition-all duration-200 hover:border-purple-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-purple-400 dark:focus:border-purple-400 dark:focus:ring-purple-800"
                     disabled={!selectedMake || loading}
