@@ -296,6 +296,7 @@ const Header = ({
               
               <button
                 onClick={() => router.push('/liked-cars')}
+                aria-label="Liked Cars"
                 className="group hidden md:flex relative rounded-xl bg-gray-100 p-3 transition-all duration-300 hover:scale-105 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700"
               >
                 <FaHeart className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:group-hover:text-blue-400" />

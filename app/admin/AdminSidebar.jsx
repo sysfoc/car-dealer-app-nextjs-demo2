@@ -35,7 +35,6 @@ const AdminSidebar = () => {
           if (token) {
             const decoded = jwt.decode(token);
             setUserRole(decoded?.role);
-            console.log("User Role from token fallback:", decoded?.role);
           }
         }
       } catch (error) {

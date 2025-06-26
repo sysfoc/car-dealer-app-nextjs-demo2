@@ -57,37 +57,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export const useAuth = () => useContext(AuthContext);
 
-
-// const fetchUser = async () => {
-//   setLoading(true);
-//   try {
-//     const res = await fetch("/api/users/me", {
-//       credentials: 'include'
-//     });
-    
-//     if (!res.ok) {
-//       throw new Error(`Failed to fetch user: ${res.status}`);
-//     }
-
-//     const data = await res.json();
-    
-//     // Check for both response formats
-//     const userData = data.user || data;
-    
-//     if (userData) {
-//       setUser({
-//         id: userData._id || userData.id,
-//         email: userData.email,
-//         role: userData.role,
-//         profilePicture: userData.profilePicture || "/userPicture.jpg"
-//       });
-//     } else {
-//       setUser(null);
-//     }
-//   } catch (error) {
-//     console.error("Error fetching user:", error);
-//     setUser(null);
-//   } finally {
-//     setLoading(false);
-//   }
-// };

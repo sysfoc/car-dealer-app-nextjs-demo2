@@ -1,91 +1,3 @@
-// "use client";
-// import { useEffect, useState } from "react";
-// import { Trash2, Users, Crown, User } from "lucide-react";
-// import axios from "axios";
-// import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import { useRouter } from 'next/navigation'
-
-
-// export default function Page() {
-//   const [users, setUsers] = useState([]);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [totalPages, setTotalPages] = useState(1);
-//   const [loading, setLoading] = useState(false);
-//   const limit = 5;
-
-//    const router = useRouter()
-//   const [userRole, setUserRole] = useState('')
-
-//   useEffect(() => {
-//     const fetchUserRole = async () => {
-//       const res = await fetch('/api/users/me')
-//       const data = await res.json()
-      
-//       if (data.user.role !== 'superadmin') {
-//         router.replace('/admin/dashboard')
-//       } else {
-//         setUserRole(data.user.role)
-//       }
-//     }
-
-//     fetchUserRole()
-//   }, [router])
-
-//   if (!userRole) {
-//     return <div>Loading...</div>
-//   }
-
-
-
-//   const handleDelete = async (userId) => {
-//     if (!confirm("Are you sure you want to delete this user?")) return;
-
-//     try {
-//       const response = await axios.delete("/api/users/delete", {
-//         data: { userId },
-//         withCredentials: true,
-//       });
-
-//       if (response.status === 200) {
-//         toast.success("User deleted successfully!");
-//         setUsers((prevUsers) =>
-//           prevUsers.filter((user) => user._id !== userId),
-//         );
-//       }
-//     } catch (error) {
-//       if (error.response) {
-//         toast.error(`Error: ${error.response.data.error}`);
-//       } else {
-//         toast.error("An unexpected error occurred.");
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchUsers = async () => {
-//       try {
-//         const response = await axios.get(
-//           `/api/users?page=${currentPage}&limit=${limit}`,
-//           {
-//             withCredentials: true,
-//           },
-//         );
-
-//         console.log("API Response:", response.data);
-//         setUsers(response.data.users || []);
-//         setTotalPages(response.data.totalPages || 1);
-//       } catch (error) {
-//         console.error("Error fetching users:", error);
-//         setUsers([]);
-//         toast.error("Error fetching users.");
-//       }
-//     };
-
-//     fetchUsers();
-//   }, [currentPage]);
-
-
 "use client";
 import { useEffect, useState } from "react";
 import { Trash2, Users, Crown, User } from "lucide-react";
@@ -118,7 +30,6 @@ export default function Page() {
           setIsSuperAdmin(true);
         }
       } catch (error) {
-        console.error('Error fetching user role:', error);
         router.replace('/admin/dashboard');
       } finally {
         setInitialCheck(false);

@@ -20,8 +20,12 @@ export async function GET(request: NextRequest) {
 
     const token = request.cookies.get("token")?.value;
 
+    // if (!token) {
+    //   return NextResponse.json({ error: "Token missing" }, { status: 403 });
+    // }
+
     if (!token) {
-      return NextResponse.json({ error: "Token missing" }, { status: 403 });
+      return NextResponse.json({ user: null }, { status: 200 });
     }
 
     let decoded: JwtUserPayload;

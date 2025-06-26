@@ -6,10 +6,19 @@ connectToMongoDB();
 
 export async function POST(request) {
   try {
+    await connectToMongoDB();
     const formData = await request.formData();
 
-    const seoTitle = formData.get("seoTitle");
-    const seoDescription = formData.get("seoDescription");
+    console.log("Received form data:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+     const seoTitle = formData.get("seoTitle");
+     const seoDescription = formData.get("seoDescription");
+
+    // const seoTitle = formData.get("title");
+    // const seoDescription = formData.get("metaDescription");
 
     const searchHeading = formData.get("searchHeading");
     const searchText = formData.get("searchText");
@@ -53,7 +62,6 @@ export async function POST(request) {
       saturday: formData.get("saturdayHr"),
     };
 
-    // Find the homepage data if it exists
     const existingHomepage = await Homepage.findOne();
 
     const homepageData = {
@@ -79,7 +87,17 @@ export async function POST(request) {
       footer,
     };
 
-    // If homepage data exists, update it, otherwise, create a new entry
+    const hasData = Object.values(homepageData).some(
+      (value) => value && (typeof value === "string" ? value.trim() : true),
+    );
+
+    if (!hasData) {
+      return NextResponse.json(
+        { error: "No valid data provided" },
+        { status: 400 },
+      );
+    }
+
     if (existingHomepage) {
       await Homepage.updateOne({}, homepageData);
       return NextResponse.json(
@@ -125,3 +143,5 @@ export async function GET() {
     );
   }
 }
+
+

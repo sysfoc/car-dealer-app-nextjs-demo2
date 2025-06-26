@@ -53,8 +53,7 @@ const VehicalsList = ({ loadingState }) => {
         );
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
-      // Keep userLikedCars as empty array on error
+      return;
     }
   };
 
