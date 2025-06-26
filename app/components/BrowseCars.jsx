@@ -143,7 +143,7 @@ const BrowseCars = () => {
 
   const CategoryCard = ({ item, index }) => (
     <div
-      className="group relative overflow-hidden rounded-xl border border-gray-200/60 bg-white/80 p-4 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-300/60 hover:shadow-lg hover:shadow-blue-500/10 dark:border-gray-700/60 dark:bg-gray-800/80 dark:hover:border-blue-600/60"
+      className="group relative overflow-hidden rounded-xl border-2 border-gray-200 bg-gray-100 p-4 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-300/60 hover:shadow-lg hover:shadow-blue-500/10 dark:border-gray-700/60 dark:bg-gray-800/80 dark:hover:border-blue-600/60"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Gradient background on hover */}
@@ -192,9 +192,8 @@ const BrowseCars = () => {
           </p>
         </div>
 
-        {/* Search and Filter Bar */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-          {/* Search Bar */}
+
           <div className="relative flex-1">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <FaSearch className="h-4 w-4 text-gray-400" />
@@ -326,46 +325,45 @@ const BrowseCars = () => {
             </button>
           </div>
         )}
-
-        {/* Quick Stats */}
         {filteredItems.length > 0 && (
-          <div className="mt-8 border-t border-gray-200/50 pt-6 dark:border-gray-700/50">
+          <div className="mt-8 border-t-2 border-gray-300 pt-6 dark:border-gray-600">
             <div className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
-              <div className="rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50">
-                <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
+              <div className="rounded-lg border-2 border-blue-200 bg-blue-50 p-4 shadow-sm dark:border-blue-700 dark:bg-blue-900/30">
+                <div className="text-xl font-bold text-blue-700 dark:text-blue-300">
                   {filteredItems.reduce((sum, item) => sum + item.count, 0)}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-xs font-semibold text-blue-600 dark:text-blue-400">
                   Total Cars
                 </div>
               </div>
-              <div className="rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50">
-                <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
+              <div className="rounded-lg border-2 border-purple-200 bg-purple-50 p-4 shadow-sm dark:border-purple-700 dark:bg-purple-900/30">
+                <div className="text-xl font-bold text-purple-700 dark:text-purple-300">
                   {filteredItems.length}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-xs font-semibold text-purple-600 dark:text-purple-400">
                   Categories
                 </div>
               </div>
-              <div className="rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50">
-                <div className="text-lg font-bold text-green-600 dark:text-green-400">
+              <div className="rounded-lg border-2 border-green-200 bg-green-50 p-4 shadow-sm dark:border-green-700 dark:bg-green-900/30">
+                <div className="text-xl font-bold text-green-700 dark:text-green-300">
                   {filteredItems.filter((item) => item.popular).length}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-xs font-semibold text-green-600 dark:text-green-400">
                   Popular
                 </div>
               </div>
-              <div className="rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50">
-                <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
+              <div className="rounded-lg border-2 border-orange-200 bg-orange-50 p-4 shadow-sm dark:border-orange-700 dark:bg-orange-900/30">
+                <div className="text-xl font-bold text-orange-700 dark:text-orange-300">
                   {Math.max(...filteredItems.map((item) => item.count))}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-xs font-semibold text-orange-600 dark:text-orange-400">
                   Most Stock
                 </div>
               </div>
             </div>
           </div>
         )}
+
       </div>
     </section>
   );

@@ -3,7 +3,7 @@ import { FaSearch, FaCar, FaFilter, FaArrowRight } from "react-icons/fa";
 
 const SearchCallToAction = ({ onSearchClick }) => {
   return (
-    <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-16 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="absolute inset-0 opacity-5">
         <div
           className="absolute inset-0"
