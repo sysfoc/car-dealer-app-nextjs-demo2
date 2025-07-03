@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function Dashboard() {
   return (
-    <main className="my-5">
+    <main className="my-5 dark:bg-gray-900">
       <OverviewSection />
       {/* <OrdersSection /> */}
       <ChartsSection />

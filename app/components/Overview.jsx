@@ -22,22 +22,22 @@ const colorMap = {
   indigo: {
     bg: "bg-indigo-500/10 dark:bg-indigo-500/20",
     border: "border-indigo-200/50 dark:border-indigo-500/30",
-    icon: "bg-indigo-500 text-white",
-    accent: "bg-indigo-500",
+    icon: "bg-indigo-500 text-white dark:bg-indigo-600 dark:text-white",
+    accent: "bg-indigo-500 dark:bg-indigo-600",
     text: "text-indigo-600 dark:text-indigo-400"
   },
   emerald: {
     bg: "bg-emerald-500/10 dark:bg-emerald-500/20",
     border: "border-emerald-200/50 dark:border-emerald-500/30",
-    icon: "bg-emerald-500 text-white",
-    accent: "bg-emerald-500",
+    icon: "bg-emerald-500 text-white dark:bg-emerald-600 dark:text-white",
+    accent: "bg-emerald-500 dark:bg-emerald-600",
     text: "text-emerald-600 dark:text-emerald-400"
   },
   amber: {
     bg: "bg-amber-500/10 dark:bg-amber-500/20",
     border: "border-amber-200/50 dark:border-amber-500/30",
-    icon: "bg-amber-500 text-white",
-    accent: "bg-amber-500",
+    icon: "bg-amber-500 text-white dark:bg-amber-600 dark:text-white",
+    accent: "bg-amber-500 dark:bg-amber-600",
     text: "text-amber-600 dark:text-amber-400"
   }
 };
@@ -145,7 +145,7 @@ const Dashboard = () => {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(28);
       doc.setFont('helvetica', 'bold');
-      doc.text('SYSFOC', pageWidth / 2, 25, { align: 'center' });
+      doc.text('AUTOMOTIVE', pageWidth / 2, 25, { align: 'center' });
       
       // Subtitle
       doc.setFontSize(12);
@@ -245,7 +245,7 @@ const Dashboard = () => {
       doc.setTextColor(100, 116, 139);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text('SYSFOC Car Dealership', pageWidth / 2, yPosition + 10, { align: 'center' });
+      doc.text('Automotive Car Dealership', pageWidth / 2, yPosition + 10, { align: 'center' });
       
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
@@ -253,7 +253,7 @@ const Dashboard = () => {
       doc.text('This report contains sensitive business information and should be handled accordingly.', pageWidth / 2, yPosition + 21, { align: 'center' });
       
       // Save the PDF
-      const fileName = `SYSFOC_Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+      const fileName = `Automotive_Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`;
       doc.save(fileName);
       
     } catch (error) {
@@ -268,7 +268,7 @@ const Dashboard = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div className="mb-6 lg:mb-0">
             <div className="flex items-center space-x-3 mb-2">
-              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 rounded-lg">
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -283,7 +283,7 @@ const Dashboard = () => {
           <div className="flex flex-wrap items-center space-x-3">
             <button
               onClick={generatePDF}
-              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-700 dark:to-emerald-700 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 dark:hover:from-green-800 dark:hover:to-emerald-800 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <Download size={18} />
               <span className="font-medium">Export Report</span>
@@ -292,8 +292,8 @@ const Dashboard = () => {
             <button
               onClick={handleRefresh}
               disabled={loading}
-              className={`flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl ${
-                loading ? 'opacity-50 cursor-not-allowed' : 'hover:from-blue-700 hover:to-indigo-700'
+              className={`flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl ${
+                loading ? 'opacity-50 cursor-not-allowed' : 'hover:from-blue-700 hover:to-indigo-700 dark:hover:from-blue-800 dark:hover:to-indigo-800'
               }`}
             >
               <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
@@ -348,7 +348,7 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   System Operational
                 </span>

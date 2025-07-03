@@ -2,11 +2,10 @@ import connectToMongoDB from "../../lib/mongodb";
 import { NextResponse } from "next/server";
 import Homepage from "../../models/Homepage.js";
 
-connectToMongoDB();
 
 export async function POST(request) {
+  await connectToMongoDB();
   try {
-    await connectToMongoDB();
     const formData = await request.formData();
 
     console.log("Received form data:");
@@ -125,6 +124,7 @@ export async function POST(request) {
 }
 
 export async function GET() {
+  await connectToMongoDB();
   try {
     const homepageData = await Homepage.findOne();
     if (homepageData) {

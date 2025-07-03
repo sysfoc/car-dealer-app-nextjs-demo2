@@ -4,9 +4,10 @@ import User from "../../models/User";
 import connectToMongoDB from "../../lib/mongodb";
 import jwt from "jsonwebtoken";
 
-connectToMongoDB();
+
 
 export async function GET(request: NextRequest) {
+  await connectToMongoDB();
   try {
     console.log("Incoming Request to /api/users");
 

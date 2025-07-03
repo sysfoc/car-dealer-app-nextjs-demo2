@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../lib/mongodb";
 import Faq from "../../../models/Faq";
 
-await connectDB();
+
 
 export async function GET(req, { params }) {
+  await connectDB();
   try {
     const faq = await Faq.findById(params.id);
     if (!faq)
@@ -16,6 +17,7 @@ export async function GET(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
+  await connectDB();
   try {
     const { title, content, order } = await req.json();
     const updatedFaq = await Faq.findByIdAndUpdate(
@@ -37,6 +39,7 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
+  await connectDB();
   try {
     await Faq.findByIdAndDelete(params.id);
     return NextResponse.json({ message: "FAQ deleted" }, { status: 200 });

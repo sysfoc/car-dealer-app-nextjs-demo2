@@ -1,5 +1,7 @@
-import Make from "../../models/make.model.js"
-import dbconnect from "../../lib/mongodb.js"
+import Make from "../../models/make.model.js";
+import dbconnect from "../../lib/mongodb.js";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   await dbconnect();

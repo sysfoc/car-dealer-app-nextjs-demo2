@@ -19,13 +19,13 @@ const Header = ({ isDarkMode }) => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await fetch('/api/settings/general');
+        const response = await fetch("/api/settings/general");
         const data = await response.json();
         if (data.settings?.logo) {
           setLogo(data.settings.logo);
         }
       } catch (error) {
-        console.error('Failed to fetch logo:', error);
+        console.error("Failed to fetch logo:", error);
       }
     };
 
@@ -39,14 +39,24 @@ const Header = ({ isDarkMode }) => {
       className="border-b border-gray-300 dark:border-gray-700 dark:shadow-xl"
     >
       <NavbarBrand href="/admin/dashboard">
-        <div className="relative w-24 h-14 md:w-28 md:h-16">
-          <Image
-            src={logo}
-            alt="Sysfoc-cars-dealer"
-            fill
-            className="object-contain"
-            priority
-          />
+        <div className="flex">
+          <div className="relative h-12 w-20 md:h-14 md:w-24">
+            <Image
+              src={logo}
+              alt="Sysfoc-cars-dealer"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+          <div className="flex flex-col items-start justify-center">
+            <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+              AutomotiveWebSloution
+            </span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+              Built to sell cars
+            </span>
+          </div>
         </div>
       </NavbarBrand>
       <div className="flex items-center gap-x-5 md:order-2">
@@ -55,16 +65,12 @@ const Header = ({ isDarkMode }) => {
             <FiLogOut fontSize={20} className="text-gray-500" />
           </Button>
         </div>
-        <DarkThemeToggle />
+        {/* <DarkThemeToggle /> */}
         <Dropdown
           arrowIcon={false}
           inline
           label={
-            <Avatar
-              alt="User settings"
-              img={user?.profilePicture}
-              rounded
-            />
+            <Avatar alt="User settings" img={user?.profilePicture} rounded />
           }
         >
           <DropdownHeader>

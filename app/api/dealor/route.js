@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import connectDB from "../../lib/mongodb";
 import Dealer from "../../models/Dealer";
 
-await connectDB();
+
 
 export const GET = async () => {
+  await connectDB();
   try {
     const dealers = await Dealer.find().lean();
     const transformedDealers = dealers.map(dealer => ({
@@ -22,6 +23,7 @@ export const GET = async () => {
 };
 
 export const POST = async (req) => {
+  await connectDB();
   try {
     const body = await req.json();
     const newDealer = new Dealer(body);

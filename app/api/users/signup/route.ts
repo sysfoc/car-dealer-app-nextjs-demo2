@@ -6,9 +6,8 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { verifyToken } from "../../../lib/auth";
 
-connectToMongoDB();
-
 export async function POST(request: NextRequest) {
+  await connectToMongoDB();
   try {
     const contentType = request.headers.get('content-type');
     let email, password, role, pin, profilePicture;

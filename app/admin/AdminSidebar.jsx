@@ -9,6 +9,7 @@ import { MdAppSettingsAlt, MdLogout } from "react-icons/md";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import jwt from "jsonwebtoken";
 import Cookies from "js-cookie";
+import { TbCalendarSearch } from "react-icons/tb";
 
 const AdminSidebar = () => {
   const router = useRouter();
@@ -85,6 +86,7 @@ const AdminSidebar = () => {
 
   const sidebarItems = [
     { label: "Dashboard", href: "/admin/dashboard", icon: HiChartPie },
+    { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
   ];
 
   const collapsibleItems = [
