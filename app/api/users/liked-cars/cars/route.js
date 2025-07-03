@@ -42,69 +42,27 @@ export async function GET(request) {
     }
 
     // Convert liked car IDs to ObjectIds
-    const likedCarIds = user.likedCars.map(id => new ObjectId(String(id)));
+    const likedCarIds = user.likedCars.map(id => new ObjectId(id));
 
     // Fetch the actual car documents
     const cars = await db.collection("cars").find({
       _id: { $in: likedCarIds }
     }).toArray();
 
-    // Format car data
-    const formattedCars = cars.map((car) => ({
+    // Format car data - no need for additional lookups
+    const likedCars = cars.map(car => ({
       ...car,
       _id: car._id.toString(),
-      make: car.make?.toString(),
-      model: car.model?.toString(),
-      userId: car.userId?.toString(),
-      dealerId: car.dealerId?.toString(),
+      makeName: car.make,
+      modelName: car.model, 
+      price: car.price,
+      year: car.modelYear,
+      images: car.imageUrls || [],
+      mileage: car.mileage,
+      fuelType: car.fuelType,
     }));
 
-    // Get make and model information
-    const makeIds = [
-      ...new Set(formattedCars.map((c) => c.make).filter(Boolean)),
-    ];
-    const modelIds = [
-      ...new Set(formattedCars.map((c) => c.model).filter(Boolean)),
-    ];
-
-    const [makes, models] = await Promise.all([
-      db
-        .collection("makes")
-        .find({ _id: { $in: makeIds.map((id) => new ObjectId(id)) } })
-        .toArray(),
-      db
-        .collection("carmodels")
-        .find({ _id: { $in: modelIds.map((id) => new ObjectId(id)) } })
-        .toArray(),
-    ]);
-
-    // Create lookup maps
-    const makeMap = makes.reduce((acc, make) => {
-      acc[make._id.toString()] = make.name;
-      return acc;
-    }, {});
-
-    const modelMap = models.reduce((acc, model) => {
-      acc[model._id.toString()] = {
-        name: model.name,
-        makeId: model.makeId.toString(),
-      };
-      return acc;
-    }, {});
-
-    // Enrich car data with make and model names
-    const enrichedCars = formattedCars.map((car) => {
-      const modelInfo = modelMap[car.model?.toString()] || {};
-      return {
-        ...car,
-        makeName: makeMap[car.make?.toString()] || "Unknown Make",
-        modelName: modelInfo.name || "Unknown Model",
-        makeId: car.make,
-        modelId: car.model,
-      };
-    });
-
-    return NextResponse.json({ likedCars: enrichedCars });
+    return NextResponse.json({ likedCars });
 
   } catch (error) {
     console.error("Error fetching liked cars:", error);

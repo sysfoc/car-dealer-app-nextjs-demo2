@@ -20,7 +20,7 @@ const VehicalsList = ({ loadingState }) => {
   const [loading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currency, selectedCurrency } = useCurrency();
-  const [userLikedCars, setUserLikedCars] = useState([]); // Initialize as empty array
+  const [userLikedCars, setUserLikedCars] = useState([]);
   const [user, setUser] = useState(null);
 
   const fetchVehicles = async () => {
@@ -170,7 +170,7 @@ const VehicalsList = ({ loadingState }) => {
                     <Image
                       src={vehicle.imageUrls?.[0]}
                       fill
-                      alt={`${vehicle?.makeName} ${vehicle?.modelName}`}
+                      alt={`${vehicle.make} ${vehicle.model}`}
                       className="object-cover transition-all duration-700 group-hover:scale-110"
                     />
 
@@ -224,7 +224,7 @@ const VehicalsList = ({ loadingState }) => {
                 <div className="p-6">
                   <div className="mb-4">
                     <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
-                      {vehicle?.makeName} {vehicle?.modelName}
+                      {vehicle.make} {vehicle.model}
                     </h3>
                     <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                       {vehicle?.description?.slice(0, 80)}...
@@ -271,7 +271,7 @@ const VehicalsList = ({ loadingState }) => {
 
                   {/* CTA Button */}
                   <Link
-                    href="https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale"
+                    href={`/car-for-sale/${vehicle.slug || vehicle._id}`}
                     className="group/cta block w-full"
                   >
                     <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">

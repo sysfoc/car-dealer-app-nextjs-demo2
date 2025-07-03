@@ -17,7 +17,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { GrSort } from "react-icons/gr";
 import { FiGrid, FiList } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
-import { FaLocationCrosshairs, FaCalendarCheck } from "react-icons/fa6";
+import { FaLocationCrosshairs, FaCalendarCheck, FaRegHeart, FaHeart } from "react-icons/fa6";
 import { IoSpeedometer } from "react-icons/io5";
 import { GiGasPump, GiCarDoor, GiCarSeat } from "react-icons/gi";
 import { TbManualGearbox } from "react-icons/tb";
@@ -47,9 +47,54 @@ const CardetailCard = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
+  const [userLikedCars, setUserLikedCars] = useState([]);
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
 
   const parseBooleanParam = (param) => {
     return param === "true";
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch("/api/users/me");
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        setUserLikedCars(
+          Array.isArray(data.user?.likedCars) ? data.user.likedCars : [],
+        );
+      }
+    } catch (error) {
+      return;
+    }
+  };
+
+  const handleLikeToggle = async (carId) => {
+    try {
+      const response = await fetch("/api/users/liked-cars", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ carId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Response:", data);
+        setUserLikedCars(Array.isArray(data.likedCars) ? data.likedCars : []);
+
+        setUser((prev) => ({
+          ...prev,
+          likedCars: data.likedCars,
+        }));
+      } else {
+        console.error("Failed to update liked cars");
+      }
+    } catch (error) {
+      console.error("Error updating liked cars:", error);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -60,55 +105,59 @@ const CardetailCard = () => {
     }));
   };
   const handleEnquirySubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setSubmitMessage("");
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage("");
 
-  const enquiryData = {
-    carId: selectedCar?._id,
-    firstName: formData.firstName,
-    lastName: formData.lastName,
-    email: formData.email,
-    phone: formData.phone,
-    message: formData.message,
-  };
+    const enquiryData = {
+      carId: selectedCar?._id,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+    };
 
-  try {
-    const response = await fetch("/api/enquiry", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(enquiryData),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      setSubmitMessage("Enquiry submitted successfully! We will contact you soon.");
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        message: "",
+    try {
+      const response = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(enquiryData),
       });
 
-      setTimeout(() => {
-        setOpenModal(false);
-        setSubmitMessage("");
-        setSelectedCar(null);
-      }, 2000);
-    } else {
-      setSubmitMessage(result.error || "Failed to submit enquiry. Please try again.");
+      const result = await response.json();
+
+      if (response.ok) {
+        setSubmitMessage(
+          "Enquiry submitted successfully! We will contact you soon.",
+        );
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          message: "",
+        });
+
+        setTimeout(() => {
+          setOpenModal(false);
+          setSubmitMessage("");
+          setSelectedCar(null);
+        }, 2000);
+      } else {
+        setSubmitMessage(
+          result.error || "Failed to submit enquiry. Please try again.",
+        );
+      }
+    } catch (error) {
+      console.error("Enquiry submission error:", error);
+      setSubmitMessage("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-  } catch (error) {
-    console.error("Enquiry submission error:", error);
-    setSubmitMessage("Something went wrong. Please try again.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   const filters = useMemo(() => {
     return Object.fromEntries(searchParams.entries());
@@ -250,12 +299,10 @@ const CardetailCard = () => {
   useEffect(() => {
     const filtered = (cars || []).filter((car) => {
       const matchesKeyword = parsedFilters.keyword
-        ? car.makeName
+        ? car.make
             ?.toLowerCase()
             .includes(parsedFilters.keyword.toLowerCase()) ||
-          car.modelName
-            ?.toLowerCase()
-            .includes(parsedFilters.keyword.toLowerCase())
+          car.model?.toLowerCase().includes(parsedFilters.keyword.toLowerCase())
         : true;
 
       const matchesCondition = parsedFilters.condition.length
@@ -297,14 +344,10 @@ const CardetailCard = () => {
           (!parsedFilters.maxYear ||
             parseInt(carYear, 10) <= parseInt(parsedFilters.maxYear, 10)));
 
-      // Match using modelName or modelId
       const matchesModel = parsedFilters.model.length
         ? parsedFilters.model.some((modelVal) => {
-            if (car.modelName) {
-              return modelVal.toLowerCase() === car.modelName.toLowerCase();
-            }
-            if (car.modelId) {
-              return modelVal === car.modelId;
+            if (car.model) {
+              return modelVal.toLowerCase() === car.model.toLowerCase();
             }
             return false;
           })
@@ -715,8 +758,7 @@ const CardetailCard = () => {
                       <Image
                         src={image.src || image}
                         alt={
-                          image.alt ||
-                          `${car.makeName} ${car.modelName} Image ${i + 1}`
+                          image.alt || `${car.make} ${car.model} Image ${i + 1}`
                         }
                         width={600}
                         height={400}
@@ -772,11 +814,25 @@ const CardetailCard = () => {
                     1/{car.imageUrls.length}
                   </div>
                 )}
-                <button className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-lg backdrop-blur-sm transition-transform hover:scale-110 dark:bg-gray-800/90">
-                  <CiHeart
-                    size={18}
-                    className="text-gray-600 dark:text-gray-400"
-                  />
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLikeToggle(car._id);
+                  }}
+                  aria-label={
+                    userLikedCars?.includes(car._id)
+                      ? "Unlike Car"
+                      : "Like Car"
+                  }
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
+                >
+                  {userLikedCars &&
+                  Array.isArray(userLikedCars) &&
+                  userLikedCars.includes(car._id) ? (
+                    <FaHeart className="h-4 w-4 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="h-4 w-4 hover:text-red-500" />
+                  )}
                 </button>
               </div>
             </div>
@@ -803,7 +859,7 @@ const CardetailCard = () => {
                       {loading ? (
                         <Skeleton height={28} />
                       ) : (
-                        `${car.makeName || "Unknown"} ${car.modelName || "Unknown"}`
+                        `${car.make || "Unknown"} ${car.model || "Unknown"}`
                       )}
                     </h3>
                   </Link>
@@ -1042,7 +1098,7 @@ const CardetailCard = () => {
               <div className="mt-auto flex gap-2">
                 <button
                   onClick={() => {
-                    setSelectedCar(car); 
+                    setSelectedCar(car);
                     setOpenModal(true);
                   }}
                   className={`flex-1 rounded-xl border-2 border-blue-600 text-center font-semibold text-blue-600 transition-all duration-200 hover:bg-blue-600 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-400 dark:hover:text-white ${

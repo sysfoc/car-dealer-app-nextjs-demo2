@@ -295,7 +295,7 @@ const LikedCarsPage = () => {
                     <Image
                       src={vehicle.imageUrls?.[0] || "/placeholder-car.jpg"}
                       fill
-                      alt={`${vehicle?.makeName} ${vehicle?.modelName}`}
+                      alt={`${vehicle?.make} ${vehicle?.model}`}
                       className="object-cover transition-all duration-700 group-hover:scale-110"
                     />
 
@@ -355,7 +355,7 @@ const LikedCarsPage = () => {
                   {/* Title */}
                   <div className="mb-4">
                     <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
-                      {vehicle?.makeName} {vehicle?.modelName}
+                      {vehicle?.make} {vehicle?.model}
                     </h3>
                     <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                       {vehicle?.description?.slice(0, 80)}...

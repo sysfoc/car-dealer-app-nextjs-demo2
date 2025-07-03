@@ -20,4 +20,3 @@ CurrencySchema.pre('validate', function(next) {
 });
 
 export default mongoose.models.Currency || mongoose.model('Currency', CurrencySchema);
-

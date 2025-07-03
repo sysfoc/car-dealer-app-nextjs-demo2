@@ -1,5 +1,3 @@
-
-
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -221,7 +219,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div className="flex-1">
                   <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    {loading ? <Skeleton width={200} /> : car.modelName}
+                    {loading ? <Skeleton width={200} /> : car.model}
                   </h2>
                   <div className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-red-500">
                     {loading ? (

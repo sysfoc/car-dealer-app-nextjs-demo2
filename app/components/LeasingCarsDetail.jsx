@@ -17,7 +17,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { GrSort } from "react-icons/gr";
 import { FiGrid, FiList } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
-import { FaLocationCrosshairs, FaCalendarCheck } from "react-icons/fa6";
+import { FaLocationCrosshairs, FaCalendarCheck, FaHeart, FaRegHeart } from "react-icons/fa6";
 import { IoSpeedometer } from "react-icons/io5";
 import { GiGasPump, GiCarDoor, GiCarSeat } from "react-icons/gi";
 import { TbManualGearbox } from "react-icons/tb";
@@ -35,8 +35,14 @@ const CardetailCard = () => {
   const [sortOption, setSortOption] = useState("default");
   const [sortedAndFilteredCars, setSortedAndFilteredCars] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(3); // You can make this configurable
+  const [itemsPerPage, setItemsPerPage] = useState(3);
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+  const [userLikedCars, setUserLikedCars] = useState([]);
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+
+
+
   const parseBooleanParam = (param) => {
     return param === "true";
   };
@@ -52,6 +58,49 @@ const CardetailCard = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState("");
+
+    const fetchUserData = async () => {
+    try {
+      const response = await fetch("/api/users/me");
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        setUserLikedCars(
+          Array.isArray(data.user?.likedCars) ? data.user.likedCars : [],
+        );
+      }
+    } catch (error) {
+      return;
+    }
+  };
+
+  const handleLikeToggle = async (carId) => {
+    try {
+      const response = await fetch("/api/users/liked-cars", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ carId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Response:", data);
+        setUserLikedCars(Array.isArray(data.likedCars) ? data.likedCars : []);
+
+        setUser((prev) => ({
+          ...prev,
+          likedCars: data.likedCars,
+        }));
+      } else {
+        console.error("Failed to update liked cars");
+      }
+    } catch (error) {
+      console.error("Error updating liked cars:", error);
+    }
+  };
+
   
     const handleInputChange = (e) => {
       const { id, value } = e.target;
@@ -136,20 +185,26 @@ const CardetailCard = () => {
     if (!cars || cars.length === 0) return cars;
     const sortedCars = [...cars];
 
-    switch (sortBy) {
-      case "price-lh":
-        return sortedCars.sort((a, b) => {
-          const priceA = parseInt(a.price) || 0;
-          const priceB = parseInt(b.price) || 0;
-          return priceA - priceB;
-        });
+  const cleanPrice = (price) => {
+    if (typeof price === 'number') return price;
+    const cleaned = String(price).replace(/[^\d]/g, "");
+    return parseInt(cleaned) || 0;
+  };
 
-      case "price-hl":
-        return sortedCars.sort((a, b) => {
-          const priceA = parseInt(a.price) || 0;
-          const priceB = parseInt(b.price) || 0;
-          return priceB - priceA;
-        });
+  switch (sortBy) {
+    case "price-lh":
+      return sortedCars.sort((a, b) => {
+        const priceA = cleanPrice(a.price);
+        const priceB = cleanPrice(b.price);
+        return priceA - priceB;
+      });
+
+    case "price-hl":
+      return sortedCars.sort((a, b) => {
+        const priceA = cleanPrice(a.price);
+        const priceB = cleanPrice(b.price);
+        return priceB - priceA;
+      });
 
       case "model-latest":
         return sortedCars.sort((a, b) => {
@@ -254,10 +309,10 @@ const CardetailCard = () => {
   useEffect(() => {
     const filtered = (cars || []).filter((car) => {
       const matchesKeyword = parsedFilters.keyword
-        ? car.makeName
+        ? car.make
             ?.toLowerCase()
             .includes(parsedFilters.keyword.toLowerCase()) ||
-          car.modelName
+          car.model
             ?.toLowerCase()
             .includes(parsedFilters.keyword.toLowerCase())
         : true;
@@ -296,14 +351,10 @@ const CardetailCard = () => {
           (!parsedFilters.maxYear ||
             parseInt(carYear, 10) <= parseInt(parsedFilters.maxYear, 10)));
 
-      // Match using modelName or modelId
       const matchesModel = parsedFilters.model.length
         ? parsedFilters.model.some((modelVal) => {
-            if (car.modelName) {
-              return modelVal.toLowerCase() === car.modelName.toLowerCase();
-            }
-            if (car.modelId) {
-              return modelVal === car.modelId;
+            if (car.model) {
+              return modelVal.toLowerCase() === car.model.toLowerCase();
             }
             return false;
           })
@@ -714,7 +765,7 @@ const CardetailCard = () => {
                         src={image.src || image}
                         alt={
                           image.alt ||
-                          `${car.makeName} ${car.modelName} Image ${i + 1}`
+                          `${car.make} ${car.model} Image ${i + 1}`
                         }
                         width={600}
                         height={400}
@@ -770,12 +821,22 @@ const CardetailCard = () => {
                     1/{car.imageUrls.length}
                   </div>
                 )}
-                <button className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-lg backdrop-blur-sm transition-transform hover:scale-110 dark:bg-gray-800/90">
-                  <CiHeart
-                    size={18}
-                    className="text-gray-600 dark:text-gray-400"
-                  />
-                </button>
+                <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleLikeToggle(car._id);
+                        }}
+                         aria-label={userLikedCars?.includes(car._id) ? "Unlike Car" : "Like Car"}
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
+                      >
+                        {userLikedCars &&
+                        Array.isArray(userLikedCars) &&
+                        userLikedCars.includes(car._id) ? (
+                          <FaHeart className="h-4 w-4 text-red-500" />
+                        ) : (
+                          <FaRegHeart className="h-4 w-4 hover:text-red-500" />
+                        )}
+                      </button>
               </div>
             </div>
 
@@ -801,7 +862,7 @@ const CardetailCard = () => {
                       {loading ? (
                         <Skeleton height={28} />
                       ) : (
-                        `${car.makeName || "Unknown"} ${car.modelName || "Unknown"}`
+                        `${car.make || "Unknown"} ${car.model || "Unknown"}`
                       )}
                     </h3>
                   </Link>

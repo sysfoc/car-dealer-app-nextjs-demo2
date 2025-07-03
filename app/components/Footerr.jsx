@@ -23,6 +23,7 @@ import { useTranslations } from "next-intl";
 const Footerr = ({ isDarkMode }) => {
   const t = useTranslations("Footer");
   const [footerSettings, setFooterSettings] = useState(null);
+  const [logo, setLogo] = useState("/logo.png");
   
   useEffect(() => {
     const fetchSettings = async () => {
@@ -36,6 +37,20 @@ const Footerr = ({ isDarkMode }) => {
     };
 
     fetchSettings();
+  }, []);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const res = await fetch("/api/settings/general", { cache: "no-store" });
+        const data = await res.json();
+        setLogo(data?.settings?.logo || {});
+      } catch (error) {
+        console.error("Failed to fetch footer Logo:", error);
+      }
+    };
+
+    fetchLogo();
   }, []);
 
   const socialLinks = [
@@ -84,7 +99,8 @@ const Footerr = ({ isDarkMode }) => {
             <div className="space-y-6">
               <div className="flex flex-col space-y-4">
                 <Image
-                  src={isDarkMode ? "/logo-white.png" : "/logo.png"}
+                  // src={isDarkMode ? "/logo-white.png" : "/logo.png"}
+                  src={logo}
                   alt="Sysfoc Cars Dealer"
                   priority
                   width={200}

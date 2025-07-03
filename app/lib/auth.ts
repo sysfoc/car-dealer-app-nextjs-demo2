@@ -36,7 +36,7 @@ export async function verifyUserToken(request: NextRequest) {
 
 export function verifyToken(token: string): string | JwtPayload {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET as string)
+    return jwt.verify(token, process.env.TOKEN_SECRET as string)
   } catch (error) {
     throw new Error('Invalid token')
   }

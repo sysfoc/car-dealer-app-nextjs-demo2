@@ -43,6 +43,8 @@ export async function PATCH(req, { params }) {
         );
       }
     }
+
+    // Handle images
     let imageUrls = Array.isArray(existingCar.imageUrls) ? existingCar.imageUrls : [];
     const newImages = formData.getAll("images");
     if (newImages.length > 0) {
@@ -56,6 +58,8 @@ export async function PATCH(req, { params }) {
         }
       }
     }
+
+    // Handle video
     let videoUrl = existingCar.video || null;
     const newVideo = formData.get("video");
     if (newVideo && newVideo.name) {
@@ -65,6 +69,8 @@ export async function PATCH(req, { params }) {
       await fs.promises.writeFile(filePath, buffer);
       videoUrl = `/uploads/${fileName}`;
     }
+
+    // Process form data
     const formEntries = {};
     for (const [key, value] of formData.entries()) {
       if (!["images", "video", "features"].includes(key)) {
@@ -72,19 +78,19 @@ export async function PATCH(req, { params }) {
       }
     }
 
+    // Handle boolean fields
     if (formEntries.isLease !== undefined) {
-  formEntries.isLease = formEntries.isLease === 'true';
-}
+      formEntries.isLease = formEntries.isLease === 'true';
+    }
 
-   let slug = existingCar.slug;
+    // Handle slug generation
+    let slug = existingCar.slug;
+    if (formData.has("make") && formData.get("make") !== existingCar.make) {
+      const userId = existingCar.userId?.toString() || existingCar._id.toString();
+      slug = `${formData.get("make").toLowerCase().replace(/\s+/g, '-')}-${userId}`;
+    }
 
-if (
-  formData.has("makeName") &&
-  formData.get("makeName").toLowerCase() !== existingCar.makeName?.toLowerCase()
-) {
-  const userId = existingCar.userId?.toString() || existingCar._id.toString();
-  slug = `${formData.get("makeName").toLowerCase()}-${userId}`;
-}
+    // Prepare updated data
     const updatedData = {
       ...formEntries,
       features,
@@ -98,6 +104,7 @@ if (
 
     delete updatedData._id;
 
+    // Update database
     const result = await db.collection("cars").updateOne(
       { _id: new ObjectId(id) },
       { $set: updatedData }
@@ -157,6 +164,7 @@ export async function DELETE(req, { params }) {
     await client.close();
   }
 }
+
 export async function GET(req, { params }) {
   const { id } = params;
 
@@ -173,20 +181,11 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: "Car not found" }, { status: 404 });
     }
 
-    const [makeDoc, modelDoc] = await Promise.all([
-      car.make ? db.collection("makes").findOne({ _id: new ObjectId(car.make) }) : null,
-      car.model ? db.collection("carmodels").findOne({ _id: new ObjectId(car.model) }) : null,
-    ]);
-
     const enrichedCar = {
       ...car,
       _id: car._id.toString(),
-      make: car.make?.toString(),
-      model: car.model?.toString(),
       userId: car.userId?.toString(),
       dealerId: car.dealerId?.toString(),
-      makeName: makeDoc?.name || "Unknown Make",
-      modelName: modelDoc?.name || "Unknown Model",
       isLease: car.isLease
     };
 

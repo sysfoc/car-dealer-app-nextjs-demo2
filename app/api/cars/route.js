@@ -114,10 +114,7 @@ export async function POST(req) {
     }
 
     const userData = await verifyUserToken(req);
-    console.log("Raw userData.id:", userData.id);
-
     const userIdString = userData.id?.toString?.() || null;
-    console.log("Converted userIdString:", userIdString);
 
     if (!userIdString) {
       return NextResponse.json(
@@ -153,17 +150,11 @@ export async function POST(req) {
 
     const imageUrls = [];
 
-    // Enhanced file processing with better error handling
+    // Process images
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
+      if (!image || !image.name || image.size === 0) continue;
 
-      // Validate file
-      if (!image || !image.name || image.size === 0) {
-        console.warn(`Skipping invalid image at index ${i}`);
-        continue;
-      }
-
-      // Check file size (limit to 10MB)
       if (image.size > 10 * 1024 * 1024) {
         return NextResponse.json(
           { error: `Image ${image.name} is too large. Maximum size is 10MB.` },
@@ -171,7 +162,6 @@ export async function POST(req) {
         );
       }
 
-      // Validate file type
       const allowedTypes = [
         "image/jpeg",
         "image/jpg",
@@ -189,40 +179,17 @@ export async function POST(req) {
       }
 
       try {
-        // Generate unique filename
         const timestamp = Date.now();
         const randomString = Math.random().toString(36).substring(2, 8);
         const fileExtension = path.extname(image.name);
         const fileName = `${timestamp}-${randomString}${fileExtension}`;
         const filePath = path.join(uploadDir, fileName);
 
-        // Convert to buffer and save
         const arrayBuffer = await image.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        //await fs.promises.writeFile(filePath, buffer);
-
-        console.log("Saving image to:", filePath);
         await fs.promises.writeFile(filePath, buffer);
-        console.log("Saved image to:", filePath);
-
-
-
-        // Verify file was actually written
-        const stats = await fs.promises.stat(filePath);
-
-
-        console.log("Stats for file:", stats);
-
-
-        if (stats.size !== buffer.length) {
-          throw new Error(`File size mismatch for ${fileName}`);
-        }
-
         imageUrls.push(`/uploads/${fileName}`);
-        console.log(
-          `Successfully saved image: ${fileName}, size: ${stats.size} bytes`,
-        );
       } catch (fileError) {
         console.error(`Error saving image ${image.name}:`, fileError);
         return NextResponse.json(
@@ -242,21 +209,12 @@ export async function POST(req) {
     await client.connect();
     const db = client.db("cardealor");
 
-    const makeId = formEntries.make;
-    const make = await db.collection("makes").findOne({
-      _id: new ObjectId(String(makeId)),
-    });
-
-    if (!make) {
-      return NextResponse.json({ error: "Invalid Make ID" }, { status: 400 });
-    }
-
-    const slug = await generateUniqueSlug(db, make.name, userIdString);
+    // Generate slug using make name
+    const makeName = formEntries.make;
+    const slug = await generateUniqueSlug(db, makeName, userIdString);
 
     const carData = {
       ...formEntries,
-      make: new ObjectId(formEntries.make),
-      model: new ObjectId(formEntries.model),
       features: JSON.parse(formEntries.features || "[]"),
       imageUrls,
       userId: new ObjectId(userIdString),
@@ -264,11 +222,6 @@ export async function POST(req) {
       status: userData.role === "superadmin" ? 1 : 0,
       createdAt: new Date(),
     };
-
-    console.log("Final carData with imageUrls:", {
-      ...carData,
-      imageUrls: carData.imageUrls,
-    });
 
     const result = await db.collection("cars").insertOne(carData);
 
@@ -278,7 +231,7 @@ export async function POST(req) {
         data: {
           ...carData,
           _id: result.insertedId,
-          imageUrls: carData.imageUrls, // Ensure imageUrls are returned
+          imageUrls: carData.imageUrls,
         },
       },
       { status: 201 },
@@ -304,57 +257,13 @@ export async function GET() {
     const formattedCars = cars.map((car) => ({
       ...car,
       _id: car._id.toString(),
-      make: car.make?.toString(),
-      model: car.model?.toString(),
       userId: car.userId?.toString(),
       dealerId: car.dealerId?.toString(),
     }));
 
-    const makeIds = [
-      ...new Set(formattedCars.map((c) => c.make).filter(Boolean)),
-    ];
-    const modelIds = [
-      ...new Set(formattedCars.map((c) => c.model).filter(Boolean)),
-    ];
-
-    const [makes, models] = await Promise.all([
-      db
-        .collection("makes")
-        .find({ _id: { $in: makeIds.map((id) => new ObjectId(id)) } })
-        .toArray(),
-      db
-        .collection("carmodels")
-        .find({ _id: { $in: modelIds.map((id) => new ObjectId(id)) } })
-        .toArray(),
-    ]);
-
-    const makeMap = makes.reduce((acc, make) => {
-      acc[make._id.toString()] = make.name;
-      return acc;
-    }, {});
-
-    const modelMap = models.reduce((acc, model) => {
-      acc[model._id.toString()] = {
-        name: model.name,
-        makeId: model.makeId.toString(),
-      };
-      return acc;
-    }, {});
-
-    const enrichedCars = formattedCars.map((car) => {
-      const modelInfo = modelMap[car.model?.toString()] || {};
-      return {
-        ...car,
-        makeName: makeMap[car.make?.toString()] || "Unknown Make",
-        modelName: modelInfo.name || "Unknown Model",
-        makeId: car.make,
-        modelId: car.model,
-      };
-    });
-
-    return NextResponse.json({ cars: enrichedCars });
+    return NextResponse.json({ cars: formattedCars });
   } catch (error) {
-    console.error("Population error:", error);
+    console.error("Error fetching cars:", error);
     return NextResponse.json(
       { error: "Failed to fetch data", details: error.message },
       { status: 500 },
@@ -363,4 +272,3 @@ export async function GET() {
     await client.close();
   }
 }
-

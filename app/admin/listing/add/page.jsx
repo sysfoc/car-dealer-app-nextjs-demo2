@@ -107,33 +107,66 @@ const Page = () => {
 
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
+  const [selectedMake, setSelectedMake] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [jsonData, setJsonData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchMakes = async () => {
+    const fetchJsonData = async () => {
       try {
-        const response = await fetch("/api/makes");
+        setLoading(true);
+        const response = await fetch("/Vehicle make and model data (2).json");
         const data = await response.json();
-        setMakes(data);
+        setJsonData(data.Sheet1);
+
+        // Extract unique makes
+        const uniqueMakes = [...new Set(data.Sheet1.map((item) => item.Maker))];
+        setMakes(uniqueMakes);
       } catch (error) {
-        console.error("Error fetching makes:", error);
+        console.error("Error loading vehicle data:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchMakes();
+
+    fetchJsonData();
   }, []);
+
   useEffect(() => {
-    const fetchModels = async () => {
-      if (formData.make) {
-        try {
-          const response = await fetch(`/api/models?makeId=${formData.make}`);
-          const data = await response.json();
-          setModels(data);
-        } catch (error) {
-          console.error("Error fetching models:", error);
-        }
+    if (selectedMake && jsonData.length > 0) {
+      const makeData = jsonData.find((item) => item.Maker === selectedMake);
+
+      if (makeData && makeData["model "]) {
+        // Split models string into array and trim whitespace
+        const modelArray = makeData["model "]
+          .split(",")
+          .map((model) => model.trim());
+        setModels(modelArray);
+      } else {
+        setModels([]);
       }
-    };
-    fetchModels();
-  }, [formData.make]);
+
+      setSelectedModel("");
+    }
+  }, [selectedMake, jsonData]);
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      make: selectedMake,
+      model: "",
+    }));
+  }, [selectedMake]);
+
+  useEffect(() => {
+    if (selectedModel) {
+      setFormData((prev) => ({
+        ...prev,
+        model: selectedModel,
+      }));
+    }
+  }, [selectedModel]);
 
   useEffect(() => {
     const fetchDealers = async () => {
@@ -150,14 +183,6 @@ const Page = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    if (name === "make") {
-      setFormData((prev) => ({
-        ...prev,
-        make: value,
-        model: "",
-      }));
-    }
 
     if (type === "checkbox") {
       setFormData((prev) => ({
@@ -215,6 +240,10 @@ const Page = () => {
     }
   };
 
+  if(loading){
+    <div></div>
+  }
+
   return (
     <section className="my-10">
       <h2 className="text-xl font-semibold">Add Listing</h2>
@@ -236,13 +265,14 @@ const Page = () => {
               <Select
                 id="brand-make"
                 name="make"
-                value={formData.make}
-                onChange={handleChange}
+                value={selectedMake}
+                onChange={(e) => setSelectedMake(e.target.value)}
+                aria-label="Select Make"
               >
-                <option>Select Make</option>
-                {makes.map((make) => (
-                  <option key={make._id} value={make._id}>
-                    {make.name}
+                <option value="">Select Make</option>
+                {makes.map((make, index) => (
+                  <option key={index} value={make}>
+                    {make}
                   </option>
                 ))}
               </Select>
@@ -253,13 +283,15 @@ const Page = () => {
               <Select
                 id="brand-Model"
                 name="model"
-                value={formData.model}
-                onChange={handleChange}
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                aria-label="Select Model"
+                disabled={!selectedMake}
               >
-                <option>Select Model</option>
-                {models.map((model) => (
-                  <option key={model._id} value={model._id}>
-                    {model.name}
+                <option value="">Select Model</option>
+                {models.map((model, index) => (
+                  <option key={index} value={model}>
+                    {model}
                   </option>
                 ))}
               </Select>

@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
+
 const CarSchema = new mongoose.Schema(
   {
-    id: Number,
     dealerId: Number,
     userId: String,
-    make: { type: mongoose.Schema.Types.ObjectId, ref: "Make", required: true },
-    model: { type: mongoose.Schema.Types.ObjectId, ref: "Model", required: true },
+    make: { type: String, required: true }, 
+    model: { type: String, required: true },
     price: Number,
     type: String,
     kms: String,
@@ -18,13 +18,12 @@ const CarSchema = new mongoose.Schema(
     doors: Number,
     seats: Number,
     gearbox: String,
-    engineCapacity: String,
     images: [String],
     video: String,
     sellerComments: String,
     condition: String,
     location: String,
-    year: String,
+    modelYear: String, 
     mileage: String,
     bodyType: String,
     color: String,
@@ -39,8 +38,11 @@ const CarSchema = new mongoose.Schema(
     co2Emission: Number,
     driveType: String,
     description: String,
-    imageUrls: [],
+    imageUrls: [String],
     status: { type: Number, default: 0 },
+    registerationPlate: String,
+    registerationExpire: String,
+    unit: String,
   },
   { timestamps: true },
 );

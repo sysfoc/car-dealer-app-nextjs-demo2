@@ -163,10 +163,10 @@ export default function Page() {
                       <TableCell className="py-4 px-6">
                         <div className="space-y-1">
                           <h4 className="font-semibold text-slate-800 text-lg">
-                            {car.modelName}
+                            {car.model}
                           </h4>
                           <p className="text-slate-600 font-medium">
-                            {car.makeName}
+                            {car.make}
                           </p>
                           <p className="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-1 rounded-md inline-block">
                             {car.slug}

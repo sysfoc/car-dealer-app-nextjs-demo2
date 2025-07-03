@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     console.log("Received Request Body:", reqBody);
 
     const user = await User.findOne({ email });
-
+    
     if (!user) {
       return NextResponse.json(
         { error: "User does not exist in DB" },

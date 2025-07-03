@@ -42,8 +42,8 @@ export default function Listing() {
   }, []);
 
   const filteredCars = cars.filter(car =>
-    car.makeName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    car.modelName?.toLowerCase().includes(searchTerm.toLowerCase())
+    car.make?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    car.model?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -171,7 +171,7 @@ export default function Listing() {
                   <Image
                     src={car.imageUrls?.[0] || "/Luxury SUV.webp"}
                     fill
-                    alt={`${car.makeName} ${car.modelName}`}
+                    alt={`${car.make} ${car.model}`}
                     className="object-cover transition-transform duration-300 hover:scale-105"
                   />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1">
@@ -181,7 +181,7 @@ export default function Listing() {
                 <div className="p-6">
                   <div className="mb-4">
                     <h3 className="text-xl font-bold text-slate-800 mb-1">
-                      {car.makeName} {car.modelName}
+                      {car.make} {car.model}
                     </h3>
                     <p className="text-2xl font-bold text-blue-600">${car.price?.toLocaleString()}</p>
                   </div>
@@ -248,7 +248,7 @@ export default function Listing() {
                             <Image
                               src={car.imageUrls?.[0] || "/Luxury SUV.webp"}
                               fill
-                              alt={`${car.makeName} ${car.modelName}`}
+                              alt={`${car.make} ${car.model}`}
                               className="object-cover"
                             />
                           </div>
@@ -256,8 +256,8 @@ export default function Listing() {
                       </td>
                       <td className="py-4 px-6">
                         <div>
-                          <p className="font-semibold text-slate-800">{car.makeName}</p>
-                          <p className="text-sm text-slate-600">{car.modelName}</p>
+                          <p className="font-semibold text-slate-800">{car.make}</p>
+                          <p className="text-sm text-slate-600">{car.model}</p>
                         </div>
                       </td>
                       <td className="py-4 px-6">

@@ -21,10 +21,8 @@ const CarEditPage = ({ params }) => {
   const [car, setCar] = useState(null);
   const [formData, setFormData] = useState({
     make: "",
-    makeName: "",
     model: "",
     description: "",
-    modelName: "",
     price: "",
     type: "",
     kms: "",
@@ -65,6 +63,10 @@ const CarEditPage = ({ params }) => {
 
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
+  const [selectedMake, setSelectedMake] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [jsonData, setJsonData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCarDetails = async () => {
@@ -87,45 +89,68 @@ const CarEditPage = ({ params }) => {
 
     fetchCarDetails();
   }, [id]);
+
   useEffect(() => {
-    const fetchMakes = async () => {
+    const fetchJsonData = async () => {
       try {
-        const res = await fetch("/api/makes");
-        const data = await res.json();
-        setMakes(data);
-      } catch (err) {
-        console.error("Failed to fetch makes", err);
+        setLoading(true);
+        const response = await fetch("/Vehicle make and model data (2).json");
+        const data = await response.json();
+        setJsonData(data.Sheet1);
+
+        // Extract unique makes
+        const uniqueMakes = [...new Set(data.Sheet1.map((item) => item.Maker))];
+        setMakes(uniqueMakes);
+      } catch (error) {
+        console.error("Error loading vehicle data:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchMakes();
+
+    fetchJsonData();
   }, []);
 
   useEffect(() => {
-    const fetchModels = async () => {
-      if (formData.make) {
-        try {
-          const res = await fetch(`/api/models?makeId=${formData.make}`);
-          const data = await res.json();
-          setModels(data);
-        } catch (err) {
-          console.error("Failed to fetch models", err);
-        }
+    if (selectedMake && jsonData.length > 0) {
+      const makeData = jsonData.find((item) => item.Maker === selectedMake);
+
+      if (makeData && makeData["model "]) {
+        // Split models string into array and trim whitespace
+        const modelArray = makeData["model "]
+          .split(",")
+          .map((model) => model.trim());
+        setModels(modelArray);
+      } else {
+        setModels([]);
       }
-    };
-    fetchModels();
-  }, [formData.make]);
+
+      setSelectedModel("");
+    }
+  }, [selectedMake, jsonData]);
+
+  // Update form data when make changes
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      make: selectedMake,
+      model: "", // Reset model when make changes
+    }));
+  }, [selectedMake]);
+
+  // Update form data when model changes
+  useEffect(() => {
+    if (selectedModel) {
+      setFormData((prev) => ({
+        ...prev,
+        model: selectedModel,
+      }));
+    }
+  }, [selectedModel]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    if (name === "make") {
-      const selectedMake = makes.find((make) => make._id === value);
-      setFormData((prev) => ({
-        ...prev,
-        make: value,
-        makeName: selectedMake ? selectedMake.name : "",
-        model: "",
-      }));
-    }
     if (type === "checkbox") {
       setFormData((prev) => ({
         ...prev,
@@ -141,18 +166,14 @@ const CarEditPage = ({ params }) => {
       }));
     }
   };
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({ ...prev, [name]: value }));
-  // };
 
   const handleInputChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  setFormData(prev => ({
-    ...prev,
-    [name]: type === 'checkbox' ? checked : value
-  }));
-};
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const handleFeatureChange = (e) => {
     const feature = e.target.value;
@@ -231,13 +252,15 @@ const CarEditPage = ({ params }) => {
             <Select
               id="make"
               name="make"
-              value={formData.make}
-              onChange={handleChange}
+              value={selectedMake}
+              onChange={(e) => setSelectedMake(e.target.value)}
+              aria-label="Select Make"
+              disabled={loading}
             >
-              <option>Select Make</option>
-              {makes.map((make) => (
-                <option key={make._id} value={make._id}>
-                  {make.name}
+              <option value="">Select Make</option>
+              {makes.map((make, index) => (
+                <option key={index} value={make}>
+                  {make}
                 </option>
               ))}
             </Select>
@@ -248,13 +271,15 @@ const CarEditPage = ({ params }) => {
             <Select
               id="model"
               name="model"
-              value={formData.model}
-              onChange={handleChange}
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              aria-label="Select Model"
+              disabled={!selectedMake || loading}
             >
-              <option>Select Model</option>
-              {models.map((model) => (
-                <option key={model._id} value={model._id}>
-                  {model.name}
+              <option value="">Select Model</option>
+              {models.map((model, index) => (
+                <option key={index} value={model}>
+                  {model}
                 </option>
               ))}
             </Select>
