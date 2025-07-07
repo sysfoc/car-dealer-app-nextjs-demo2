@@ -8,6 +8,7 @@ import Cookiebox from "@/app/components/Cookiebox";
 import Sidebar from "@/app/admin/AdminSidebar";
 import Header from "@/app/admin/Header";
 import DrawerSidebar from "@/app/admin/DrawerSidebar";
+import WhatsAppChat from "@/app/components/WhatsAppChat"
 
 export default function LayoutRenderer({ children }) {
   const pathname = usePathname();
@@ -55,6 +56,7 @@ export default function LayoutRenderer({ children }) {
     <>
       <Navbar isDarkMode={isDarkMode} />
       {children}
+      <WhatsAppChat/>
       <ScrolltoTop />
       <Cookiebox />
       <Footer isDarkMode={isDarkMode} />

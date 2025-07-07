@@ -404,7 +404,7 @@ const LikedCarsPage = () => {
                   {/* CTA Buttons */}
                   <div className="space-y-3">
                     <Link
-                      href={`/car-details/${vehicle.slug || vehicle._id}`}
+                      href={`/car-detail/${vehicle.slug || vehicle._id}`}
                       className="group/cta block w-full"
                     >
                       <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
