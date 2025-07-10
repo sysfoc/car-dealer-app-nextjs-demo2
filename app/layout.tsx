@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { ThemeModeScript } from "flowbite-react";
-import LayoutRenderer from "@/app/components/LayoutRenderer";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
-import Cookiebox from "@/app/components/Cookiebox";
+import LayoutRenderer from "./components/LayoutRenderer";
+import Cookiebox from "./components/Cookiebox";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import { CurrencyProvider } from "./context/CurrencyContext";
 import { AuthProvider } from "./context/UserContext";

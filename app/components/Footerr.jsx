@@ -17,7 +17,7 @@ import {
 } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
 import { SiGiphy } from "react-icons/si";
-import LanguageSwitching from "@/app/components/LanguageSwitching";
+import LanguageSwitching from "./LanguageSwitching";
 import { useTranslations } from "next-intl";
 
 const Footerr = ({ isDarkMode }) => {

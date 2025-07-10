@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import jwt from "jsonwebtoken"
 import connectToMongoDB from "../../../../lib/mongodb"
-import User from "@/app/models/User"
+import User from "../../../../models/User"
 import Car from "../../../../models/Car"
 export const dynamic = "force-dynamic"
 

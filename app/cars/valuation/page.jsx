@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import BrandsList from "@/app/components/BrandsList";
-import ChooseUs from "@/app/components/ChooseUs";
+import BrandsList from "../components/BrandsList";
+import ChooseUs from "../components/ChooseUs";
 import { Button, Card, Label, Select } from "flowbite-react";
 import { AiOutlineDollar } from "react-icons/ai";
 import { MdSell } from "react-icons/md";

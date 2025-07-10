@@ -1,4 +1,4 @@
-import dbConnect from "@/app/lib/mongodb";
+import dbConnect from "../../lib/mongodb";
 import Currency from "../../models/Currency";
 import { NextResponse } from "next/server";
 

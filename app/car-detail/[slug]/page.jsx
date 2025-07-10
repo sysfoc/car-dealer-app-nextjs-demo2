@@ -2,10 +2,11 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LuCrown, LuPhone, LuMail, LuMapPin } from "react-icons/lu";
-import Slider from "@/app/components/Slider";
-import Table from "@/app/components/Tables";
-import SellerComment from "@/app/components/SellerComment";
-import Features from "@/app/components/Features";
+import Slider from "../components/Slider";
+import Table from "../components/Tables";
+import SellerComment from "../components/SellerComment";
+import Features from "../components/Features";
+import { useCurrency } from "../context/CurrencyContext";
 import { Spinner } from "flowbite-react";
 import {
   Button,
@@ -19,7 +20,7 @@ import {
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslations } from "next-intl";
-import { useCurrency } from "@/app/context/CurrencyContext";
+
 
 export default function Home() {
   const t = useTranslations("carDetails");

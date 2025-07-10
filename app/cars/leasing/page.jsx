@@ -1,7 +1,7 @@
 "use client";
 import { Pagination } from "flowbite-react";
-import LeasingCarsDetail from "@/app/components/LeasingCarsDetail";
-import SidebarFilters from "@/app/components/SidebarFilters";
+import LeasingCarsDetail from "../components/LeasingCarsDetail";
+import SidebarFilters from "../components/SidebarFilters";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 

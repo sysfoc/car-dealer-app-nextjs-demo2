@@ -1,6 +1,6 @@
 import React from "react";
-import PieChart from "@/app/components/PieChart";
-import BarChart from "@/app/components/BarChart";
+import PieChart from "./PieChart";
+import BarChart from "./BarChart";
 
 const Charts = () => {
   return (

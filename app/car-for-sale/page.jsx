@@ -1,8 +1,7 @@
 "use client";
-import SidebarFilters from "@/app/components/SidebarFilters";
-import CardetailCard from "@/app/components/CardetailCard";
+import SidebarFilters from "../components/SidebarFilters";
+import CardetailCard from "../components/CardetailCard";
 import { Pagination } from "flowbite-react";
-
 export default function Home() {
   return (
     <section className="mx-4 my-16 sm:mx-8">

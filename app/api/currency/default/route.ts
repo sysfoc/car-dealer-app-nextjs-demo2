@@ -1,6 +1,6 @@
 import { NextResponse , NextRequest } from "next/server";
 import dbConnect from "../../../lib/mongodb";
-import Currency from "@/app/models/Currency";
+import Currency from "../../../models/Currency";
 
 export async function GET() {
   await dbConnect();

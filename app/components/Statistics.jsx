@@ -1,6 +1,6 @@
 import React from "react";
-import GeoChart from "@/app/components/GeoChart";
-import RevenueChart from "@/app/components/RevenueChart";
+import GeoChart from "./GeoChart";
+import RevenueChart from "./RevenueChart";
 
 const Statistics = () => {
   return (

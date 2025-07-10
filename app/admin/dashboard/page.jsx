@@ -1,7 +1,5 @@
-import OverviewSection from "@/app/components/Overview";
-import ChartsSection from "@/app/components/Charts";
-// import OrdersSection from "@/app/components/OrdersTable";
-// import GeoChartSection from "@/app/components/Statistics";
+import OverviewSection from "../../components/Overview";
+import ChartsSection from "../../components/Charts";
 export const metadata = {
   title: "Dashboard - Auto Car Dealers",
   description: "Manage your car deals and settings from the admin dashboard.",
