@@ -160,7 +160,7 @@ const VehicalsList = ({ loadingState }) => {
                   </div>
                 </div>
               ))
-          : vehicles.slice(0,4).map((vehicle) => (
+          : vehicles.slice(0, 4).map((vehicle) => (
               <div
                 className="group transform overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl transition-all duration-500 hover:-translate-y-1 hover:border-slate-300 hover:shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
                 key={vehicle._id}
@@ -176,13 +176,21 @@ const VehicalsList = ({ loadingState }) => {
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 
-                    <div className="absolute left-4 top-4">
+                    <div className="absolute left-4 top-4 flex flex-wrap gap-1.5">
                       <div className="rounded-full bg-emerald-900 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
                         <div className="flex items-center gap-1.5">
                           <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
                           Available
                         </div>
                       </div>
+                      {vehicle.sold && (
+                        <div className="rounded-full bg-red-500 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
+                          <div className="flex items-center gap-1.5">
+                            <div className="h-2 w-2 rounded-full bg-white"></div>
+                            SOLD
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
@@ -191,7 +199,11 @@ const VehicalsList = ({ loadingState }) => {
                           e.preventDefault();
                           handleLikeToggle(vehicle._id);
                         }}
-                         aria-label={userLikedCars?.includes(vehicle._id) ? "Unlike Car" : "Like Car"}
+                        aria-label={
+                          userLikedCars?.includes(vehicle._id)
+                            ? "Unlike Car"
+                            : "Like Car"
+                        }
                         className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
                       >
                         {userLikedCars &&
@@ -272,7 +284,7 @@ const VehicalsList = ({ loadingState }) => {
                   {/* CTA Button */}
                   <Link
                     // href={`/car-for-sale/${vehicle.slug || vehicle._id}`}
-                       href={`/car-detail/${vehicle.slug || vehicle._id}`}
+                    href={`/car-detail/${vehicle.slug || vehicle._id}`}
                     className="group/cta block w-full"
                   >
                     <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">

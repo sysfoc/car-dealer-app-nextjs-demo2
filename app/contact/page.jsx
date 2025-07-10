@@ -16,7 +16,7 @@ const ContactUs = () => {
             </h2>
             <p className="mb-6 text-gray-600 dark:text-gray-300">
               Have questions or want to work with us? Fill out the form below,
-              and we’ll get back to you as soon as possible.
+              and we&apos;ll get back to you as soon as possible.
             </p>
             <form>
               <div className="mb-4">
@@ -95,7 +95,7 @@ const ContactUs = () => {
                 Working Hours
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-              {process.env.NEXT_PUBLIC_CONTACT_WORKING_HOURS}
+              Monday - Friday: 9:00 AM - 6:00 PM
               </p>
             </div>
           </div>

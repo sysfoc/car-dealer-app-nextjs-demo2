@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import { MdOutlineArrowOutward, MdFavorite, MdLogin } from "react-icons/md";
 import { IoSpeedometer } from "react-icons/io5";
 import { GiGasPump } from "react-icons/gi";
 import { TbManualGearboxFilled } from "react-icons/tb";
-import { FaHeart, FaEye , FaLock } from "react-icons/fa";
+import { FaHeart, FaEye, FaLock } from "react-icons/fa";
 import { AiOutlineDelete } from "react-icons/ai";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -21,49 +21,48 @@ const LikedCarsPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
 
-
   useEffect(() => {
-  const initializePage = async () => {
-    try {
-      setAuthLoading(true);
-      setLoading(true);
-      
-      const user = await fetchUserData();
-      setIsAuthenticated(true);
-      
-      await fetchLikedCars();
-    } catch (error) {
-      if (error.message === "User not authenticated") {
-        setIsAuthenticated(false);
-      } else {
-        setError(error.message);
-      }
-    } finally {
-      setLoading(false);
-      setAuthLoading(false);
-    }
-  };
+    const initializePage = async () => {
+      try {
+        setAuthLoading(true);
+        setLoading(true);
 
-  initializePage();
-}, []);
+        const user = await fetchUserData();
+        setIsAuthenticated(true);
+
+        await fetchLikedCars();
+      } catch (error) {
+        if (error.message === "User not authenticated") {
+          setIsAuthenticated(false);
+        } else {
+          setError(error.message);
+        }
+      } finally {
+        setLoading(false);
+        setAuthLoading(false);
+      }
+    };
+
+    initializePage();
+  }, []);
 
   const fetchUserData = async () => {
-  try {
-    const response = await fetch("/api/users/me");
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("User not authenticated");
+    try {
+      const response = await fetch("/api/users/me");
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("User not authenticated");
+        }
+        throw new Error("Failed to fetch user data");
       }
-      throw new Error("Failed to fetch user data");
+      const data = await response.json();
+      setUser(data.user);
+      return data.user;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      throw error;
     }
-    const data = await response.json();
-    setUser(data.user);
-    return data.user;
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    throw error;
-  }
-};
+  };
 
   const fetchLikedCars = async () => {
     try {
@@ -100,11 +99,11 @@ const LikedCarsPage = () => {
       if (response.ok) {
         const data = await response.json();
         // Remove the car from the displayed list
-        setLikedCars(prev => prev.filter(car => car._id !== carId));
+        setLikedCars((prev) => prev.filter((car) => car._id !== carId));
         // Update user data
-        setUser(prev => ({
+        setUser((prev) => ({
           ...prev,
-          likedCars: data.likedCars
+          likedCars: data.likedCars,
         }));
       } else {
         console.error("Failed to remove car from liked list");
@@ -137,7 +136,7 @@ const LikedCarsPage = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-        <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="container mx-auto mt-16 px-4 py-8">
           <div className="mx-auto max-w-md text-center">
             {/* Login Icon */}
             <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 shadow-lg dark:from-blue-900/30 dark:to-blue-800/30">
@@ -148,9 +147,10 @@ const LikedCarsPage = () => {
             <h2 className="mb-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-3xl font-bold text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300">
               Login Required
             </h2>
-            
+
             <p className="mb-8 text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-              Please log in to view your liked cars and manage your favorites collection.
+              Please log in to view your liked cars and manage your favorites
+              collection.
             </p>
 
             {/* Login Button */}
@@ -186,7 +186,9 @@ const LikedCarsPage = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-8 text-center text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-200">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40">
-              <span className="text-2xl text-red-600 dark:text-red-400">⚠</span>
+              <span className="text-2xl text-red-600 dark:text-red-400">
+                ⚠
+              </span>
             </div>
             <h3 className="mb-2 text-xl font-bold">Error Loading Liked Cars</h3>
             <p className="text-red-700 dark:text-red-300">{error}</p>
@@ -208,16 +210,15 @@ const LikedCarsPage = () => {
                 <MdFavorite className="h-4 w-4" />
                 <span>Favorites Collection</span>
               </div>
-              
+
               <h1 className="mb-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-4xl font-bold leading-tight text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300 md:text-5xl">
                 My Liked Cars
               </h1>
-              
+
               <p className="text-lg text-slate-600 dark:text-slate-400">
-                {loading 
-                  ? "Loading your favorite vehicles..." 
-                  : `${likedCars.length} ${likedCars.length === 1 ? 'vehicle' : 'vehicles'} in your collection`
-                }
+                {loading
+                  ? "Loading your favorite vehicles..."
+                  : `${likedCars.length} ${likedCars.length === 1 ? "vehicle" : "vehicles"} in your collection`}
               </p>
             </div>
 
@@ -234,34 +235,36 @@ const LikedCarsPage = () => {
         {/* Cars Grid */}
         {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {Array(6).fill().map((_, index) => (
-              <div
-                className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800"
-                key={index}
-              >
-                <div className="relative">
-                  <Skeleton className="h-64 w-full" />
+            {Array(6)
+              .fill()
+              .map((_, index) => (
+                <div
+                  className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800"
+                  key={index}
+                >
+                  <div className="relative">
+                    <Skeleton className="h-64 w-full" />
+                  </div>
+                  <div className="space-y-4 p-6">
+                    <div className="space-y-3">
+                      <Skeleton height={28} />
+                      <Skeleton height={16} width="70%" />
+                    </div>
+                    <div className="space-y-3">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <Skeleton circle width={32} height={32} />
+                          <Skeleton height={16} width="60%" />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
+                      <Skeleton height={32} width="50%" />
+                      <Skeleton height={40} className="mt-3" />
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-4 p-6">
-                  <div className="space-y-3">
-                    <Skeleton height={28} />
-                    <Skeleton height={16} width="70%" />
-                  </div>
-                  <div className="space-y-3">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <Skeleton circle width={32} height={32} />
-                        <Skeleton height={16} width="60%" />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
-                    <Skeleton height={32} width="50%" />
-                    <Skeleton height={40} className="mt-3" />
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         ) : likedCars.length === 0 ? (
           // Empty State
@@ -273,7 +276,8 @@ const LikedCarsPage = () => {
               No Liked Cars Yet
             </h3>
             <p className="mx-auto mb-8 max-w-md text-lg text-slate-600 dark:text-slate-400">
-              Start exploring our premium collection and save your favorite vehicles to see them here.
+              Start exploring our premium collection and save your favorite
+              vehicles to see them here.
             </p>
             <Link href="/car-for-sale">
               <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
@@ -302,20 +306,28 @@ const LikedCarsPage = () => {
                     {/* Premium overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 
-                    {/* Liked Badge */}
-                    <div className="absolute left-4 top-4">
+                    {/* Liked Badge and Sold Badge */}
+                    <div className="absolute left-4 top-4 flex flex-wrap gap-1.5">
                       <div className="rounded-full bg-red-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
                         <div className="flex items-center gap-1.5">
                           <FaHeart className="h-3 w-3" />
                           Liked
                         </div>
                       </div>
+                      {vehicle.sold && (
+                        <div className="rounded-full bg-gray-800 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
+                          <div className="flex items-center gap-1.5">
+                            <div className="h-2 w-2 rounded-full bg-white"></div>
+                            SOLD
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Action Buttons */}
                     <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                       <button
-                      aria-label="Remove from Liked Cars"
+                        aria-label="Remove from Liked Cars"
                         onClick={(e) => {
                           e.preventDefault();
                           handleRemoveLike(vehicle._id);
@@ -329,9 +341,10 @@ const LikedCarsPage = () => {
                           <AiOutlineDelete className="h-4 w-4" />
                         )}
                       </button>
-                      <button 
-                      aria-label="View Car Details"
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:text-blue-500 hover:shadow-xl">
+                      <button
+                        aria-label="View Car Details"
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:text-blue-500 hover:shadow-xl"
+                      >
                         <FaEye className="h-4 w-4" />
                       </button>
                     </div>
@@ -343,7 +356,7 @@ const LikedCarsPage = () => {
                           Price
                         </p>
                         <p className="bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-lg font-bold text-transparent dark:from-white dark:to-slate-300">
-                          ${vehicle?.price?.toLocaleString() || 'N/A'}
+                          ${vehicle?.price?.toLocaleString() || "N/A"}
                         </p>
                       </div>
                     </div>
@@ -372,7 +385,7 @@ const LikedCarsPage = () => {
                         Mileage:
                       </span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {vehicle?.kms || 'N/A'} KM
+                        {vehicle?.kms || "N/A"} KM
                       </span>
                     </div>
 
@@ -384,7 +397,7 @@ const LikedCarsPage = () => {
                         Fuel Type:
                       </span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {vehicle?.fuelType || 'N/A'}
+                        {vehicle?.fuelType || "N/A"}
                       </span>
                     </div>
 
@@ -396,7 +409,7 @@ const LikedCarsPage = () => {
                         Transmission:
                       </span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {vehicle?.gearbox || 'N/A'}
+                        {vehicle?.gearbox || "N/A"}
                       </span>
                     </div>
                   </div>

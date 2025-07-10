@@ -34,11 +34,7 @@ const isLightColor = (colorId) => {
   return lightColors.includes(colorId);
 };
 
-const Header = ({ 
-  isSidebarOpen, 
-  setIsSidebarOpen, 
-  onSidebarClose
-}) => {
+const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
   const t = useTranslations("HomePage");
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
@@ -88,12 +84,12 @@ const Header = ({
     const fetchJsonData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/Vehicle make and model data (2).json');
+        const response = await fetch("/Vehicle make and model data (2).json");
         const data = await response.json();
         setJsonData(data.Sheet1);
-        
+
         // Extract unique makes
-        const uniqueMakes = [...new Set(data.Sheet1.map(item => item.Maker))];
+        const uniqueMakes = [...new Set(data.Sheet1.map((item) => item.Maker))];
         setMakes(uniqueMakes);
       } catch (error) {
         console.error("Error loading vehicle data:", error);
@@ -105,13 +101,13 @@ const Header = ({
     fetchJsonData();
   }, []);
 
-  // Update models when selectedMake changes
   useEffect(() => {
     if (selectedMake && jsonData) {
-      const makeData = jsonData.find(item => item.Maker === selectedMake);
+      const makeData = jsonData.find((item) => item.Maker === selectedMake);
       if (makeData && makeData["model "]) {
-        // Split models string into array and trim whitespace
-        const modelArray = makeData["model "].split(",").map(model => model.trim());
+        const modelArray = makeData["model "]
+          .split(",")
+          .map((model) => model.trim());
         setModels(modelArray);
       } else {
         setModels([]);
@@ -141,9 +137,13 @@ const Header = ({
         if (data.settings?.logo) {
           setLogo(data.settings.logo);
         }
-        if (data.settings?.top) {
-          setTopSettings(data.settings.top);
-        }
+        
+          setTopSettings(prev => ({
+        hideDarkMode: false,
+        hideFavourite: false,
+        hideLogo: false,
+        ...data.settings?.top
+      }));
       } catch (error) {
         console.error("Failed to fetch settings:", error);
       }
@@ -151,6 +151,9 @@ const Header = ({
 
     fetchSettings();
   }, []);
+  // if (data.settings?.top) {
+        //   setTopSettings(data.settings.top);
+        // }
 
   const handleColorSelection = (colorId) => {
     setSelectedColors((prev) =>
@@ -251,18 +254,23 @@ const Header = ({
       <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg transition-all duration-300 dark:border-gray-700 dark:bg-gray-900/95">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo Section */}
-            <Link href="/" className="flex items-center space-x-3">
-              <img src={logo} alt="Logo" className="h-16 w-16 object-contain" />
-              <div className="flex flex-col">
-                <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-                  AutomotiveWebSolutions
-                </span>
-                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Built to Sell Cars
-                </span>
-              </div>
-            </Link>
+            {!topSettings.hideLogo && (
+              <Link href="/" className="flex items-center space-x-3">
+                <img
+                  src={logo}
+                  alt="Logo"
+                  className="h-16 w-16 object-contain"
+                />
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+                    AutomotiveWebSolutions
+                  </span>
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    Built to Sell Cars
+                  </span>
+                </div>
+              </Link>
+            )}
 
             <div className="hidden items-center space-x-6 lg:flex">
               {quickLinks.map((link, index) => {
@@ -289,15 +297,17 @@ const Header = ({
                 <FaSearch className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:group-hover:text-blue-400" />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 group-hover:from-blue-500/10 group-hover:to-purple-500/10"></div>
               </button>
-              
-              <button
-                onClick={() => router.push('/liked-cars')}
-                aria-label="Liked Cars"
-                className="group hidden md:flex relative rounded-xl bg-gray-100 p-3 transition-all duration-300 hover:scale-105 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700"
-              >
-                <FaHeart className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:group-hover:text-blue-400" />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 group-hover:from-blue-500/10 group-hover:to-purple-500/10"></div>
-              </button>
+
+              {!topSettings.hideFavourite && (
+                <button
+                  onClick={() => router.push("/liked-cars")}
+                  aria-label="Liked Cars"
+                  className="group relative hidden rounded-xl bg-gray-100 p-3 transition-all duration-300 hover:scale-105 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700 md:flex"
+                >
+                  <FaHeart className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:group-hover:text-blue-400" />
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 group-hover:from-blue-500/10 group-hover:to-purple-500/10"></div>
+                </button>
+              )}
 
               <div className="hidden items-center space-x-3 md:flex">
                 {!topSettings.hideDarkMode && (
@@ -367,9 +377,10 @@ const Header = ({
             {/* Make and Model Selection */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label 
-                htmlFor="make"
-                className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="make"
+                  className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                >
                   Make
                 </label>
                 <div className="relative">
@@ -396,9 +407,10 @@ const Header = ({
               </div>
 
               <div>
-                <label 
-                htmlFor="model"
-                className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="model"
+                  className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                >
                   Model
                 </label>
                 <div className="relative">

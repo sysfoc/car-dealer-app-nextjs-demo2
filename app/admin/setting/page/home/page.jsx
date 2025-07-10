@@ -51,49 +51,72 @@ const Page = () => {
     fridayHr: useRef(null),
     saturdayHr: useRef(null),
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
-    
-    const formData = new FormData();
-    Object.entries(refs).forEach(([key, ref]) => {
-      formData.append(key, ref.current?.value || "");
-    });
-
-    try {
-      const response = await fetch("/api/homepage", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSaving(true);
       
-      if (response.ok) {
-        Swal.fire({
-          title: "Success!",
-          text: "Homepage settings saved successfully",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: result.error || "Failed to save settings",
-          icon: "error",
-        });
-      }
-    } catch (error) {
+  const formData = new FormData();
+  
+  formData.append("seoTitle", refs.title.current?.value || "");
+  formData.append("seoDescription", refs.metaDescription.current?.value || "");
+  formData.append("searchHeading", refs.searchHeading.current?.value || "");
+  formData.append("searchText", refs.searchText.current?.value || "");
+  formData.append("brandHeading", refs.brandHeading.current?.value || "");
+  formData.append("brandSubheading", refs.brandSubheading.current?.value || "");
+  formData.append("brandItems", refs.brandItems.current?.value || "");
+  formData.append("brandStatus", refs.brandStatus.current?.value || "");
+  formData.append("listingHeading", refs.listingHeading.current?.value || "");
+  formData.append("listingSubheading", refs.listingSubheading.current?.value || "");
+  formData.append("listingItems", refs.listingItems.current?.value || "");
+  formData.append("listingStatus", refs.listingStatus.current?.value || "");
+  formData.append("chooseusHeading", refs.chooseusHeading.current?.value || "");
+  formData.append("chooseusFirstHeading", refs.chooseusFirstHeading.current?.value || "");
+  formData.append("chooseusFirstDescription", refs.chooseusFirstDescription.current?.value || "");
+  formData.append("chooseusSecondHeading", refs.chooseusSecondHeading.current?.value || "");
+  formData.append("chooseusSecondDescription", refs.chooseusSecondDescription.current?.value || "");
+  formData.append("chooseusThirdHeading", refs.chooseusThirdHeading.current?.value || "");
+  formData.append("chooseusThirdDescription", refs.chooseusThirdDescription.current?.value || "");
+  formData.append("chooseusFourthHeading", refs.chooseusFourthHeading.current?.value || "");
+  formData.append("chooseusFourthDescription", refs.chooseusFourthDescription.current?.value || "");
+  formData.append("mondayHr", refs.mondayHr.current?.value || "");
+  formData.append("tuesdayHr", refs.tuesdayHr.current?.value || "");
+  formData.append("wednesdayHr", refs.wednesdayHr.current?.value || "");
+  formData.append("thursdayHr", refs.thursdayHr.current?.value || "");
+  formData.append("fridayHr", refs.fridayHr.current?.value || "");
+  formData.append("saturdayHr", refs.saturdayHr.current?.value || "");
+
+  try {
+    const response = await fetch("/api/homepage", {
+      method: "POST",
+      body: formData,
+    });
+    const result = await response.json();
+          
+    if (response.ok) {
+      Swal.fire({
+        title: "Success!",
+        text: "Homepage settings saved successfully",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } else {
       Swal.fire({
         title: "Error!",
-        text: "An unexpected error occurred",
+        text: result.error || "Failed to save settings",
         icon: "error",
       });
-    } finally {
-      setIsSaving(false);
     }
-  };
+  } catch (error) {
+    Swal.fire({
+      title: "Error!",
+      text: "An unexpected error occurred",
+      icon: "error",
+    });
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-6">

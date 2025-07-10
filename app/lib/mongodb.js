@@ -6,6 +6,12 @@ if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
 }
 
+if (!mongoose.connection.readyState) {
+  await mongoose.connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  });
+}
 let cached = global.mongoose;
 
 if (!cached) {

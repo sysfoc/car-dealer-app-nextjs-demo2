@@ -199,10 +199,10 @@ export default function LoginPage() {
                   <button
                     onClick={() =>
                       setUser({
-                        email: "sysfoc_admin07@gmail.com",
-                        password: "sysfoc_admin07",
+                        email: "sysfoc_admin@gmail.com",
+                        password: "sysfoc_admin",
                         role: "superadmin",
-                        pin: "977442",
+                        pin: "123456",
                       })
                     }
                     className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"

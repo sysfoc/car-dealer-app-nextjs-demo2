@@ -17,7 +17,12 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { GrSort } from "react-icons/gr";
 import { FiGrid, FiList } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
-import { FaLocationCrosshairs, FaCalendarCheck, FaRegHeart, FaHeart } from "react-icons/fa6";
+import {
+  FaLocationCrosshairs,
+  FaCalendarCheck,
+  FaRegHeart,
+  FaHeart,
+} from "react-icons/fa6";
 import { IoSpeedometer } from "react-icons/io5";
 import { GiGasPump, GiCarDoor, GiCarSeat } from "react-icons/gi";
 import { TbManualGearbox } from "react-icons/tb";
@@ -794,12 +799,18 @@ const CardetailCard = () => {
               </Carousel>
 
               {/* Overlay Badges */}
+              {/* Overlay Badges */}
               <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
                 <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
                   {car.condition && car.condition !== "Select"
                     ? car.condition
                     : car.type || "Used"}
                 </span>
+                {car.sold && (
+                  <span className="rounded-full bg-red-500 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
+                    SOLD
+                  </span>
+                )}
                 {car.isFinance && car.isFinance !== "km" && (
                   <span className="rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
                     {car.isFinance}
@@ -820,9 +831,7 @@ const CardetailCard = () => {
                     handleLikeToggle(car._id);
                   }}
                   aria-label={
-                    userLikedCars?.includes(car._id)
-                      ? "Unlike Car"
-                      : "Like Car"
+                    userLikedCars?.includes(car._id) ? "Unlike Car" : "Like Car"
                   }
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
                 >

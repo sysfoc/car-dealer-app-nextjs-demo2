@@ -9,6 +9,7 @@ const CarSchema = new mongoose.Schema(
     price: Number,
     type: String,
     kms: String,
+    sold: { type: Boolean, default: false },
     fuelType: String,
     fuelTankFillPrice: String,
     fuelCapacityPerTank: String,

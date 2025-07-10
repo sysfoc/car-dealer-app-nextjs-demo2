@@ -17,7 +17,12 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { GrSort } from "react-icons/gr";
 import { FiGrid, FiList } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
-import { FaLocationCrosshairs, FaCalendarCheck, FaHeart, FaRegHeart } from "react-icons/fa6";
+import {
+  FaLocationCrosshairs,
+  FaCalendarCheck,
+  FaHeart,
+  FaRegHeart,
+} from "react-icons/fa6";
 import { IoSpeedometer } from "react-icons/io5";
 import { GiGasPump, GiCarDoor, GiCarSeat } from "react-icons/gi";
 import { TbManualGearbox } from "react-icons/tb";
@@ -41,25 +46,22 @@ const CardetailCard = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
 
-
-
   const parseBooleanParam = (param) => {
     return param === "true";
   };
 
-
   const [selectedCar, setSelectedCar] = useState(null);
-    const [formData, setFormData] = useState({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      message: "",
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitMessage, setSubmitMessage] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
 
-    const fetchUserData = async () => {
+  const fetchUserData = async () => {
     try {
       const response = await fetch("/api/users/me");
       if (response.ok) {
@@ -101,19 +103,18 @@ const CardetailCard = () => {
     }
   };
 
-  
-    const handleInputChange = (e) => {
-      const { id, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [id]: value,
-      }));
-    };
-    const handleEnquirySubmit = async (e) => {
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+  const handleEnquirySubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage("");
-  
+
     const enquiryData = {
       carId: selectedCar?._id,
       firstName: formData.firstName,
@@ -122,7 +123,7 @@ const CardetailCard = () => {
       phone: formData.phone,
       message: formData.message,
     };
-  
+
     try {
       const response = await fetch("/api/enquiry", {
         method: "POST",
@@ -131,11 +132,13 @@ const CardetailCard = () => {
         },
         body: JSON.stringify(enquiryData),
       });
-  
+
       const result = await response.json();
-  
+
       if (response.ok) {
-        setSubmitMessage("Enquiry submitted successfully! We will contact you soon.");
+        setSubmitMessage(
+          "Enquiry submitted successfully! We will contact you soon.",
+        );
         setFormData({
           firstName: "",
           lastName: "",
@@ -143,14 +146,16 @@ const CardetailCard = () => {
           phone: "",
           message: "",
         });
-  
+
         setTimeout(() => {
           setOpenModal(false);
           setSubmitMessage("");
           setSelectedCar(null);
         }, 2000);
       } else {
-        setSubmitMessage(result.error || "Failed to submit enquiry. Please try again.");
+        setSubmitMessage(
+          result.error || "Failed to submit enquiry. Please try again.",
+        );
       }
     } catch (error) {
       console.error("Enquiry submission error:", error);
@@ -185,26 +190,26 @@ const CardetailCard = () => {
     if (!cars || cars.length === 0) return cars;
     const sortedCars = [...cars];
 
-  const cleanPrice = (price) => {
-    if (typeof price === 'number') return price;
-    const cleaned = String(price).replace(/[^\d]/g, "");
-    return parseInt(cleaned) || 0;
-  };
+    const cleanPrice = (price) => {
+      if (typeof price === "number") return price;
+      const cleaned = String(price).replace(/[^\d]/g, "");
+      return parseInt(cleaned) || 0;
+    };
 
-  switch (sortBy) {
-    case "price-lh":
-      return sortedCars.sort((a, b) => {
-        const priceA = cleanPrice(a.price);
-        const priceB = cleanPrice(b.price);
-        return priceA - priceB;
-      });
+    switch (sortBy) {
+      case "price-lh":
+        return sortedCars.sort((a, b) => {
+          const priceA = cleanPrice(a.price);
+          const priceB = cleanPrice(b.price);
+          return priceA - priceB;
+        });
 
-    case "price-hl":
-      return sortedCars.sort((a, b) => {
-        const priceA = cleanPrice(a.price);
-        const priceB = cleanPrice(b.price);
-        return priceB - priceA;
-      });
+      case "price-hl":
+        return sortedCars.sort((a, b) => {
+          const priceA = cleanPrice(a.price);
+          const priceB = cleanPrice(b.price);
+          return priceB - priceA;
+        });
 
       case "model-latest":
         return sortedCars.sort((a, b) => {
@@ -312,9 +317,7 @@ const CardetailCard = () => {
         ? car.make
             ?.toLowerCase()
             .includes(parsedFilters.keyword.toLowerCase()) ||
-          car.model
-            ?.toLowerCase()
-            .includes(parsedFilters.keyword.toLowerCase())
+          car.model?.toLowerCase().includes(parsedFilters.keyword.toLowerCase())
         : true;
 
       const matchesCondition = parsedFilters.condition.length
@@ -327,7 +330,6 @@ const CardetailCard = () => {
           )
         : true;
 
-      
       const matchesLease = car.isLease === true;
       const carPrice = car.price ? parseInt(car.price, 10) : null;
       const matchesPrice =
@@ -680,9 +682,9 @@ const CardetailCard = () => {
                 setCurrentPage(1);
               }}
             >
-              <option  value={3}>3 per page</option>
-              <option  value={6}>6 per page</option>
-              <option  value={9}>9 per page</option>
+              <option value={3}>3 per page</option>
+              <option value={6}>6 per page</option>
+              <option value={9}>9 per page</option>
               <option value={12}>12 per page</option>
             </Select>
 
@@ -764,8 +766,7 @@ const CardetailCard = () => {
                       <Image
                         src={image.src || image}
                         alt={
-                          image.alt ||
-                          `${car.make} ${car.model} Image ${i + 1}`
+                          image.alt || `${car.make} ${car.model} Image ${i + 1}`
                         }
                         width={600}
                         height={400}
@@ -807,6 +808,11 @@ const CardetailCard = () => {
                     ? car.condition
                     : car.type || "Used"}
                 </span>
+                {car.sold && (
+                  <span className="rounded-full bg-red-500 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
+                    SOLD
+                  </span>
+                )}
                 {car.isFinance && car.isFinance !== "km" && (
                   <span className="rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
                     {car.isFinance}
@@ -822,21 +828,23 @@ const CardetailCard = () => {
                   </div>
                 )}
                 <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleLikeToggle(car._id);
-                        }}
-                         aria-label={userLikedCars?.includes(car._id) ? "Unlike Car" : "Like Car"}
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
-                      >
-                        {userLikedCars &&
-                        Array.isArray(userLikedCars) &&
-                        userLikedCars.includes(car._id) ? (
-                          <FaHeart className="h-4 w-4 text-red-500" />
-                        ) : (
-                          <FaRegHeart className="h-4 w-4 hover:text-red-500" />
-                        )}
-                      </button>
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLikeToggle(car._id);
+                  }}
+                  aria-label={
+                    userLikedCars?.includes(car._id) ? "Unlike Car" : "Like Car"
+                  }
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
+                >
+                  {userLikedCars &&
+                  Array.isArray(userLikedCars) &&
+                  userLikedCars.includes(car._id) ? (
+                    <FaHeart className="h-4 w-4 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="h-4 w-4 hover:text-red-500" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -1100,16 +1108,16 @@ const CardetailCard = () => {
               {/* Action Buttons */}
               <div className="mt-auto flex gap-2">
                 <button
-                 onClick={() => {
-    setSelectedCar(car); 
-    setOpenModal(true);
-  }}
+                  onClick={() => {
+                    setSelectedCar(car);
+                    setOpenModal(true);
+                  }}
                   className={`flex-1 rounded-xl border-2 border-blue-600 text-center font-semibold text-blue-600 transition-all duration-200 hover:bg-blue-600 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-400 dark:hover:text-white ${
-    isGridView ? "px-3 py-2 text-sm" : "px-6 py-3"
-  }`}
->
-  {t("enquireNow")}
-</button>
+                    isGridView ? "px-3 py-2 text-sm" : "px-6 py-3"
+                  }`}
+                >
+                  {t("enquireNow")}
+                </button>
                 <Link href={`car-detail/${car.slug}`} className="flex-1">
                   <button
                     className={`w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl ${
@@ -1259,9 +1267,9 @@ const CardetailCard = () => {
         dismissible
         show={openModal}
         onClose={() => {
-    setOpenModal(false);
-    setSelectedCar(null); // Reset selected car
-  }}
+          setOpenModal(false);
+          setSelectedCar(null); // Reset selected car
+        }}
         className="backdrop-blur-sm"
       >
         <ModalHeader className="border-b border-gray-200 pb-4 dark:border-gray-700">
@@ -1410,4 +1418,3 @@ const CardetailCard = () => {
   );
 };
 export default CardetailCard;
-
