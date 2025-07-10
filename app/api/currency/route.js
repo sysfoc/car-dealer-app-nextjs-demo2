@@ -1,5 +1,5 @@
-import dbConnect from "../../lib/mongodb";
-import Currency from "../../models/Currency";
+import dbConnect from "../../lib/mongodb"
+import Currency from "../../models/Currency"
 import { NextResponse } from "next/server";
 
 export async function GET() {

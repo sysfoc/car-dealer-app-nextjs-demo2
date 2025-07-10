@@ -1,5 +1,5 @@
-import dbconnect from "../../../lib/mongodb";
-import Currency from "../../../models/Currency";
+import dbconnect from "../../../lib/mongodb.js"
+import Currency from "../../../models/Currency.js"
 import Car from "../../../models/Car.js"
 import { NextResponse } from "next/server";
 

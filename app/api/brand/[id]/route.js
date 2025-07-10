@@ -1,6 +1,6 @@
-import connectToMongoDB from "../../../lib/mongodb";
+import connectToMongoDB from "../../../lib/mongodb"
 import { NextResponse } from "next/server";
-import Brand from "../../../models/Brand";
+import Brand from "../../../models/Brand"
 import { verifyUserToken } from "../../../lib/auth";
 import path from "path";
 import fs from "fs/promises";

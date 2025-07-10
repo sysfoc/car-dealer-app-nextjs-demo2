@@ -1,8 +1,8 @@
 
 import Car from "../../models/Car"
 import { NextResponse } from 'next/server';
-import connectDB from "../../lib/mongodb";
-import CarEnquiry from "../../models/CarEnquiry";
+import connectDB from "../../lib/mongodb"
+import CarEnquiry from "../../models/CarEnquiry"
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransporter({

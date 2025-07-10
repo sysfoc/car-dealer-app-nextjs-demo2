@@ -1,5 +1,5 @@
 'use client';
-import { getLocalStorage, setLocalStorage } from '../lib/storageHelper';
+import { getLocalStorage, setLocalStorage } from "../lib/storageHelper"
 import { useState, useEffect } from 'react';
 
 interface CookieboxProps {

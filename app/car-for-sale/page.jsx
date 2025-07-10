@@ -1,5 +1,5 @@
 "use client";
-import SidebarFilters from "../components/SidebarFilters";
+import SidebarFilters from "../components/SidebarFilters"
 import CardetailCard from "../components/CardetailCard";
 import { Pagination } from "flowbite-react";
 export default function Home() {

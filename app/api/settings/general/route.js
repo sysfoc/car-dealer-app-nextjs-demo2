@@ -1,5 +1,5 @@
-import dbConnect from "../../../lib/mongodb";
-import GeneralSettings from "../../../models/settings/General.js";
+import dbConnect from "../../../lib/mongodb"
+import GeneralSettings from "../../../models/settings/General"
 import { NextResponse } from "next/server";
 
 export async function GET() {

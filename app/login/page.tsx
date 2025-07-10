@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAuth } from "../context/UserContext";
+import { useAuth } from "../context/UserContext"
 import { IoLockClosedOutline, IoMail } from "react-icons/io5";
 import { MdFiberPin } from "react-icons/md";
 

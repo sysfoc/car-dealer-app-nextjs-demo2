@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { IoMdAlarm } from "react-icons/io";
 import { Avatar } from "flowbite-react";
-import ClientBlog from "../[slug]/ClientBlog"
+import ClientBlog from "./ClientBlog"
 import { headers } from "next/headers";
 import CommentSection from "../../components/CommentSection"
 

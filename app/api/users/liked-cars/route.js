@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "../../models/User";
-import connectToMongoDB from "../../../lib/mongodb";
+import User from "../../../models/User"
+import connectToMongoDB from "../../../lib/mongodb"
 import jwt from "jsonwebtoken";
 
 export const dynamic = "force-dynamic";

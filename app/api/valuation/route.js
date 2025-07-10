@@ -1,5 +1,5 @@
 import connectDB from "../../lib/mongodb";
-import Valuation from "../../models/Valuation";
+import Valuation from "../../models/Valuation"
 
 export async function POST(req) {
   try {

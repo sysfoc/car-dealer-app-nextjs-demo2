@@ -2,8 +2,8 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import dbConnect from "../../../lib/mongodb";
-import Car from "../../../models/Car";
+import dbConnect from "../../../lib/mongodb"
+import Car from "../../../models/Car"
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 

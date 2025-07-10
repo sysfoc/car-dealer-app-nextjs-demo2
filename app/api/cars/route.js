@@ -2,9 +2,9 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { verifyUserToken } from "../../lib/auth";
+import { verifyUserToken } from "../../lib/auth"
 import dbConnect from "../../lib/mongodb";
-import Car from "../../models/Car";
+import Car from "../../models/Car"
 
 // Enhanced upload directory handling
 const uploadDir = path.join(process.cwd(), "public", "uploads");

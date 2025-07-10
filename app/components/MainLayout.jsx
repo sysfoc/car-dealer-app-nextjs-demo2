@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Header from "./Header";
-import SearchCallToAction from "./SearchCallToAction";
+import SearchCallToAction from "./SearchCallToAction"
 
 const MainLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

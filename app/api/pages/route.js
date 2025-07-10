@@ -1,6 +1,6 @@
-import connectToMongoDB from "../../lib/mongodb";
+import connectToMongoDB from "../../lib/mongodb.js"
 import { NextResponse } from "next/server";
-import Homepage from "../../models/Homepage.js";
+import Homepage from "../../models/Homepage.js"
 
 const fieldMappings = {
   seoTitle: "seoTitle",

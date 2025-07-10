@@ -5,7 +5,7 @@ import Navbar from "./Header";
 import Footer from "./Footerr";
 import ScrolltoTop from "./ScrolltoTop";
 import Cookiebox from "./Cookiebox";
-import Sidebar from "../admin/AdminSidebar";
+import Sidebar from "../admin/AdminSidebar"
 import Header from "../admin/Header";
 import DrawerSidebar from "../admin/DrawerSidebar";
 import WhatsAppChat from "./WhatsAppChat";

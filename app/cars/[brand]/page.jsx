@@ -1,6 +1,6 @@
 "use client";
 import { Select, Label } from "flowbite-react";
-import BrandCarsDetail from "../components/BrandCarsDetail";
+import BrandCarsDetail from "../../components/BrandCarsDetail"
 import { useParams } from "next/navigation";
 export default function Home() {
   const params = useParams();

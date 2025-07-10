@@ -11,7 +11,7 @@ import {
 } from "flowbite-react";
 import Image from "next/image";
 import { FiLogOut } from "react-icons/fi";
-import { useAuth } from "../context/UserContext";
+import { useAuth } from "../context/UserContext"
 
 const Header = ({ isDarkMode }) => {
   const { user } = useAuth();

@@ -1,6 +1,6 @@
-import connectToMongoDB from "../../lib/mongodb";
+import connectToMongoDB from "../../lib/mongodb"
 import { NextResponse } from "next/server";
-import Homepage from "../../models/Homepage.js";
+import Homepage from "../../models/Homepage"
 
 
 export async function POST(request) {

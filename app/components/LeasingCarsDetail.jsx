@@ -30,7 +30,7 @@ import { IoIosColorPalette } from "react-icons/io";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
-import { useCurrency } from "../context/CurrencyContext.tsx";
+import { useCurrency } from "../context/CurrencyContext"
 
 const CardetailCard = () => {
   const [cars, setCars] = useState([]);

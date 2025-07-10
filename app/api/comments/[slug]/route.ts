@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../lib/mongodb";
-import Comment from "../../../models/Comments";
+import connectDB from "../../../lib/mongodb"
+import Comment from "../../../models/Comments"
 
 export async function GET(req: Request, { params }: { params: { slug: string } }) {
   await connectDB();

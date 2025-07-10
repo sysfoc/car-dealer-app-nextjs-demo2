@@ -2,7 +2,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LuCrown, LuPhone, LuMail, LuMapPin } from "react-icons/lu";
-import Slider from "../../components/Slider";
+import Slider from "../../components/Slider"
 import Table from "../../components/Tables";
 import SellerComment from "../../components/SellerComment";
 import Features from "../../components/Features";

@@ -1,6 +1,6 @@
-import connectToMongoDB from "../../lib/mongodb";
+import connectToMongoDB from "../../lib/mongodb"
 import { NextResponse } from "next/server";
-import { verifyUserToken } from "../../lib/auth";
+import { verifyUserToken } from "../../lib/auth"
 
 import path from "path";
 import fs from "fs/promises";

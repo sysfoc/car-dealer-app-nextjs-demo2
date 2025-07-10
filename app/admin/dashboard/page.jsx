@@ -1,4 +1,4 @@
-import OverviewSection from "../../components/Overview";
+import OverviewSection from "../../components/Overview"
 import ChartsSection from "../../components/Charts";
 export const metadata = {
   title: "Dashboard - Auto Car Dealers",

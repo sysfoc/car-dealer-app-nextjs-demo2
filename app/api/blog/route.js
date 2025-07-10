@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
-import connectDB from "../../lib/mongodb";
+import connectDB from "../../lib/mongodb"
 import { Types } from "mongoose";
 
-import Blog from "../../models/Blog";
+import Blog from "../../models/Blog"
 import Category from "../../models/Category";
 import fs from "fs/promises";
 import path from "path";

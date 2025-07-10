@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../lib/mongodb";
-import Dealer from "../../models/Dealer";
+import connectDB from "../../lib/mongodb"
+import Dealer from "../../models/Dealer"
 
 
 

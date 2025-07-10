@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import PageContent from "../../../models/PageContent.js";
+import PageContent from "../../../models/PageContent.js"
 import dbconnect from "../../../lib/mongodb.js"
 
 export async function GET(req, { params }) {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../lib/mongodb";
-import SocialMedia from "../../models/SocialMedia";
+import connectDB from "../../lib/mongodb"
+import SocialMedia from "../../models/SocialMedia"
 export async function GET() {
   await connectDB();
   const data = await SocialMedia.find().sort({ order: 1 });

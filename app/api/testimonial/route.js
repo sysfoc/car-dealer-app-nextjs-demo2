@@ -1,8 +1,8 @@
 import path from "path";
 import fs from "fs/promises";
 import { NextResponse } from "next/server";
-import dbConnect from "../../lib/mongodb";
-import Testimonial from "../../models/Testimonial";
+import dbConnect from "../../lib/mongodb"
+import Testimonial from "../../models/Testimonial"
 
 const uploadDir = path.join(process.cwd(), "public/uploads");
 
