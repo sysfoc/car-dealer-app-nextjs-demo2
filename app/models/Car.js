@@ -4,6 +4,7 @@ const CarSchema = new mongoose.Schema(
   {
     dealerId: Number,
     userId: String,
+    tag:String,
     make: { type: String, required: true }, 
     model: { type: String, required: true },
     price: Number,

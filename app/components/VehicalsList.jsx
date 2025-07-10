@@ -177,20 +177,31 @@ const VehicalsList = ({ loadingState }) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 
                     <div className="absolute left-4 top-4 flex flex-wrap gap-1.5">
-                      <div className="rounded-full bg-emerald-900 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
-                        <div className="flex items-center gap-1.5">
-                          <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
-                          Available
-                        </div>
-                      </div>
-                      {vehicle.sold && (
-                        <div className="rounded-full bg-red-500 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
-                          <div className="flex items-center gap-1.5">
-                            <div className="h-2 w-2 rounded-full bg-white"></div>
-                            SOLD
-                          </div>
-                        </div>
-                      )}
+                      {vehicle.sold ? (
+              <div className="rounded-full bg-red-500 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-2 w-2 rounded-full bg-white"></div>
+                  SOLD
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-full bg-emerald-900 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
+                  AVAILABLE
+                </div>
+              </div>
+            )}
+
+                     
+                      {vehicle.tag && vehicle.tag !== "default" && (
+              <div className="rounded-full bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-2 w-2 rounded-full bg-white"></div>
+                  {vehicle.tag.toUpperCase()}
+                </div>
+              </div>
+            )}
                     </div>
 
                     <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">

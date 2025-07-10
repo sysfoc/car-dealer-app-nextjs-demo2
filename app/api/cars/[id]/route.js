@@ -1,390 +1,210 @@
-// import { MongoClient, ObjectId } from "mongodb";
-// import { NextResponse } from "next/server";
-// import fs from "fs";
-// import path from "path";
+import { ObjectId } from "mongodb";
+import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
+import dbConnect from "../../../lib/mongodb";
+import Car from "../../../models/Car";
 
-// const uri = process.env.MONGODB_URI;
-// const client = new MongoClient(uri);
-
-// const uploadDir = path.join(process.cwd(), "public", "uploads");
-
-// if (!fs.existsSync(uploadDir)) {
-//   fs.mkdirSync(uploadDir, { recursive: true });
-// }
-
-// export async function PATCH(req, { params }) {
-//   const { id } = params;
-
-//   try {
-//     if (!ObjectId.isValid(id)) {
-//       return NextResponse.json({ error: "Invalid car ID" }, { status: 400 });
-//     }
-
-//     await client.connect();
-//     const db = client.db("cardealor");
-
-//     const existingCar = await db
-//       .collection("cars")
-//       .findOne({ _id: new ObjectId(id) });
-//     if (!existingCar) {
-//       return NextResponse.json({ error: "Car not found" }, { status: 404 });
-//     }
-
-//     const formData = await req.formData();
-
-//     // Parse features
-//     let features = existingCar.features || [];
-//     if (formData.has("features")) {
-//       try {
-//         features = JSON.parse(formData.get("features"));
-//       } catch (error) {
-//         console.error("Failed to parse features:", error);
-//         return NextResponse.json(
-//           { error: "Invalid features format" },
-//           { status: 400 },
-//         );
-//       }
-//     }
-
-//     // Handle images
-//     let imageUrls = Array.isArray(existingCar.imageUrls)
-//       ? existingCar.imageUrls
-//       : [];
-//     const newImages = formData.getAll("images");
-//     if (newImages.length > 0) {
-//       for (const image of newImages) {
-//         if (image.name) {
-//           const fileName = `${Date.now()}-${image.name}`;
-//           const filePath = path.join(uploadDir, fileName);
-//           const buffer = Buffer.from(await image.arrayBuffer());
-//           await fs.promises.writeFile(filePath, buffer);
-//           imageUrls.push(`/uploads/${fileName}`);
-//         }
-//       }
-//     }
-
-//     // Handle video
-//     let videoUrl = existingCar.video || null;
-//     const newVideo = formData.get("video");
-//     if (newVideo && newVideo.name) {
-//       const fileName = `${Date.now()}-${newVideo.name}`;
-//       const filePath = path.join(uploadDir, fileName);
-//       const buffer = Buffer.from(await newVideo.arrayBuffer());
-//       await fs.promises.writeFile(filePath, buffer);
-//       videoUrl = `/uploads/${fileName}`;
-//     }
-
-//     // Process form data
-//     const formEntries = {};
-//     for (const [key, value] of formData.entries()) {
-//       if (!["images", "video", "features"].includes(key)) {
-//         formEntries[key] = value;
-//       }
-//     }
-
-//     // Handle boolean fields
-//     if (formEntries.isLease !== undefined) {
-//       formEntries.isLease = formEntries.isLease === "true";
-//     }
-
-//     if (formEntries.sold !== undefined) {
-//       formEntries.sold = formEntries.sold === "true";
-//     }
-
-//     // Handle slug generation
-//     let slug = existingCar.slug;
-//     if (formData.has("make") && formData.get("make") !== existingCar.make) {
-//       const userId =
-//         existingCar.userId?.toString() || existingCar._id.toString();
-//       slug = `${formData.get("make").toLowerCase().replace(/\s+/g, "-")}-${userId}`;
-//     }
-
-//     // Prepare updated data
-//     const updatedData = {
-//       ...formEntries,
-//       features,
-//       imageUrls,
-//       video: videoUrl,
-//       slug,
-//       sold: formEntries.sold !== undefined ? formEntries.sold : existingCar.sold,
-//       status: existingCar.status,
-//       description: formEntries.description || existingCar.description,
-//       isLease: formEntries.isLease,
-//     };
-
-//     delete updatedData._id;
-
-//     // Update database
-//     const result = await db
-//       .collection("cars")
-//       .updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
-
-//     if (result.modifiedCount === 0) {
-//       return NextResponse.json(
-//         { error: "No changes made or car not found" },
-//         { status: 404 },
-//       );
-//     }
-
-//     return NextResponse.json(
-//       { message: "Car updated successfully", updatedData },
-//       { status: 200 },
-//     );
-//   } catch (error) {
-//     console.error("Error occurred:", error);
-//     return NextResponse.json(
-//       { error: "Failed to update car", details: error.message },
-//       { status: 500 },
-//     );
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-// export async function DELETE(req, { params }) {
-//   const { id } = params;
-
-//   try {
-//     if (!ObjectId.isValid(id)) {
-//       return NextResponse.json({ error: "Invalid car ID" }, { status: 400 });
-//     }
-
-//     await client.connect();
-//     const db = client.db("cardealor");
-
-//     const car = await db.collection("cars").findOne({ _id: new ObjectId(id) });
-//     if (!car) {
-//       return NextResponse.json({ error: "Car not found" }, { status: 404 });
-//     }
-
-//     await db.collection("cars").deleteOne({ _id: new ObjectId(id) });
-
-//     return NextResponse.json(
-//       { message: "Car deleted successfully" },
-//       { status: 200 },
-//     );
-//   } catch (error) {
-//     console.error("Error occurred:", error);
-//     return NextResponse.json(
-//       { error: "Failed to delete car", details: error.message },
-//       { status: 500 },
-//     );
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-// export async function GET(req, { params }) {
-//   const { id } = params;
-
-//   try {
-//     if (!ObjectId.isValid(id)) {
-//       return NextResponse.json({ error: "Invalid car ID" }, { status: 400 });
-//     }
-
-//     await client.connect();
-//     const db = client.db("cardealor");
-
-//     const car = await db.collection("cars").findOne({ _id: new ObjectId(id) });
-//     if (!car) {
-//       return NextResponse.json({ error: "Car not found" }, { status: 404 });
-//     }
-
-//     const enrichedCar = {
-//       ...car,
-//       _id: car._id.toString(),
-//       userId: car.userId?.toString(),
-//       dealerId: car.dealerId?.toString(),
-//       isLease: car.isLease,
-//     };
-
-//     return NextResponse.json({ car: enrichedCar }, { status: 200 });
-//   } catch (error) {
-//     console.error("Error occurred:", error);
-//     return NextResponse.json(
-//       { error: "Failed to fetch car", details: error.message },
-//       { status: 500 },
-//     );
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-import { ObjectId } from "mongodb"
-import { NextResponse } from "next/server"
-import fs from "fs"
-import path from "path"
-import dbConnect from "../../../lib/mongodb"
-import Car from "../../../models/Car"
-
-const uploadDir = path.join(process.cwd(), "public", "uploads")
+const uploadDir = path.join(process.cwd(), "public", "uploads");
 
 // Enhanced upload directory handling
 async function ensureUploadDir() {
   try {
     if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 })
-      console.log("Upload directory created:", uploadDir)
+      fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
+      console.log("Upload directory created:", uploadDir);
     }
     // Test write permissions
-    const testFile = path.join(uploadDir, "test-write.tmp")
-    await fs.promises.writeFile(testFile, "test")
-    await fs.promises.unlink(testFile)
-    console.log("Upload directory is writable")
-    return true
+    const testFile = path.join(uploadDir, "test-write.tmp");
+    await fs.promises.writeFile(testFile, "test");
+    await fs.promises.unlink(testFile);
+    console.log("Upload directory is writable");
+    return true;
   } catch (error) {
-    console.error("Upload directory setup failed:", error)
-    return false
+    console.error("Upload directory setup failed:", error);
+    return false;
   }
 }
 
 function safeParseNumber(value, existingValue = null) {
-  if (!value || value === "" || value === "Select") return existingValue
-  const parsed = Number(value)
-  return isNaN(parsed) ? existingValue : parsed
+  if (!value || value === "" || value === "Select") return existingValue;
+  const parsed = Number(value);
+  return isNaN(parsed) ? existingValue : parsed;
 }
 
 function safeParseBoolean(value, existingValue = false) {
-  if (value === "true" || value === true) return true
-  if (value === "false" || value === false) return false
-  return existingValue // return existing value if conversion fails
+  if (value === "true" || value === true) return true;
+  if (value === "false" || value === false) return false;
+  return existingValue; // return existing value if conversion fails
 }
 
 function safeParseString(value, existingValue = "") {
-  return value !== undefined ? value || "" : existingValue
+  return value !== undefined ? value || "" : existingValue;
 }
 
 export async function PATCH(req, { params }) {
-  const { id } = params
+  const { id } = params;
 
   try {
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid car ID" }, { status: 400 })
+      return NextResponse.json({ error: "Invalid car ID" }, { status: 400 });
     }
 
-    const uploadReady = await ensureUploadDir()
+    const uploadReady = await ensureUploadDir();
     if (!uploadReady) {
       return NextResponse.json(
         {
           error: "Server configuration error: Upload directory not accessible",
         },
         { status: 500 },
-      )
+      );
     }
 
-    await dbConnect()
+    await dbConnect();
 
-    const existingCar = await Car.findOne({ _id: new ObjectId(id) })
+    const existingCar = await Car.findOne({ _id: new ObjectId(id) });
     if (!existingCar) {
-      return NextResponse.json({ error: "Car not found" }, { status: 404 })
+      return NextResponse.json({ error: "Car not found" }, { status: 404 });
     }
 
-    const formData = await req.formData()
+    const formData = await req.formData();
 
-    let features = existingCar.features || []
+    let features = existingCar.features || [];
     if (formData.has("features")) {
       try {
-        features = JSON.parse(formData.get("features"))
+        features = JSON.parse(formData.get("features"));
       } catch (error) {
-        console.error("Failed to parse features:", error)
-        return NextResponse.json({ error: "Invalid features format" }, { status: 400 })
+        console.error("Failed to parse features:", error);
+        return NextResponse.json(
+          { error: "Invalid features format" },
+          { status: 400 },
+        );
       }
     }
 
-    const imageUrls = Array.isArray(existingCar.imageUrls) ? existingCar.imageUrls : []
-    const newImages = formData.getAll("images")
+    const imageUrls = Array.isArray(existingCar.imageUrls)
+      ? existingCar.imageUrls
+      : [];
+    const newImages = formData.getAll("images");
 
     if (newImages.length > 0) {
       for (const image of newImages) {
         if (image && image.name && image.size > 0) {
           if (image.size > 10 * 1024 * 1024) {
             return NextResponse.json(
-              { error: `Image ${image.name} is too large. Maximum size is 10MB.` },
+              {
+                error: `Image ${image.name} is too large. Maximum size is 10MB.`,
+              },
               { status: 400 },
-            )
+            );
           }
 
-          const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]
+          const allowedTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+          ];
           if (!allowedTypes.includes(image.type)) {
             return NextResponse.json(
               {
                 error: `Invalid file type for ${image.name}. Only JPEG, PNG, and WebP are allowed.`,
               },
               { status: 400 },
-            )
+            );
           }
 
           try {
-            const timestamp = Date.now()
-            const randomString = Math.random().toString(36).substring(2, 8)
-            const fileExtension = path.extname(image.name)
-            const fileName = `${timestamp}-${randomString}${fileExtension}`
-            const filePath = path.join(uploadDir, fileName)
+            const timestamp = Date.now();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const fileExtension = path.extname(image.name);
+            const fileName = `${timestamp}-${randomString}${fileExtension}`;
+            const filePath = path.join(uploadDir, fileName);
 
-            const arrayBuffer = await image.arrayBuffer()
-            const buffer = Buffer.from(arrayBuffer)
-            await fs.promises.writeFile(filePath, buffer)
-            imageUrls.push(`/uploads/${fileName}`)
+            const arrayBuffer = await image.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            await fs.promises.writeFile(filePath, buffer);
+            imageUrls.push(`/uploads/${fileName}`);
           } catch (fileError) {
-            console.error(`Error saving image ${image.name}:`, fileError)
+            console.error(`Error saving image ${image.name}:`, fileError);
             return NextResponse.json(
-              { error: `Failed to save image ${image.name}: ${fileError.message}` },
+              {
+                error: `Failed to save image ${image.name}: ${fileError.message}`,
+              },
               { status: 500 },
-            )
+            );
           }
         }
       }
     }
 
     // Handle video with enhanced error handling
-    let videoUrl = existingCar.video || null
-    const newVideo = formData.get("video")
+    let videoUrl = existingCar.video || null;
+    const newVideo = formData.get("video");
     if (newVideo && newVideo.name && newVideo.size > 0) {
       // Validate video file size (50MB limit for videos)
       if (newVideo.size > 50 * 1024 * 1024) {
-        return NextResponse.json({ error: "Video file is too large. Maximum size is 50MB." }, { status: 400 })
+        return NextResponse.json(
+          { error: "Video file is too large. Maximum size is 50MB." },
+          { status: 400 },
+        );
       }
 
       try {
-        const timestamp = Date.now()
-        const randomString = Math.random().toString(36).substring(2, 8)
-        const fileExtension = path.extname(newVideo.name)
-        const fileName = `${timestamp}-${randomString}${fileExtension}`
-        const filePath = path.join(uploadDir, fileName)
+        const timestamp = Date.now();
+        const randomString = Math.random().toString(36).substring(2, 8);
+        const fileExtension = path.extname(newVideo.name);
+        const fileName = `${timestamp}-${randomString}${fileExtension}`;
+        const filePath = path.join(uploadDir, fileName);
 
-        const arrayBuffer = await newVideo.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
-        await fs.promises.writeFile(filePath, buffer)
-        videoUrl = `/uploads/${fileName}`
+        const arrayBuffer = await newVideo.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        await fs.promises.writeFile(filePath, buffer);
+        videoUrl = `/uploads/${fileName}`;
       } catch (fileError) {
-        console.error(`Error saving video ${newVideo.name}:`, fileError)
-        return NextResponse.json({ error: `Failed to save video: ${fileError.message}` }, { status: 500 })
+        console.error(`Error saving video ${newVideo.name}:`, fileError);
+        return NextResponse.json(
+          { error: `Failed to save video: ${fileError.message}` },
+          { status: 500 },
+        );
       }
     }
 
-    const formEntries = {}
+    const formEntries = {};
     for (const [key, value] of formData.entries()) {
       if (!["images", "video", "features"].includes(key)) {
-        formEntries[key] = value
+        formEntries[key] = value;
       }
     }
 
-    let slug = existingCar.slug
+    let slug = existingCar.slug;
     if (formData.has("make") && formData.get("make") !== existingCar.make) {
-      const userId = existingCar.userId?.toString() || existingCar._id.toString()
-      slug = `${formData.get("make").toLowerCase().replace(/\s+/g, "-")}-${userId}`
+      const userId =
+        existingCar.userId?.toString() || existingCar._id.toString();
+      slug = `${formData.get("make").toLowerCase().replace(/\s+/g, "-")}-${userId}`;
     }
 
     const updatedData = {
       make: safeParseString(formEntries.make, existingCar.make),
       model: safeParseString(formEntries.model, existingCar.model),
+      tag: safeParseString(formEntries.tag, existingCar.tag),
       type: safeParseString(formEntries.type, existingCar.type),
       kms: safeParseString(formEntries.kms, existingCar.kms),
       fuelType: safeParseString(formEntries.fuelType, existingCar.fuelType),
-      fuelTankFillPrice: safeParseString(formEntries.fuelTankFillPrice, existingCar.fuelTankFillPrice),
-      fuelCapacityPerTank: safeParseString(formEntries.fuelCapacityPerTank, existingCar.fuelCapacityPerTank),
+      fuelTankFillPrice: safeParseString(
+        formEntries.fuelTankFillPrice,
+        existingCar.fuelTankFillPrice,
+      ),
+      fuelCapacityPerTank: safeParseString(
+        formEntries.fuelCapacityPerTank,
+        existingCar.fuelCapacityPerTank,
+      ),
       gearbox: safeParseString(formEntries.gearbox, existingCar.gearbox),
-      sellerComments: safeParseString(formEntries.sellerComments, existingCar.sellerComments),
+      sellerComments: safeParseString(
+        formEntries.sellerComments,
+        existingCar.sellerComments,
+      ),
       condition: safeParseString(formEntries.condition, existingCar.condition),
       location: safeParseString(formEntries.location, existingCar.location),
       modelYear: safeParseString(formEntries.modelYear, existingCar.modelYear),
@@ -393,22 +213,53 @@ export async function PATCH(req, { params }) {
       color: safeParseString(formEntries.color, existingCar.color),
       isFinance: safeParseString(formEntries.isFinance, existingCar.isFinance),
       driveType: safeParseString(formEntries.driveType, existingCar.driveType),
-      registerationPlate: safeParseString(formEntries.registerationPlate, existingCar.registerationPlate),
-      registerationExpire: safeParseString(formEntries.registerationExpire, existingCar.registerationExpire),
+      registerationPlate: safeParseString(
+        formEntries.registerationPlate,
+        existingCar.registerationPlate,
+      ),
+      registerationExpire: safeParseString(
+        formEntries.registerationExpire,
+        existingCar.registerationExpire,
+      ),
       unit: safeParseString(formEntries.unit, existingCar.unit),
-      description: safeParseString(formEntries.description, existingCar.description),
+      description: safeParseString(
+        formEntries.description,
+        existingCar.description,
+      ),
 
       price: safeParseNumber(formEntries.price, existingCar.price),
       noOfGears: safeParseNumber(formEntries.noOfGears, existingCar.noOfGears),
       cylinder: safeParseNumber(formEntries.cylinder, existingCar.cylinder),
       doors: safeParseNumber(formEntries.doors, existingCar.doors),
       seats: safeParseNumber(formEntries.seats, existingCar.seats),
-      batteryRange: safeParseNumber(formEntries.batteryRange, existingCar.batteryRange),
-      chargingTime: safeParseNumber(formEntries.chargingTime, existingCar.chargingTime),
-      engineSize: safeParseNumber(formEntries.engineSize, existingCar.engineSize),
-      enginePower: safeParseNumber(formEntries.enginePower, existingCar.enginePower),
-      fuelConsumption: safeParseNumber(formEntries.fuelConsumption, existingCar.fuelConsumption),
-      co2Emission: safeParseNumber(formEntries.co2Emission, existingCar.co2Emission),
+      batteryRange: safeParseNumber(
+        formEntries.batteryRange,
+        existingCar.batteryRange,
+      ),
+      chargingTime: safeParseNumber(
+        formEntries.chargingTime,
+        existingCar.chargingTime,
+      ),
+      engineSize: safeParseNumber(
+        formEntries.engineSize,
+        existingCar.engineSize,
+      ),
+      enginePower: safeParseNumber(
+        formEntries.enginePower,
+        existingCar.enginePower,
+      ),
+      fuelConsumption: safeParseNumber(
+        formEntries.fuelConsumption,
+        existingCar.fuelConsumption,
+      ),
+      co2Emission: safeParseNumber(
+        formEntries.co2Emission,
+        existingCar.co2Emission,
+      ),
+      engineCapacity: safeParseString(
+        formEntries.engineCapacity,
+        existingCar.engineCapacity,
+      ),
       dealerId: formEntries.dealerId
         ? safeParseNumber(formEntries.dealerId, existingCar.dealerId)
         : existingCar.dealerId,
@@ -423,85 +274,103 @@ export async function PATCH(req, { params }) {
 
       status: existingCar.status,
       userId: existingCar.userId,
-    }
+    };
 
-    delete updatedData._id
+    delete updatedData._id;
 
-    console.log("Updated car data:", updatedData)
+    console.log("Updated car data:", updatedData);
 
-    const result = await Car.updateOne({ _id: new ObjectId(id) }, { $set: updatedData })
+    const result = await Car.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updatedData },
+    );
 
     if (result.modifiedCount === 0) {
-      return NextResponse.json({ error: "No changes made or car not found" }, { status: 404 })
+      return NextResponse.json(
+        { error: "No changes made or car not found" },
+        { status: 404 },
+      );
     }
 
-    return NextResponse.json({ message: "Car updated successfully", updatedData }, { status: 200 })
+    return NextResponse.json(
+      { message: "Car updated successfully", updatedData },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error("Error occurred:", error)
-    return NextResponse.json({ error: "Failed to update car", details: error.message }, { status: 500 })
+    console.error("Error occurred:", error);
+    return NextResponse.json(
+      { error: "Failed to update car", details: error.message },
+      { status: 500 },
+    );
   }
 }
 
 export async function DELETE(req, { params }) {
-  const { id } = params
+  const { id } = params;
 
   try {
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid car ID" }, { status: 400 })
+      return NextResponse.json({ error: "Invalid car ID" }, { status: 400 });
     }
 
-    await dbConnect()
+    await dbConnect();
 
-    const car = await Car.findOne({ _id: new ObjectId(id) })
+    const car = await Car.findOne({ _id: new ObjectId(id) });
     if (!car) {
-      return NextResponse.json({ error: "Car not found" }, { status: 404 })
+      return NextResponse.json({ error: "Car not found" }, { status: 404 });
     }
 
     try {
       if (car.imageUrls && Array.isArray(car.imageUrls)) {
         for (const imageUrl of car.imageUrls) {
           if (imageUrl.startsWith("/uploads/")) {
-            const filePath = path.join(process.cwd(), "public", imageUrl)
+            const filePath = path.join(process.cwd(), "public", imageUrl);
             if (fs.existsSync(filePath)) {
-              await fs.promises.unlink(filePath)
+              await fs.promises.unlink(filePath);
             }
           }
         }
       }
 
       if (car.video && car.video.startsWith("/uploads/")) {
-        const videoPath = path.join(process.cwd(), "public", car.video)
+        const videoPath = path.join(process.cwd(), "public", car.video);
         if (fs.existsSync(videoPath)) {
-          await fs.promises.unlink(videoPath)
+          await fs.promises.unlink(videoPath);
         }
       }
     } catch (cleanupError) {
-      console.warn("Failed to clean up files:", cleanupError)
+      console.warn("Failed to clean up files:", cleanupError);
       // Don't fail the deletion if file cleanup fails
     }
 
-    await Car.deleteOne({ _id: new ObjectId(id) })
+    await Car.deleteOne({ _id: new ObjectId(id) });
 
-    return NextResponse.json({ message: "Car deleted successfully" }, { status: 200 })
+    return NextResponse.json(
+      { message: "Car deleted successfully" },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error("Error occurred:", error)
-    return NextResponse.json({ error: "Failed to delete car", details: error.message }, { status: 500 })
+    console.error("Error occurred:", error);
+    return NextResponse.json(
+      { error: "Failed to delete car", details: error.message },
+      { status: 500 },
+    );
   }
 }
 
 export async function GET(req, { params }) {
-  const { id } = params
+  const { id } = params;
 
   try {
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid car ID" }, { status: 400 })
+      return NextResponse.json({ error: "Invalid car ID" }, { status: 400 });
     }
 
-    await dbConnect()
+    await dbConnect();
 
-    const car = await Car.findOne({ _id: new ObjectId(id) }).lean()
+    const car = await Car.findOne({ _id: new ObjectId(id) }).lean();
     if (!car) {
-      return NextResponse.json({ error: "Car not found" }, { status: 404 })
+      return NextResponse.json({ error: "Car not found" }, { status: 404 });
     }
 
     const enrichedCar = {
@@ -510,11 +379,14 @@ export async function GET(req, { params }) {
       userId: car.userId?.toString(),
       dealerId: car.dealerId?.toString(),
       isLease: car.isLease,
-    }
+    };
 
-    return NextResponse.json({ car: enrichedCar }, { status: 200 })
+    return NextResponse.json({ car: enrichedCar }, { status: 200 });
   } catch (error) {
-    console.error("Error occurred:", error)
-    return NextResponse.json({ error: "Failed to fetch car", details: error.message }, { status: 500 })
+    console.error("Error occurred:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch car", details: error.message },
+      { status: 500 },
+    );
   }
 }
