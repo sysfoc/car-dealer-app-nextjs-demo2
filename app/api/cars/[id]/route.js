@@ -7,7 +7,6 @@ import Car from "../../../models/Car";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 
-// Enhanced upload directory handling
 async function ensureUploadDir() {
   try {
     if (!fs.existsSync(uploadDir)) {

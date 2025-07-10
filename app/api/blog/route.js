@@ -7,7 +7,7 @@ import Blog from "../../models/Blog";
 import Category from "../../models/Category";
 import fs from "fs/promises";
 import path from "path";
-
+export const dynamic = 'force-dynamic'
 const uploadDir = path.join(process.cwd(), "public/uploads");
 export async function POST(request) {
   try {

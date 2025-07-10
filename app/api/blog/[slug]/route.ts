@@ -4,7 +4,9 @@ import path from "path";
 import fs from "fs/promises";
 import connectDB from "../../../lib/mongodb"
 
+
 const uploadDir = path.join(process.cwd(), "public/uploads");
+export const dynamic = 'force-dynamic'
 
 export async function GET(
   req: Request,
