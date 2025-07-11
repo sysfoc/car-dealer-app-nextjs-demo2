@@ -30,7 +30,8 @@ import { IoIosColorPalette } from "react-icons/io";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
-import { useCurrency } from "../context/CurrencyContext"
+import { useCurrency } from "../context/CurrencyContext";
+import { useDistance } from "../context/DistanceContext";
 
 const CardetailCard = () => {
   const [cars, setCars] = useState([]);
@@ -45,6 +46,7 @@ const CardetailCard = () => {
   const [userLikedCars, setUserLikedCars] = useState([]);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const { distance: defaultUnit, loading: distanceLoading } = useDistance();
 
   const parseBooleanParam = (param) => {
     return param === "true";
@@ -284,6 +286,57 @@ const CardetailCard = () => {
   const [isGridView, setIsGridView] = useState(true);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+
+  // Conversion functions
+  const convertKmToMiles = (km) => {
+    const numericKm = Number.parseFloat(km);
+    return isNaN(numericKm) ? km : (numericKm * 0.621371).toFixed(1);
+  };
+
+  const convertMilesToKm = (miles) => {
+    const numericMiles = Number.parseFloat(miles);
+    return isNaN(numericMiles) ? miles : (numericMiles * 1.60934).toFixed(1);
+  };
+
+  // Function to convert car values based on default unit
+  const getConvertedValues = (vehicle) => {
+    if (distanceLoading || !defaultUnit || !vehicle.unit) {
+      return {
+        kms: vehicle.kms,
+        mileage: vehicle.mileage,
+        unit: vehicle.unit || defaultUnit,
+      };
+    }
+
+    // If car's unit matches default unit, no conversion needed
+    if (vehicle.unit === defaultUnit) {
+      return {
+        kms: vehicle.kms,
+        mileage: vehicle.mileage,
+        unit: vehicle.unit,
+      };
+    }
+
+    // Convert based on units
+    let convertedKms = vehicle.kms;
+    let convertedMileage = vehicle.mileage;
+
+    if (vehicle.unit === "km" && defaultUnit === "miles") {
+      // Convert from km to miles
+      convertedKms = convertKmToMiles(vehicle.kms);
+      convertedMileage = convertKmToMiles(vehicle.mileage);
+    } else if (vehicle.unit === "miles" && defaultUnit === "km") {
+      // Convert from miles to km
+      convertedKms = convertMilesToKm(vehicle.kms);
+      convertedMileage = convertMilesToKm(vehicle.mileage);
+    }
+
+    return {
+      kms: convertedKms,
+      mileage: convertedMileage,
+      unit: defaultUnit,
+    };
+  };
 
   useEffect(() => {
     const query = new URLSearchParams(filters).toString();
@@ -897,7 +950,7 @@ const CardetailCard = () => {
                     {loading ? (
                       <Skeleton height={32} width={120} />
                     ) : (
-                      `${selectedCurrency?.symbol}${Math.round(car.price) || 0}`
+                      `${selectedCurrency?.symbol} ${Math.round(car.price) || 0}`
                     )}
                   </div>
                   <p
@@ -976,7 +1029,10 @@ const CardetailCard = () => {
                           isGridView ? "text-xs" : "text-xs"
                         }`}
                       >
-                        {car.kms || car.mileage || "Not specified"}
+                        {(() => {
+                          const convertedValues = getConvertedValues(car);
+                          return `${convertedValues.kms || "Not specified"} ${convertedValues.unit?.toUpperCase() || ""}`;
+                        })()}
                       </p>
                     </div>
                   </div>

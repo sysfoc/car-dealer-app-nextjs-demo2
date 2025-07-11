@@ -260,7 +260,7 @@ export async function POST(req) {
       driveType: safeParseString(formEntries.driveType),
       registerationPlate: safeParseString(formEntries.registerationPlate),
       registerationExpire: safeParseString(formEntries.registerationExpire),
-      unit: safeParseString(formEntries.unit),
+      unit: safeParseString(formEntries.unit) || "km",
       engineCapacity: safeParseString(formEntries.engineCapacity),
       description: safeParseString(formEntries.description),
 

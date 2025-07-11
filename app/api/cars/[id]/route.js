@@ -220,7 +220,7 @@ export async function PATCH(req, { params }) {
         formEntries.registerationExpire,
         existingCar.registerationExpire,
       ),
-      unit: safeParseString(formEntries.unit, existingCar.unit),
+      unit: safeParseString(formEntries.unit, existingCar.unit) || "km",
       description: safeParseString(
         formEntries.description,
         existingCar.description,

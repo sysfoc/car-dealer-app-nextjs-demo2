@@ -12,6 +12,7 @@ import Cookiebox from "./components/Cookiebox";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import { CurrencyProvider } from "./context/CurrencyContext";
 import { AuthProvider } from "./context/UserContext";
+import { DistanceProvider } from "./context/DistanceContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,11 +27,10 @@ export const metadata: Metadata = {
 
 const getGeneralSettings = async () => {
   try {
-     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}`
-        : "http://localhost:3000";
-   const res = await fetch(`${baseUrl}/api/settings/general`, {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}`
+      : "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/settings/general`, {
       cache: "no-store",
     });
 
@@ -45,7 +45,6 @@ const getGeneralSettings = async () => {
     return null;
   }
 };
-
 
 export default async function RootLayout({
   children,
@@ -109,7 +108,7 @@ export default async function RootLayout({
             <LayoutRenderer>
               <NuqsAdapter>
                 <CurrencyProvider>
-                  {children}
+                  <DistanceProvider>{children}</DistanceProvider>
                   <Cookiebox cookieConsent={settings.cookieConsent} />
                 </CurrencyProvider>
               </NuqsAdapter>
