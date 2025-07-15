@@ -713,7 +713,7 @@ const Page = () => {
                                   color: settings.cookieConsent.buttonTextColor,
                                 }}
                               >
-                                Manage Preferences
+                                Reject All
                               </button>
                               <button
                                 className="px-4 py-2 text-sm rounded font-medium transition-colors"
