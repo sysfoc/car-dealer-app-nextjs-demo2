@@ -57,6 +57,13 @@ const CardetailCard = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const { distance: defaultUnit, loading: distanceLoading } = useDistance();
+  // const [recaptchaSiteKey, setRecaptchaSiteKey] = useState<string | null>(null)
+  const [recaptchaSiteKey, setRecaptchaSiteKey] = useState(null)
+  const [recaptchaStatus, setRecaptchaStatus] = useState("inactive")
+  // const [recaptchaStatus, setRecaptchaStatus] = useState<"active" | "inactive">("inactive")
+
+  
+  
 
   const parseBooleanParam = (param) => {
     return param === "true";
@@ -111,10 +118,52 @@ const CardetailCard = () => {
       [id]: value,
     }));
   };
+  
+ useEffect(() => {
+    const fetchRecaptchaSettings = async () => {
+      try {
+        const response = await fetch("/api/settings/general", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        const data = await response.json()
+        if (data.settings?.recaptcha) {
+          setRecaptchaSiteKey(data.settings.recaptcha.siteKey)
+          setRecaptchaStatus(data.settings.recaptcha.status)
+        }
+      } catch (error) {
+        console.error("Failed to fetch reCAPTCHA settings in CardetailCard:", error)
+      }
+    }
+    fetchRecaptchaSettings()
+  }, [])
+
   const handleEnquirySubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitMessage("");
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitMessage("")
+
+    let recaptchaToken = null
+
+    // Only execute reCAPTCHA if it's active and the script is loaded
+    if (recaptchaStatus === "active" && recaptchaSiteKey && typeof window.grecaptcha !== "undefined") {
+      try {
+        // Execute reCAPTCHA for this specific form action
+        recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, { action: "car_enquiry_submit" })
+      } catch (error) {
+        console.error("reCAPTCHA execution failed:", error)
+        setSubmitMessage("reCAPTCHA verification failed. Please try again.")
+        setIsSubmitting(false)
+        return // Stop submission if reCAPTCHA fails
+      }
+    } else if (recaptchaStatus === "active" && (!recaptchaSiteKey || typeof window.grecaptcha === "undefined")) {
+      // If reCAPTCHA is active but not loaded/configured, prevent submission
+      console.error("reCAPTCHA is active but not fully loaded or configured.")
+      setSubmitMessage("reCAPTCHA is not ready. Please refresh the page and try again.")
+      setIsSubmitting(false)
+      return
+    }
 
     const enquiryData = {
       carId: selectedCar?._id,
@@ -123,7 +172,8 @@ const CardetailCard = () => {
       email: formData.email,
       phone: formData.phone,
       message: formData.message,
-    };
+      recaptchaToken: recaptchaToken, // Add the reCAPTCHA token here
+    }
 
     try {
       const response = await fetch("/api/enquiry", {
@@ -132,39 +182,32 @@ const CardetailCard = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(enquiryData),
-      });
-
-      const result = await response.json();
-
+      })
+      const result = await response.json()
       if (response.ok) {
-        setSubmitMessage(
-          "Enquiry submitted successfully! We will contact you soon.",
-        );
+        setSubmitMessage("Enquiry submitted successfully! We will contact you soon.")
         setFormData({
           firstName: "",
           lastName: "",
           email: "",
           phone: "",
           message: "",
-        });
-
+        })
         setTimeout(() => {
-          setOpenModal(false);
-          setSubmitMessage("");
-          setSelectedCar(null);
-        }, 2000);
+          setOpenModal(false)
+          setSubmitMessage("")
+          setSelectedCar(null)
+        }, 2000)
       } else {
-        setSubmitMessage(
-          result.error || "Failed to submit enquiry. Please try again.",
-        );
+        setSubmitMessage(result.error || "Failed to submit enquiry. Please try again.")
       }
     } catch (error) {
-      console.error("Enquiry submission error:", error);
-      setSubmitMessage("Something went wrong. Please try again.");
+      console.error("Enquiry submission error:", error)
+      setSubmitMessage("Something went wrong. Please try again.")
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const filters = useMemo(() => {
     return Object.fromEntries(searchParams.entries());

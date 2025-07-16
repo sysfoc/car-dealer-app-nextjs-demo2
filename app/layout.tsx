@@ -141,6 +141,7 @@ import "./globals.css"
 import LayoutRenderer from "./components/LayoutRenderer"
 import Cookiebox from "./components/Cookiebox"
 import GoogleAnalytics from "./components/GoogleAnalytics"
+import GoogleRecaptcha from "./components/GoogleRecaptcha"
 import { CurrencyProvider } from "./context/CurrencyContext"
 import { AuthProvider } from "./context/UserContext"
 import { DistanceProvider } from "./context/DistanceContext"
@@ -226,6 +227,7 @@ export default async function RootLayout({
       </head>
       <body className={`transition-all dark:bg-gray-800 dark:text-gray-200 ${poppins.className}`}>
         <GoogleAnalytics />
+        <GoogleRecaptcha />
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <LayoutRenderer>
