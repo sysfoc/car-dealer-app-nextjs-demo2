@@ -1,90 +1,65 @@
-"use client";
-import Herosection from "./components/Herosection";
-import VehicalsList from "./components/VehicalsList";
-import BrandsList from "./components/BrandsList";
-import Services from "./components/Services";
-import BrowseCars from "./components/BrowseCars";
-import Blog from "./components/Blog";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaYoutube } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa";
-import { FaTiktok } from "react-icons/fa6";
-import { FaXTwitter } from "react-icons/fa6";
-import { SiGiphy } from "react-icons/si";
-import { FaPinterest } from "react-icons/fa";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import MainLayout from "./components/MainLayout.jsx";
+"use client"
+import Herosection from "./components/Herosection"
+import VehicalsList from "./components/VehicalsList"
+import BrandsList from "./components/BrandsList"
+import Services from "./components/Services"
+import BrowseCars from "./components/BrowseCars"
+import Blog from "./components/Blog"
+import Link from "next/link"
+import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
+import MainLayout from "./components/MainLayout.jsx"
+import { iconComponentsMap, allSocialPlatforms } from "../app/lib/social-icons"
 
 export default function Home() {
-  const t = useTranslations("HomePage");
-  const [loading, setLoading] = useState(false);
+  const t = useTranslations("HomePage")
+  const [loading, setLoading] = useState(false)
+  const [fetchedSocials, setFetchedSocials] = useState([])
 
   useEffect(() => {
-    document.documentElement.classList.add('no-scrollbar');
+    document.documentElement.classList.add("no-scrollbar")
     return () => {
-      document.documentElement.classList.remove('no-scrollbar');
-    };
-  }, []);
-
-  const socialPlatforms = [
-    {
-      icon: FaFacebookSquare,
-      name: "Facebook",
-      color: "from-blue-600 to-blue-700",
-      textColor: "text-blue-600",
-      followers: "10K+"
-    },
-    {
-      icon: FaYoutube,
-      name: "Youtube",
-      color: "from-red-600 to-red-700",
-      textColor: "text-red-600",
-      followers: "25K+"
-    },
-    {
-      icon: FaInstagram,
-      name: "Instagram",
-      color: "from-pink-500 to-purple-600",
-      textColor: "text-pink-500",
-      followers: "15K+"
-    },
-    {
-      icon: FaXTwitter,
-      name: "Twitter",
-      color: "from-gray-800 to-black",
-      textColor: "text-black dark:text-white",
-      followers: "8K+"
-    },
-    {
-      icon: FaTiktok,
-      name: "Tiktok",
-      color: "from-black to-gray-800",
-      textColor: "text-black dark:text-white",
-      followers: "20K+"
-    },
-    {
-      icon: SiGiphy,
-      name: "Giphy",
-      color: "from-green-500 to-teal-600",
-      textColor: "text-green-500",
-      followers: "5K+"
-    },
-    {
-      icon: FaPinterest,
-      name: "Pinterest",
-      color: "from-red-500 to-red-600",
-      textColor: "text-red-500",
-      followers: "12K+"
+      document.documentElement.classList.remove("no-scrollbar")
     }
-  ];
+  }, [])
+
+  useEffect(() => {
+    const fetchSocialMedia = async () => {
+      try {
+        const res = await fetch("/api/socials")
+        const json = await res.json()
+        if (json.data) {
+          const combinedSocials = json.data.map((social) => {
+            // If it's a react-icon, find its styling properties
+            if (social.iconType === "react-icon") {
+              const platformDetails = allSocialPlatforms.find((p) => p.name === social.iconValue)
+              return {
+                ...social,
+                color: platformDetails?.color || "from-gray-200 to-gray-300", // Default color if not found
+                textColor: platformDetails?.textColor || "text-gray-600", // Default text color
+              }
+            }
+            // If it's an SVG, use default styling or define new ones
+            return {
+              ...social,
+              color: "from-gray-200 to-gray-300", // Default for custom SVGs
+              textColor: "text-gray-600", // Default for custom SVGs
+            }
+          })
+          setFetchedSocials(combinedSocials)
+        }
+      } catch (error) {
+        console.error("Failed to fetch social media data:", error)
+      }
+    }
+    fetchSocialMedia()
+  }, [])
 
   return (
     <div>
       <MainLayout>
-      <Herosection />
-    </MainLayout>
+        <Herosection />
+      </MainLayout>
       <BrowseCars />
       <BrandsList />
       <VehicalsList loadingState={loading} />
@@ -103,19 +78,45 @@ export default function Home() {
 
           <div className="flex justify-center items-center mb-8">
             <div className="flex items-center gap-4 bg-white dark:bg-slate-900/50 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-slate-800/50 backdrop-blur-sm">
-              {socialPlatforms.map((platform, index) => (
-                <Link
-                  key={index}
-                  href="#"
-                  target="_blank"
-                  aria-label="Follow us on our platform"
-                  className="group relative w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 bg-gray-50 dark:bg-slate-800 shadow-sm hover:shadow-lg border border-gray-100 dark:border-slate-700/80"
-                >
-                  <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${platform.color} opacity-0 group-hover:opacity-15 transition-all duration-300`}></div>
-                  <platform.icon className={`w-6 h-6 ${platform.textColor} relative z-10 transition-all duration-300`} />
-                  <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${platform.color} opacity-0 group-hover:opacity-25 blur-xl transition-all duration-300 -z-10`}></div>
-                </Link>
-              ))}
+              {fetchedSocials.length > 0 ? (
+                fetchedSocials.map((platform, index) => {
+                  const IconComponent =
+                    platform.iconType === "react-icon" ? iconComponentsMap[platform.iconValue] : null
+
+                  return (
+                    <Link
+                      key={index}
+                      href={platform.url}
+                      target="_blank"
+                      aria-label={`Follow us on ${platform.iconValue}`}
+                      className="group relative w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 bg-gray-50 dark:bg-slate-800 shadow-sm hover:shadow-lg border border-gray-100 dark:border-slate-700/80"
+                    >
+                      <div
+                        className={`absolute inset-0 rounded-xl bg-gradient-to-br ${platform.color} opacity-0 group-hover:opacity-15 transition-all duration-300`}
+                      ></div>
+                      {IconComponent ? (
+                        <IconComponent
+                          className={`w-6 h-6 ${platform.textColor} relative z-10 transition-all duration-300`}
+                        />
+                      ) : platform.iconType === "svg-code" ? (
+                        // Render SVG code directly
+                        <div
+                          className={`w-6 h-6 ${platform.textColor} relative z-10 transition-all duration-300`}
+                          dangerouslySetInnerHTML={{ __html: platform.iconValue }}
+                        />
+                      ) : (
+                        // Fallback for unknown types or errors
+                        <div className="w-6 h-6 text-gray-500 relative z-10">?</div>
+                      )}
+                      <div
+                        className={`absolute inset-0 rounded-xl bg-gradient-to-br ${platform.color} opacity-0 group-hover:opacity-25 blur-xl transition-all duration-300 -z-10`}
+                      ></div>
+                    </Link>
+                  )
+                })
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">No social media links configured yet.</p>
+              )}
             </div>
           </div>
 
@@ -127,5 +128,5 @@ export default function Home() {
         </div>
       </section>
     </div>
-  );
+  )
 }

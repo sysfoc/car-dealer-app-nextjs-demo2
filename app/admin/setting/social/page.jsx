@@ -1,62 +1,87 @@
-"use client";
-import { Button, Label, Select, TextInput } from "flowbite-react";
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
+"use client"
+import { Button, Label, Select, TextInput, Radio, Textarea } from "flowbite-react" // Import Radio and Textarea
+import { useEffect, useState } from "react"
+import Swal from "sweetalert2"
+import { availableIconOptions } from "../../../lib/social-icons"
 
 const SocialMediaForm = () => {
-  const [formData, setFormData] = useState({ url: "", icon: "", order: 0 });
-  const [list, setList] = useState([]);
-  const [selectedIcon, setSelectedIcon] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState({ url: "", iconType: "react-icon", iconValue: "", order: 0 })
+  const [list, setList] = useState([])
+  const [selectedIconOption, setSelectedIconOption] = useState("") // Stores the selected predefined icon name
+  const [iconSource, setIconSource] = useState("predefined") // 'predefined' or 'custom-svg'
+  const [loading, setLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
 
   const fetchData = async () => {
     try {
-      const res = await fetch("/api/socials");
-      const json = await res.json();
-      setList(json.data || []);
+      const res = await fetch("/api/socials")
+      const json = await res.json()
+      setList(json.data || [])
     } catch (error) {
       Swal.fire({
         title: "Error!",
         text: "Failed to load social media settings. Please try again.",
         icon: "error",
-      });
+      })
     }
-  };
+  }
 
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true);
-      await fetchData();
-      setLoading(false);
-    };
-    loadData();
-  }, []);
+      setLoading(true)
+      await fetchData()
+      setLoading(false)
+    }
+    loadData()
+  }, [])
 
-  const handleIconSelect = (iconName) => {
-    setSelectedIcon(iconName);
-    const selected = list.find((item) => item.icon === iconName);
+  // Handle selection from dropdown or pre-filling form when an existing item is selected
+  const handleIconSelect = (value) => {
+    setSelectedIconOption(value)
+    // Find existing entry based on iconType and iconValue
+    const selected = list.find((item) => item.iconValue === value && item.iconType === "react-icon")
+
     if (selected) {
       setFormData({
         url: selected.url || "",
-        icon: selected.icon || "",
+        iconType: selected.iconType,
+        iconValue: selected.iconValue || "",
         order: selected.order || 0,
-      });
+      })
+      setIconSource(selected.iconType === "react-icon" ? "predefined" : "custom-svg")
     } else {
-      setFormData({ url: "", icon: iconName || "", order: 0 });
+      // If a new predefined icon is selected, or no match found, reset URL and order
+      setFormData({ url: "", iconType: "react-icon", iconValue: value || "", order: 0 })
+      setIconSource("predefined")
     }
-  };
+  }
+
+  // Handle changes for custom SVG input
+  const handleCustomSvgChange = (e) => {
+    setFormData({ ...formData, iconType: "svg-code", iconValue: e.target.value })
+  }
+
+  // Handle source change (predefined vs custom SVG)
+  const handleIconSourceChange = (source) => {
+    setIconSource(source)
+    if (source === "predefined") {
+      setFormData({ ...formData, iconType: "react-icon", iconValue: selectedIconOption || "" })
+    } else {
+      setFormData({ ...formData, iconType: "svg-code", iconValue: "" }) // Clear iconValue for custom SVG
+      setSelectedIconOption("") // Clear predefined selection
+    }
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
+    e.preventDefault()
+    setIsSaving(true)
     try {
       const res = await fetch("/api/socials", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-      });
-      const data = await res.json();
+      })
+      const data = await res.json()
       if (data.message) {
         Swal.fire({
           title: "Success!",
@@ -64,21 +89,23 @@ const SocialMediaForm = () => {
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
-        });
-        setFormData({ url: "", icon: "", order: 0 });
-        setSelectedIcon("");
-        await fetchData();
+        })
+        // Reset form after successful save
+        setFormData({ url: "", iconType: "react-icon", iconValue: "", order: 0 })
+        setSelectedIconOption("")
+        setIconSource("predefined")
+        await fetchData() // Re-fetch data to update the list
       }
     } catch (error) {
       Swal.fire({
         title: "Error!",
         text: "Failed to save social media settings. Please try again.",
         icon: "error",
-      });
+      })
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -90,7 +117,7 @@ const SocialMediaForm = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -103,28 +130,75 @@ const SocialMediaForm = () => {
             <p className="text-gray-600">Manage your social media links and display order</p>
           </div>
         </div>
-
         {/* Form Section */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
           <div className="mb-6">
-            <Label htmlFor="selectIcon" className="block text-sm font-medium text-gray-700 mb-2">
-              Select Existing Icon or Add New
-            </Label>
-            <Select
-              id="selectIcon"
-              value={selectedIcon}
-              onChange={(e) => handleIconSelect(e.target.value)}
-              className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-            >
-              <option value="">-- Add New / Select Existing --</option>
-              {list.map((item) => (
-                <option key={item._id} value={item.icon}>
-                  {item.icon}
-                </option>
-              ))}
-            </Select>
-            <p className="text-sm text-gray-500 mt-1">Choose an existing social media icon or add a new one</p>
+            <Label className="block text-sm font-medium text-gray-700 mb-2">Choose Icon Source</Label>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <Radio
+                  id="predefined-icon"
+                  name="iconSource"
+                  value="predefined"
+                  checked={iconSource === "predefined"}
+                  onChange={() => handleIconSourceChange("predefined")}
+                />
+                <Label htmlFor="predefined-icon">Predefined Icon</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Radio
+                  id="custom-svg-icon"
+                  name="iconSource"
+                  value="custom-svg"
+                  checked={iconSource === "custom-svg"}
+                  onChange={() => handleIconSourceChange("custom-svg")}
+                />
+                <Label htmlFor="custom-svg-icon">Custom SVG Code</Label>
+              </div>
+            </div>
           </div>
+
+          {iconSource === "predefined" && (
+            <div className="mb-6">
+              <Label htmlFor="selectIcon" className="block text-sm font-medium text-gray-700 mb-2">
+                Select Predefined Icon
+              </Label>
+              <Select
+                id="selectIcon"
+                value={selectedIconOption}
+                onChange={(e) => handleIconSelect(e.target.value)}
+                className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">-- Select a Platform --</option>
+                {availableIconOptions.map((option) => (
+                  <option key={option.name} value={option.name}>
+                    {option.displayName}
+                  </option>
+                ))}
+              </Select>
+              <p className="text-sm text-gray-500 mt-1">Choose from a list of pre-installed social media icons.</p>
+            </div>
+          )}
+
+          {iconSource === "custom-svg" && (
+            <div className="mb-6">
+              <Label htmlFor="customSvgCode" className="block text-sm font-medium text-gray-700 mb-2">
+                Custom SVG Icon Code
+              </Label>
+              <Textarea
+                id="customSvgCode"
+                value={formData.iconValue}
+                onChange={handleCustomSvgChange}
+                placeholder={`<svg viewBox="0 0 24 24" fill="currentColor" ...>...</svg>`}
+                rows={5}
+                className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Paste the full SVG code for your custom icon. **Ensure it's from a trusted source to avoid security
+                risks.**
+              </p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div>
@@ -140,24 +214,6 @@ const SocialMediaForm = () => {
               />
               <p className="text-sm text-gray-500 mt-1">Enter the URL of your social media page</p>
             </div>
-
-            <div>
-              <Label htmlFor="icon" className="block text-sm font-medium text-gray-700 mb-2">
-                Icon Name
-              </Label>
-              <TextInput
-                id="icon"
-                value={formData.icon}
-                onChange={(e) => {
-                  setFormData({ ...formData, icon: e.target.value });
-                  setSelectedIcon(e.target.value);
-                }}
-                placeholder="facebook, twitter, instagram..."
-                className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-              />
-              <p className="text-sm text-gray-500 mt-1">Enter the name of the social media platform</p>
-            </div>
-
             <div>
               <Label htmlFor="order" className="block text-sm font-medium text-gray-700 mb-2">
                 Display Order
@@ -171,7 +227,6 @@ const SocialMediaForm = () => {
               />
               <p className="text-sm text-gray-500 mt-1">Enter a number to set the display order</p>
             </div>
-
             <div className="flex justify-end">
               <Button
                 type="submit"
@@ -211,7 +266,7 @@ const SocialMediaForm = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SocialMediaForm;
+export default SocialMediaForm
