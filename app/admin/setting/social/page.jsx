@@ -194,8 +194,8 @@ const SocialMediaForm = () => {
                 className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
               />
               <p className="text-sm text-gray-500 mt-1">
-                Paste the full SVG code for your custom icon. **Ensure it's from a trusted source to avoid security
-                risks.**
+                Paste the full SVG code for your custom icon. Ensure it&apos;s from a trusted source to avoid security
+                risks.
               </p>
             </div>
           )}
