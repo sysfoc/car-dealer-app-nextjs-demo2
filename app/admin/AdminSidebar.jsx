@@ -236,7 +236,6 @@ const AdminSidebar = () => {
         </nav>
       </div>
 
-      {/* Logout Button */}
       <div className="border-t border-slate-200 p-4">
         <button
           onClick={handleLogout}

@@ -30,20 +30,18 @@ export default function Home() {
         const json = await res.json()
         if (json.data) {
           const combinedSocials = json.data.map((social) => {
-            // If it's a react-icon, find its styling properties
             if (social.iconType === "react-icon") {
               const platformDetails = allSocialPlatforms.find((p) => p.name === social.iconValue)
               return {
                 ...social,
-                color: platformDetails?.color || "from-gray-200 to-gray-300", // Default color if not found
-                textColor: platformDetails?.textColor || "text-gray-600", // Default text color
+                color: platformDetails?.color || "from-gray-200 to-gray-300",
+                textColor: platformDetails?.textColor || "text-gray-600",
               }
             }
-            // If it's an SVG, use default styling or define new ones
             return {
               ...social,
-              color: "from-gray-200 to-gray-300", // Default for custom SVGs
-              textColor: "text-gray-600", // Default for custom SVGs
+              color: "from-gray-200 to-gray-300",
+              textColor: "text-gray-600",
             }
           })
           setFetchedSocials(combinedSocials)
@@ -60,9 +58,9 @@ export default function Home() {
       <MainLayout>
         <Herosection />
       </MainLayout>
+      <VehicalsList loadingState={loading} />
       <BrowseCars />
       <BrandsList />
-      <VehicalsList loadingState={loading} />
       <Services />
       <Blog />
       <section className="bg-gray-50 dark:bg-slate-950 py-16 border-t border-gray-200 dark:border-slate-800">

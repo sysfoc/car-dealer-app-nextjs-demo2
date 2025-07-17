@@ -41,7 +41,7 @@ const CardetailCard = () => {
   const [sortOption, setSortOption] = useState("default");
   const [sortedAndFilteredCars, setSortedAndFilteredCars] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(3); // You can make this configurable
+  const [itemsPerPage, setItemsPerPage] = useState(3);
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
   const [formData, setFormData] = useState({
@@ -57,13 +57,8 @@ const CardetailCard = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const { distance: defaultUnit, loading: distanceLoading } = useDistance();
-  // const [recaptchaSiteKey, setRecaptchaSiteKey] = useState<string | null>(null)
-  const [recaptchaSiteKey, setRecaptchaSiteKey] = useState(null)
-  const [recaptchaStatus, setRecaptchaStatus] = useState("inactive")
-  // const [recaptchaStatus, setRecaptchaStatus] = useState<"active" | "inactive">("inactive")
-
-  
-  
+  const [recaptchaSiteKey, setRecaptchaSiteKey] = useState(null);
+  const [recaptchaStatus, setRecaptchaStatus] = useState("inactive");
 
   const parseBooleanParam = (param) => {
     return param === "true";
@@ -118,51 +113,62 @@ const CardetailCard = () => {
       [id]: value,
     }));
   };
-  
- useEffect(() => {
+
+  useEffect(() => {
     const fetchRecaptchaSettings = async () => {
       try {
         const response = await fetch("/api/settings/general", {
           headers: {
             "Content-Type": "application/json",
           },
-        })
-        const data = await response.json()
+        });
+        const data = await response.json();
         if (data.settings?.recaptcha) {
-          setRecaptchaSiteKey(data.settings.recaptcha.siteKey)
-          setRecaptchaStatus(data.settings.recaptcha.status)
+          setRecaptchaSiteKey(data.settings.recaptcha.siteKey);
+          setRecaptchaStatus(data.settings.recaptcha.status);
         }
       } catch (error) {
-        console.error("Failed to fetch reCAPTCHA settings in CardetailCard:", error)
+        console.error(
+          "Failed to fetch reCAPTCHA settings in CardetailCard:",
+          error,
+        );
       }
-    }
-    fetchRecaptchaSettings()
-  }, [])
+    };
+    fetchRecaptchaSettings();
+  }, []);
 
   const handleEnquirySubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitMessage("")
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage("");
 
-    let recaptchaToken = null
+    let recaptchaToken = null;
 
-    // Only execute reCAPTCHA if it's active and the script is loaded
-    if (recaptchaStatus === "active" && recaptchaSiteKey && typeof window.grecaptcha !== "undefined") {
+    if (
+      recaptchaStatus === "active" &&
+      recaptchaSiteKey &&
+      typeof window.grecaptcha !== "undefined"
+    ) {
       try {
-        // Execute reCAPTCHA for this specific form action
-        recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, { action: "car_enquiry_submit" })
+        recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, {
+          action: "car_enquiry_submit",
+        });
       } catch (error) {
-        console.error("reCAPTCHA execution failed:", error)
-        setSubmitMessage("reCAPTCHA verification failed. Please try again.")
-        setIsSubmitting(false)
-        return // Stop submission if reCAPTCHA fails
+        console.error("reCAPTCHA execution failed:", error);
+        setSubmitMessage("reCAPTCHA verification failed. Please try again.");
+        setIsSubmitting(false);
+        return;
       }
-    } else if (recaptchaStatus === "active" && (!recaptchaSiteKey || typeof window.grecaptcha === "undefined")) {
-      // If reCAPTCHA is active but not loaded/configured, prevent submission
-      console.error("reCAPTCHA is active but not fully loaded or configured.")
-      setSubmitMessage("reCAPTCHA is not ready. Please refresh the page and try again.")
-      setIsSubmitting(false)
-      return
+    } else if (
+      recaptchaStatus === "active" &&
+      (!recaptchaSiteKey || typeof window.grecaptcha === "undefined")
+    ) {
+      console.error("reCAPTCHA is active but not fully loaded or configured.");
+      setSubmitMessage(
+        "reCAPTCHA is not ready. Please refresh the page and try again.",
+      );
+      setIsSubmitting(false);
+      return;
     }
 
     const enquiryData = {
@@ -172,8 +178,8 @@ const CardetailCard = () => {
       email: formData.email,
       phone: formData.phone,
       message: formData.message,
-      recaptchaToken: recaptchaToken, // Add the reCAPTCHA token here
-    }
+      recaptchaToken: recaptchaToken,
+    };
 
     try {
       const response = await fetch("/api/enquiry", {
@@ -182,38 +188,41 @@ const CardetailCard = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(enquiryData),
-      })
-      const result = await response.json()
+      });
+      const result = await response.json();
       if (response.ok) {
-        setSubmitMessage("Enquiry submitted successfully! We will contact you soon.")
+        setSubmitMessage(
+          "Enquiry submitted successfully! We will contact you soon.",
+        );
         setFormData({
           firstName: "",
           lastName: "",
           email: "",
           phone: "",
           message: "",
-        })
+        });
         setTimeout(() => {
-          setOpenModal(false)
-          setSubmitMessage("")
-          setSelectedCar(null)
-        }, 2000)
+          setOpenModal(false);
+          setSubmitMessage("");
+          setSelectedCar(null);
+        }, 2000);
       } else {
-        setSubmitMessage(result.error || "Failed to submit enquiry. Please try again.")
+        setSubmitMessage(
+          result.error || "Failed to submit enquiry. Please try again.",
+        );
       }
     } catch (error) {
-      console.error("Enquiry submission error:", error)
-      setSubmitMessage("Something went wrong. Please try again.")
+      console.error("Enquiry submission error:", error);
+      setSubmitMessage("Something went wrong. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const filters = useMemo(() => {
     return Object.fromEntries(searchParams.entries());
   }, [searchParams]);
 
-  // Parse array parameters from query string
   const parseArrayParam = (param) => {
     if (!param) return [];
     return Array.isArray(param) ? param : [param];
@@ -283,7 +292,6 @@ const CardetailCard = () => {
     }
   };
 
-  // Parsed filter values
   const parsedFilters = useMemo(() => {
     return {
       keyword: filters.keyword || "",
@@ -365,12 +373,6 @@ const CardetailCard = () => {
           )
         : true;
 
-      // const matchesPrice = parsedFilters.price.length
-      //   ? parsedFilters.price.some((singlePrice) => {
-      //     const carPrice = car.price ? parseInt(car.price, 10) : null;
-      //     return carPrice >= singlePrice;
-      //   })
-      //   : true;
       const matchesLease = parsedFilters.lease ? car.isLease : true;
       const carPrice = car.price ? parseInt(car.price, 10) : null;
       const matchesPrice =
@@ -381,13 +383,10 @@ const CardetailCard = () => {
           (parsedFilters.maxPrice === null ||
             carPrice <= parsedFilters.maxPrice));
 
-      // Use modelYear if year is not available
       const carYear = car.year || car.modelYear;
 
       const matchesYear =
-        // Pass if no year filters are applied
         (!parsedFilters.minYear && !parsedFilters.maxYear) ||
-        // OR if car has year and passes filters
         (carYear &&
           (!parsedFilters.minYear ||
             parseInt(carYear, 10) >= parseInt(parsedFilters.minYear, 10)) &&
@@ -403,7 +402,6 @@ const CardetailCard = () => {
           })
         : true;
 
-      // Use kms field if mileage is not available
       const carMileageField = car.mileage || car.kms;
       const matchesMileage = carMileageField
         ? (() => {
@@ -431,7 +429,6 @@ const CardetailCard = () => {
         ? parsedFilters.color.includes(car.color?.toLowerCase())
         : true;
 
-      // Convert to number if string
       const carDoors =
         typeof car.doors === "string" && car.doors !== "Select"
           ? parseInt(car.doors, 10)
@@ -441,7 +438,6 @@ const CardetailCard = () => {
         ? parsedFilters.doors.includes(carDoors)
         : true;
 
-      // Convert to number if string
       const carSeats =
         typeof car.seats === "string" && car.seats !== "Select"
           ? parseInt(car.seats, 10)
@@ -587,13 +583,11 @@ const CardetailCard = () => {
 
     setIsPageTransitioning(true);
 
-    // Smooth scroll to top
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
 
-    // Small delay for smooth transition
     setTimeout(() => {
       setCurrentPage(newPage);
       setIsPageTransitioning(false);
@@ -602,7 +596,7 @@ const CardetailCard = () => {
 
   const getVisiblePageNumbers = () => {
     const { totalPages } = paginationData;
-    const delta = 2; // Number of pages to show around current page
+    const delta = 2;
     const range = [];
     const rangeWithDots = [];
 
@@ -635,7 +629,6 @@ const CardetailCard = () => {
     setCurrentPage(1);
   }, [parsedFilters]);
 
-  // Conversion functions
   const convertKmToMiles = (km) => {
     const numericKm = Number.parseFloat(km);
     return isNaN(numericKm) ? km : (numericKm * 0.621371).toFixed(1);
@@ -646,7 +639,6 @@ const CardetailCard = () => {
     return isNaN(numericMiles) ? miles : (numericMiles * 1.60934).toFixed(1);
   };
 
-  // Function to convert car values based on default unit
   const getConvertedValues = (vehicle) => {
     if (distanceLoading || !defaultUnit || !vehicle.unit) {
       return {
@@ -656,7 +648,6 @@ const CardetailCard = () => {
       };
     }
 
-    // If car's unit matches default unit, no conversion needed
     if (vehicle.unit === defaultUnit) {
       return {
         kms: vehicle.kms,
@@ -665,16 +656,13 @@ const CardetailCard = () => {
       };
     }
 
-    // Convert based on units
     let convertedKms = vehicle.kms;
     let convertedMileage = vehicle.mileage;
 
     if (vehicle.unit === "km" && defaultUnit === "miles") {
-      // Convert from km to miles
       convertedKms = convertKmToMiles(vehicle.kms);
       convertedMileage = convertKmToMiles(vehicle.mileage);
     } else if (vehicle.unit === "miles" && defaultUnit === "km") {
-      // Convert from miles to km
       convertedKms = convertMilesToKm(vehicle.kms);
       convertedMileage = convertMilesToKm(vehicle.mileage);
     }
@@ -686,7 +674,6 @@ const CardetailCard = () => {
     };
   };
 
-  // Loading State
   if (loading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -709,7 +696,6 @@ const CardetailCard = () => {
     );
   }
 
-  // No Results State
   if (!sortedAndFilteredCars.length) {
     return (
       <div className="flex min-h-[400px] flex-col items-center justify-center p-8 text-center">
@@ -766,7 +752,6 @@ const CardetailCard = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Items per page selector */}
             <Select
               className="min-w-[130px] rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700"
               value={itemsPerPage}
@@ -826,11 +811,7 @@ const CardetailCard = () => {
       <div
         className={`gap-4 transition-opacity duration-200 ${
           isPageTransitioning ? "opacity-50" : "opacity-100"
-        } ${
-          isGridView
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-            : "space-y-6"
-        }`}
+        } ${isGridView ? "grid grid-cols-1 md:grid-cols-2" : "space-y-6"}`}
       >
         {paginationData.currentItems.map((car, index) => (
           <div
@@ -844,9 +825,7 @@ const CardetailCard = () => {
             {/* Image Section */}
             <div
               className={`relative flex-shrink-0 ${
-                isGridView
-                  ? "h-40 w-full sm:h-44"
-                  : "h-64 sm:h-64 sm:w-80 md:w-96"
+                isGridView ? "h-44 w-full" : "h-60 sm:h-64 sm:w-64 md:w-72"
               }`}
             >
               <Carousel
@@ -897,17 +876,19 @@ const CardetailCard = () => {
               {/* Overlay Badges */}
               {/* Overlay Badges */}
               <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
-                  {car.condition && car.condition !== "Select"
-                    ? car.condition
-                    : car.type || "Used"}
-                </span>
+                {!car.sold && (
+                  <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
+                    {car.condition && car.condition !== "Select"
+                      ? car.condition
+                      : car.type || "Used"}
+                  </span>
+                )}
                 {car.sold && (
                   <span className="rounded-full bg-red-500 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
                     SOLD
                   </span>
                 )}
-                {car.isFinance && car.isFinance !== "km" && (
+                {!car.sold && car.isFinance && car.isFinance !== "km" && (
                   <span className="rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-bold uppercase text-white shadow-lg backdrop-blur-sm">
                     {car.isFinance}
                   </span>
@@ -945,41 +926,40 @@ const CardetailCard = () => {
             {/* Content Section */}
             <div
               className={`flex flex-1 flex-col ${
-                isGridView ? "p-3" : "p-5 sm:p-6"
+                isGridView ? "p-2.5" : "p-5 sm:p-6"
               }`}
             >
               {/* Header */}
               <div
-                className={`flex items-start justify-between ${isGridView ? "mb-3" : "mb-4"}`}
+                className={`flex items-start justify-between ${isGridView ? "mb-2" : "mb-4"}`}
               >
                 <div className="flex-1 pr-3">
                   <Link href={`car-detail/${car.slug}`} className="group/link">
-                    <h3
-                      className={`line-clamp-2 font-bold text-gray-900 transition-colors group-hover/link:text-blue-600 dark:text-white dark:group-hover/link:text-blue-400 ${
-                        isGridView
-                          ? "text-base leading-tight"
-                          : "text-xl sm:text-2xl"
-                      }`}
-                    >
-                      {loading ? (
-                        <Skeleton height={28} />
-                      ) : (
-                        `${car.make || "Unknown"} ${car.model || "Unknown"}`
-                      )}
-                    </h3>
-                  </Link>
-
-                  {(car.year || car.modelYear) && (
-                    <div className={`${isGridView ? "mt-1" : "mt-2"}`}>
-                      <span
-                        className={`inline-flex items-center rounded-lg bg-slate-100 px-2 py-0.5 font-semibold text-slate-700 dark:bg-gray-700 dark:text-gray-300 ${
-                          isGridView ? "text-xs" : "text-xs"
+                    <div className="flex items-center gap-2">
+                      <h3
+                        className={`line-clamp-1 font-bold text-gray-900 transition-colors group-hover/link:text-blue-600 dark:text-white dark:group-hover/link:text-blue-400 ${
+                          isGridView
+                            ? "text-base leading-tight"
+                            : "text-xl sm:text-2xl"
                         }`}
                       >
-                        {car.year || car.modelYear} Model
-                      </span>
+                        {loading ? (
+                          <Skeleton height={28} />
+                        ) : (
+                          `${car.make || "Unknown"} ${car.model || "Unknown"}`
+                        )}
+                      </h3>
+                      {(car.year || car.modelYear) && (
+                        <span
+                          className={`inline-flex items-center rounded-lg bg-slate-100 px-2 py-0.5 font-semibold text-slate-700 dark:bg-gray-700 dark:text-gray-300 ${
+                            isGridView ? "text-xs" : "text-xs"
+                          }`}
+                        >
+                          {car.year || car.modelYear}
+                        </span>
+                      )}
                     </div>
-                  )}
+                  </Link>
                 </div>
 
                 <div className="text-right">
@@ -1005,9 +985,9 @@ const CardetailCard = () => {
               </div>
 
               {/* Key Specifications */}
-              <div className={`flex-1 ${isGridView ? "mb-3" : "mb-4"}`}>
+              <div className={`flex-1 ${isGridView ? "mb-2" : "mb-4"}`}>
                 <div
-                  className={`grid gap-2 ${
+                  className={`grid gap-1.5 ${
                     isGridView ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3"
                   }`}
                 >
@@ -1032,15 +1012,11 @@ const CardetailCard = () => {
                         Location
                       </p>
                       <p
-                        className={`break-words font-semibold leading-tight text-gray-900 dark:text-white ${
+                        className={`truncate font-semibold leading-tight text-gray-900 dark:text-white ${
                           isGridView ? "text-xs" : "text-xs"
                         }`}
                       >
-                        {car.location
-                          ? car.location.length > 12
-                            ? `${car.location.substring(0, 12)}...`
-                            : car.location
-                          : "Not specified"}
+                        {car.location || "Not specified"}
                       </p>
                     </div>
                   </div>
@@ -1066,7 +1042,7 @@ const CardetailCard = () => {
                         Mileage
                       </p>
                       <p
-                        className={`break-words font-semibold leading-tight text-gray-900 dark:text-white ${
+                        className={`font-semibold leading-tight text-gray-900 dark:text-white ${
                           isGridView ? "text-xs" : "text-xs"
                         }`}
                       >
@@ -1099,7 +1075,7 @@ const CardetailCard = () => {
                         Fuel
                       </p>
                       <p
-                        className={`break-words font-semibold leading-tight text-gray-900 dark:text-white ${
+                        className={`font-semibold leading-tight text-gray-900 dark:text-white ${
                           isGridView ? "text-xs" : "text-xs"
                         }`}
                       >
@@ -1129,7 +1105,7 @@ const CardetailCard = () => {
                         Gearbox
                       </p>
                       <p
-                        className={`break-words font-semibold leading-tight text-gray-900 dark:text-white ${
+                        className={`font-semibold leading-tight text-gray-900 dark:text-white ${
                           isGridView ? "text-xs" : "text-xs"
                         }`}
                       >
@@ -1159,7 +1135,7 @@ const CardetailCard = () => {
                         Color
                       </p>
                       <p
-                        className={`break-words font-semibold leading-tight text-gray-900 dark:text-white ${
+                        className={`font-semibold leading-tight text-gray-900 dark:text-white ${
                           isGridView ? "text-xs" : "text-xs"
                         }`}
                       >
@@ -1189,7 +1165,7 @@ const CardetailCard = () => {
                         Seats
                       </p>
                       <p
-                        className={`break-words font-semibold leading-tight text-gray-900 dark:text-white ${
+                        className={`font-semibold leading-tight text-gray-900 dark:text-white ${
                           isGridView ? "text-xs" : "text-xs"
                         }`}
                       >
@@ -1210,15 +1186,15 @@ const CardetailCard = () => {
                     setOpenModal(true);
                   }}
                   className={`flex-1 rounded-xl border-2 border-blue-600 text-center font-semibold text-blue-600 transition-all duration-200 hover:bg-blue-600 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-400 dark:hover:text-white ${
-                    isGridView ? "px-3 py-2 text-sm" : "px-6 py-3"
+                    isGridView ? "px-2 py-2 text-sm" : "px-4 py-2"
                   }`}
                 >
                   {t("enquireNow")}
                 </button>
                 <Link href={`car-detail/${car.slug}`} className="flex-1">
                   <button
-                    className={`w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl ${
-                      isGridView ? "px-3 py-2 text-sm" : "px-6 py-3"
+                    className={`w-full rounded-xl border-2 border-blue-600 bg-blue-600 font-semibold text-white shadow-lg transition-all duration-200 hover:border-blue-700 hover:bg-blue-700 hover:shadow-xl ${
+                      isGridView ? "px-2 py-2 text-sm" : "px-4 py-2"
                     }`}
                   >
                     {t("viewDetails")}

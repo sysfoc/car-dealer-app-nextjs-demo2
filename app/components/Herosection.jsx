@@ -48,11 +48,19 @@ const HeroSection = () => {
 
             {/* CTA Buttons - Optimized button sizes */}
             <div className="flex flex-col gap-4 pt-4 sm:flex-row">
-              <button
+              {/* <button
                 onClick={() => router.push("/contact")}
                 className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 py-3 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:px-8 sm:py-4"
               >
                 <span className="relative z-10 mr-3">Request More Info</span>
+                <FaArrowRight className="relative z-10 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
+              </button> */}
+
+              <button
+                onClick={() => router.push("/car-for-sale")}
+                className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 py-3 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:px-8 sm:py-4"
+              >
+                <span className="relative z-10 mr-3">Explore Our Vehicles</span>
                 <FaArrowRight className="relative z-10 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
               </button>
 

@@ -151,10 +151,7 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
 
     fetchSettings();
   }, []);
-  // if (data.settings?.top) {
-        //   setTopSettings(data.settings.top);
-        // }
-
+  
   const handleColorSelection = (colorId) => {
     setSelectedColors((prev) =>
       prev.includes(colorId)
@@ -244,9 +241,9 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
   };
 
   const quickLinks = [
-    { name: "Car selling", href: "/cars/car-selling", icon: FaHandshake },
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
+    { name: "About us", href: "/cars/car-selling", icon: FaHandshake },
   ];
 
   return (

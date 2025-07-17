@@ -98,9 +98,7 @@ const LikedCarsPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Remove the car from the displayed list
         setLikedCars((prev) => prev.filter((car) => car._id !== carId));
-        // Update user data
         setUser((prev) => ({
           ...prev,
           likedCars: data.likedCars,
@@ -132,18 +130,15 @@ const LikedCarsPage = () => {
     );
   }
 
-  // Show login prompt if not authenticated
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         <div className="container mx-auto mt-16 px-4 py-8">
           <div className="mx-auto max-w-md text-center">
-            {/* Login Icon */}
             <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 shadow-lg dark:from-blue-900/30 dark:to-blue-800/30">
               <FaLock className="h-10 w-10 text-blue-600 dark:text-blue-400" />
             </div>
 
-            {/* Login Required Message */}
             <h2 className="mb-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-3xl font-bold text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300">
               Login Required
             </h2>
@@ -153,7 +148,6 @@ const LikedCarsPage = () => {
               collection.
             </p>
 
-            {/* Login Button */}
             <Link href="/login">
               <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-500 hover:to-blue-400 hover:shadow-xl">
                 <MdLogin className="h-5 w-5" />
@@ -162,7 +156,6 @@ const LikedCarsPage = () => {
               </div>
             </Link>
 
-            {/* Alternative Actions */}
             <div className="mt-6 space-y-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
                 <Link href="/car-for-sale">
@@ -179,30 +172,37 @@ const LikedCarsPage = () => {
     );
   }
 
-  // Show error state (only for authenticated users)
   if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-        <div className="container mx-auto px-4 py-16">
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-8 text-center text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-200">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40">
-              <span className="text-2xl text-red-600 dark:text-red-400">
-                ⚠
-              </span>
-            </div>
-            <h3 className="mb-2 text-xl font-bold">Error Loading Liked Cars</h3>
-            <p className="text-red-700 dark:text-red-300">{error}</p>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="container mx-auto px-4 py-20">
+        <div className="rounded-lg border border-slate-200 bg-white px-8 py-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700">
+            <svg className="h-10 w-10 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
           </div>
+          <h3 className="mb-3 text-2xl font-semibold text-slate-900 dark:text-slate-100">
+            Authentication Required
+          </h3>
+          <p className="mb-8 text-slate-600 dark:text-slate-400">
+            Please log in to view your liked cars and manage your favorites.
+          </p>
+          <Link
+            href="/login"
+            className="inline-flex items-center rounded-md bg-slate-900 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+          >
+            Log In
+          </Link>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  // Main component content (only shown for authenticated users)
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
         <div className="mb-12">
           <div className="flex items-center justify-between">
             <div>
@@ -222,7 +222,6 @@ const LikedCarsPage = () => {
               </p>
             </div>
 
-            {/* Back to Browse Button */}
             <Link href="/car-for-sale">
               <div className="group hidden transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200 sm:inline-flex">
                 <span>Browse More Cars</span>
@@ -232,7 +231,6 @@ const LikedCarsPage = () => {
           </div>
         </div>
 
-        {/* Cars Grid */}
         {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array(6)
@@ -293,7 +291,6 @@ const LikedCarsPage = () => {
                 className="group transform overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl transition-all duration-500 hover:-translate-y-1 hover:border-slate-300 hover:shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
                 key={vehicle._id}
               >
-                {/* Image Section */}
                 <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-900">
                   <div className="relative aspect-[16/10]">
                     <Image
@@ -303,10 +300,8 @@ const LikedCarsPage = () => {
                       className="object-cover transition-all duration-700 group-hover:scale-110"
                     />
 
-                    {/* Premium overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 
-                    {/* Liked Badge and Sold Badge */}
                     <div className="absolute left-4 top-4 flex flex-wrap gap-1.5">
                       <div className="rounded-full bg-red-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
                         <div className="flex items-center gap-1.5">
@@ -324,7 +319,6 @@ const LikedCarsPage = () => {
                       )}
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                       <button
                         aria-label="Remove from Liked Cars"
@@ -349,7 +343,6 @@ const LikedCarsPage = () => {
                       </button>
                     </div>
 
-                    {/* Price Tag */}
                     <div className="absolute bottom-4 right-4 rounded-2xl bg-white/95 px-4 py-2 shadow-lg backdrop-blur-md dark:bg-slate-800/95">
                       <div className="text-right">
                         <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -363,9 +356,7 @@ const LikedCarsPage = () => {
                   </div>
                 </div>
 
-                {/* Content Section */}
                 <div className="p-6">
-                  {/* Title */}
                   <div className="mb-4">
                     <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
                       {vehicle?.make} {vehicle?.model}
@@ -375,7 +366,6 @@ const LikedCarsPage = () => {
                     </p>
                   </div>
 
-                  {/* Specifications */}
                   <div className="mb-6 space-y-3">
                     <div className="flex items-center gap-3 text-sm">
                       <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30">
@@ -414,7 +404,6 @@ const LikedCarsPage = () => {
                     </div>
                   </div>
 
-                  {/* CTA Buttons */}
                   <div className="space-y-3">
                     <Link
                       href={`/car-detail/${vehicle.slug || vehicle._id}`}
@@ -455,7 +444,6 @@ const LikedCarsPage = () => {
           </div>
         )}
 
-        {/* Mobile Browse Button */}
         {likedCars.length > 0 && (
           <div className="mt-12 text-center sm:hidden">
             <Link href="/car-for-sale">

@@ -1,43 +1,31 @@
-"use client";
-import {
-  Footer,
-  FooterCopyright,
-  FooterIcon,
-  FooterLink,
-  FooterLinkGroup,
-  FooterTitle,
-} from "flowbite-react";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import {
-  FaFacebookSquare,
-  FaPinterest,
-  FaYoutube,
-  FaInstagram,
-} from "react-icons/fa";
-import { FaTiktok } from "react-icons/fa6";
-import { SiGiphy } from "react-icons/si";
-import LanguageSwitching from "./LanguageSwitching";
-import { useTranslations } from "next-intl";
+"use client"
+import { Footer, FooterCopyright, FooterIcon, FooterLink, FooterLinkGroup, FooterTitle } from "flowbite-react"
+import Image from "next/image"
+import { useEffect, useState } from "react"
+import { FaFacebookSquare, FaPinterest, FaYoutube, FaInstagram } from "react-icons/fa"
+import { FaTiktok } from "react-icons/fa6"
+import { SiGiphy } from "react-icons/si"
+import LanguageSwitching from "./LanguageSwitching"
+import { useTranslations } from "next-intl"
 
 const Footerr = ({ isDarkMode }) => {
-  const t = useTranslations("Footer");
-  const [footerSettings, setFooterSettings] = useState(null);
-  const [logo, setLogo] = useState("/logo.png");
-  const [homepageData, setHomepageData] = useState(null);
+  const t = useTranslations("Footer")
+  const [footerSettings, setFooterSettings] = useState(null)
+  const [logo, setLogo] = useState("/logo.png")
+  const [homepageData, setHomepageData] = useState(null)
 
   useEffect(() => {
     const fetchHomepageData = async () => {
       try {
-        const res = await fetch("/api/homepage", { cache: "no-store" });
-        const data = await res.json();
-        setHomepageData(data?.data || {});
+        const res = await fetch("/api/homepage", { cache: "no-store" })
+        const data = await res.json()
+        setHomepageData(data?.data || {})
       } catch (error) {
-        console.error("Failed to fetch homepage data:", error);
+        console.error("Failed to fetch homepage data:", error)
       }
-    };
-    fetchHomepageData();
-  }, []);
+    }
+    fetchHomepageData()
+  }, [])
 
   const tradingHours = [
     {
@@ -65,35 +53,33 @@ const Footerr = ({ isDarkMode }) => {
       hours: homepageData?.footer?.saturday || t("closedHours"),
     },
     { day: t("sunday"), hours: t("closedHours") }, // Sunday is not in your schema, so keep default
-  ];
+  ]
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch("/api/settings/general", { cache: "no-store" });
-        const data = await res.json();
-        setFooterSettings(data?.settings?.footer || {});
+        const res = await fetch("/api/settings/general", { cache: "no-store" })
+        const data = await res.json()
+        setFooterSettings(data?.settings?.footer || {})
       } catch (error) {
-        console.error("Failed to fetch footer settings:", error);
+        console.error("Failed to fetch footer settings:", error)
       }
-    };
-
-    fetchSettings();
-  }, []);
+    }
+    fetchSettings()
+  }, [])
 
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const res = await fetch("/api/settings/general", { cache: "no-store" });
-        const data = await res.json();
-        setLogo(data?.settings?.logo || "/logo.png");
+        const res = await fetch("/api/settings/general", { cache: "no-store" })
+        const data = await res.json()
+        setLogo(data?.settings?.logo || "/logo.png")
       } catch (error) {
-        console.error("Failed to fetch footer Logo:", error);
+        console.error("Failed to fetch footer Logo:", error)
       }
-    };
-
-    fetchLogo();
-  }, []);
+    }
+    fetchLogo()
+  }, [])
 
   const socialLinks = [
     {
@@ -127,7 +113,7 @@ const Footerr = ({ isDarkMode }) => {
       label: "Pinterest",
       color: "hover:text-red-500",
     },
-  ];
+  ]
 
   return (
     <div className="relative mt-5">
@@ -146,17 +132,18 @@ const Footerr = ({ isDarkMode }) => {
           />
         </svg>
       </div>
-
       <Footer className="relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950">
         <div className="mx-auto w-full max-w-7xl">
           {/* Main Footer Content */}
-          <div className="grid w-full grid-cols-1 gap-8 px-6 py-12 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid w-full grid-cols-1 gap-8 px-6 py-8 md:grid-cols-2 lg:grid-cols-4">
+            {" "}
+            {/* Changed py-12 to py-8 */}
             {/* Company Info Section */}
             <div className="space-y-6">
               <div className="flex flex-col space-y-4">
                 <Image
                   // src={isDarkMode ? "/logo-white.png" : "/logo.png"}
-                  src={logo}
+                  src={logo || "/placeholder.svg"}
                   alt="Sysfoc Cars Dealer"
                   priority
                   width={200}
@@ -165,7 +152,6 @@ const Footerr = ({ isDarkMode }) => {
                 />
               </div>
             </div>
-
             {/* Quick Links Section */}
             <div className="space-y-6">
               <FooterTitle
@@ -200,7 +186,6 @@ const Footerr = ({ isDarkMode }) => {
                 </FooterLink>
               </FooterLinkGroup>
             </div>
-
             {/* Trading Hours Section */}
             <div className="space-y-6">
               <FooterTitle
@@ -210,10 +195,7 @@ const Footerr = ({ isDarkMode }) => {
               <div className="mb-4 h-1 w-12 rounded-full bg-gradient-to-r from-green-500 to-green-600"></div>
               <div className="space-y-3">
                 {tradingHours.map((schedule, index) => (
-                  <div
-                    key={index}
-                    className="group flex items-center justify-between py-2"
-                  >
+                  <div key={index} className="group flex items-center justify-between py-2">
                     <span className="text-sm font-medium text-gray-700 transition-colors group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
                       {schedule.day}
                     </span>
@@ -230,8 +212,6 @@ const Footerr = ({ isDarkMode }) => {
                 ))}
               </div>
             </div>
-
-            {/* Language & Newsletter Section */}
             <div className="space-y-6">
               <FooterTitle
                 title={footerSettings?.col3Heading || t("language")}
@@ -243,10 +223,11 @@ const Footerr = ({ isDarkMode }) => {
               </div>
             </div>
           </div>
-
           {/* Bottom Footer */}
           <div className="border-t border-gray-300 bg-gradient-to-r from-gray-100 to-gray-200 dark:border-gray-600 dark:from-gray-900 dark:to-gray-800">
-            <div className="flex flex-col space-y-6 px-6 py-8 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+            <div className="flex flex-col space-y-6 px-6 py-6 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+              {" "}
+              {/* Changed py-8 to py-6 */}
               {/* Copyright */}
               <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-x-6 sm:space-y-0">
                 <FooterCopyright
@@ -266,12 +247,9 @@ const Footerr = ({ isDarkMode }) => {
                   </a>
                 </div>
               </div>
-
               {/* Social Media Icons */}
               <div className="flex items-center justify-center space-x-6 lg:justify-end">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Follow us:
-                </span>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Follow us:</span>
                 <div className="flex items-center space-x-4">
                   {socialLinks.map((social, index) => (
                     <FooterIcon
@@ -290,7 +268,7 @@ const Footerr = ({ isDarkMode }) => {
         </div>
       </Footer>
     </div>
-  );
-};
+  )
+}
 
-export default Footerr;
+export default Footerr
