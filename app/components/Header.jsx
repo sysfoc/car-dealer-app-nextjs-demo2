@@ -243,7 +243,7 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
   const quickLinks = [
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
-    { name: "About us", href: "/cars/car-selling", icon: FaHandshake },
+    { name: "About us", href: "/cars/about-us", icon: FaHandshake },
   ];
 
   return (

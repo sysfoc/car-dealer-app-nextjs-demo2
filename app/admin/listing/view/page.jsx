@@ -2,12 +2,15 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCurrency } from "../../../context/CurrencyContext"
 
 export default function Listing() {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid"); // grid or table
+  const { currency, selectedCurrency } = useCurrency();
+
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this car?")) return;
@@ -283,7 +286,7 @@ export default function Listing() {
                       {car.make} {car.model}
                     </h3>
                     <p className="text-2xl font-bold text-blue-600">
-                      ${car.price?.toLocaleString()}
+                      {selectedCurrency?.symbol}{" "}{car.price?.toLocaleString()}
                     </p>
                   </div>
                   <div className="mb-6 space-y-2">

@@ -1,24 +1,18 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import {
-  MdOutlineArrowOutward,
-  MdSearch,
-  MdFilterList,
-  MdGridView,
-  MdViewList,
-} from "react-icons/md";
-import { useTranslations } from "next-intl";
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import { useState, useEffect } from "react"
+import { ArrowUpRight, Search, Filter, Grid, List, Wallet, Tag, Car, BatteryCharging } from "lucide-react"
 
 const BrandsList = () => {
-  const t = useTranslations("HomePage");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [viewMode, setViewMode] = useState("grid");
-  const [hoveredBrand, setHoveredBrand] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+  // Removed useTranslations as next-intl is not supported in Next.js
+  // const t = useTranslations("HomePage");
 
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [viewMode, setViewMode] = useState("grid")
+  const [hoveredBrand, setHoveredBrand] = useState(null)
+  const [isVisible, setIsVisible] = useState(false)
   const brandLists = [
     {
       name: "BMW",
@@ -164,8 +158,7 @@ const BrandsList = () => {
       founded: "1927",
       country: "Sweden",
     },
-  ];
-
+  ]
   const categories = [
     { id: "all", name: "All Brands", count: brandLists.length },
     {
@@ -183,79 +176,81 @@ const BrandsList = () => {
       name: "Electric",
       count: brandLists.filter((b) => b.category === "electric").length,
     },
-  ];
-
-  const [visibleCount, setVisibleCount] = useState(8);
+  ]
+  const [visibleCount, setVisibleCount] = useState(8)
   const filteredBrands = brandLists.filter((brand) => {
-    const matchesSearch = brand.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || brand.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
+    const matchesSearch = brand.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = selectedCategory === "all" || brand.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
+    setIsVisible(true)
+  }, [])
   const getCategoryColor = (category) => {
     switch (category) {
       case "luxury":
-        return "from-amber-500 to-yellow-600";
+        return "from-amber-600 to-yellow-700" // Stronger gradient
       case "electric":
-        return "from-green-500 to-emerald-600";
+        return "from-emerald-600 to-teal-700" // Stronger gradient
       case "mainstream":
-        return "from-blue-500 to-cyan-600";
+        return "from-blue-600 to-cyan-700" // Stronger gradient
       default:
-        return "from-gray-500 to-slate-600";
+        return "from-gray-600 to-slate-700" // Stronger gradient
     }
-  };
-
+  }
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case "luxury":
+        return <Wallet className="text-yellow-400" /> // Lucide icon, adjusted color
+      case "electric":
+        return <BatteryCharging className="text-emerald-400" /> // Lucide icon, adjusted color
+      case "mainstream":
+        return <Car className="text-blue-400" /> // Lucide icon, adjusted color
+      default:
+        return <Tag className="text-gray-400" /> // Lucide icon
+    }
+  }
   return (
-    <section className="relative overflow-hidden bg-gray-50 px-4 py-8 dark:bg-gray-900 sm:px-8">
+    <section className="relative overflow-hidden bg-gray-100 px-4 py-12 dark:bg-gray-950 border border-gray-200 rounded-2xl shadow-lg mx-4 my-6">
       {/* Subtle Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -right-32 -top-40 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br from-blue-100/40 to-purple-100/40 blur-3xl dark:from-blue-900/20 dark:to-purple-900/20"></div>
-        <div className="absolute -bottom-32 -left-40 h-80 w-80 animate-pulse rounded-full bg-gradient-to-tr from-orange-100/40 to-red-100/40 blur-3xl delay-1000 dark:from-orange-900/20 dark:to-red-900/20"></div>
+        <div className="absolute -right-32 -top-40 h-96 w-96 animate-pulse rounded-full bg-blue-200/15 to-purple-200/15 blur-3xl dark:bg-blue-900/10 dark:to-purple-900/10"></div>
+        <div className="absolute -bottom-32 -left-40 h-80 w-80 animate-pulse rounded-full bg-orange-200/15 to-red-200/15 blur-3xl delay-1000 dark:bg-orange-900/10 dark:to-red-900/10"></div>
       </div>
-
       <div
         className={`relative mx-auto max-w-7xl transition-all duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
       >
         {/* Header Section */}
         <div className="mb-16 text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 px-4 py-2 text-sm font-medium text-white shadow-lg">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-white"></span>
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-100/20 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-4 py-2 text-sm font-semibold">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-blue-600 dark:bg-blue-400"></span>
             Featured Automotive Brands
           </div>
           <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-700 dark:text-gray-300">
-            Explore our curated collection of world-class automotive brands,
-            from luxury icons to innovative electric pioneers.
+            Explore our curated collection of world-class automotive brands, from luxury icons to innovative electric
+            pioneers.
           </p>
-
           {/* Controls Section */}
-          <div className="flex flex-col items-center justify-between gap-6 rounded-2xl border border-gray-300 bg-white p-6 shadow-lg dark:border-gray-600 dark:bg-gray-800 lg:flex-row">
+          <div className="flex flex-col items-center justify-between gap-6 rounded-xl border border-gray-300 bg-white p-6 shadow-md dark:border-gray-700 dark:bg-gray-900 lg:flex-row">
             {/* Search Bar */}
-            <div className="relative max-w-md flex-1">
-              <MdSearch className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-500" />
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-500" />
               <input
                 type="text"
                 placeholder="Search brands..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pl-12 pr-4 text-gray-800 transition-all duration-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:focus:border-blue-400"
+                className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500"
               />
             </div>
-
             {/* Category Filter */}
             <div className="flex items-center gap-2">
-              <MdFilterList className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+              <Filter className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               <select
                 value={selectedCategory}
                 aria-label="Filter by category"
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:focus:border-blue-400"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               >
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
@@ -264,54 +259,47 @@ const BrandsList = () => {
                 ))}
               </select>
             </div>
-
             {/* View Toggle */}
-            <div className="flex items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 p-1 dark:border-gray-600 dark:bg-gray-700">
+            <div className="flex items-center gap-2 rounded-lg border border-gray-300 bg-gray-200 p-1 dark:border-gray-700 dark:bg-gray-800">
               <button
                 onClick={() => setViewMode("grid")}
                 aria-label="Switch to Grid View"
-                className={`rounded-lg p-2 transition-all duration-300 ${
+                className={`rounded-md p-2 transition-all duration-300 ${
                   viewMode === "grid"
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-600 hover:bg-gray-200 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-gray-200"
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-100"
                 }`}
               >
-                <MdGridView className="h-5 w-5" />
+                <Grid className="h-5 w-5" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
                 aria-label="Switch to List View"
-                className={`rounded-lg p-2 transition-all duration-300 ${
+                className={`rounded-md p-2 transition-all duration-300 ${
                   viewMode === "list"
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-600 hover:bg-gray-200 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-gray-200"
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-100"
                 }`}
               >
-                <MdViewList className="h-5 w-5" />
+                <List className="h-5 w-5" />
               </button>
             </div>
-
             {/* View All Button */}
             <Link href="/brands">
-              <div className="group inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 px-6 py-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-blue-600 hover:shadow-xl">
-                <span className="font-medium">
-                  {t("viewAll") || "View All"}
-                </span>
-                <MdOutlineArrowOutward className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
+              <div className="group inline-flex items-center gap-3 rounded-lg bg-blue-600 px-5 py-2.5 text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg">
+                <span className="font-medium">View All</span>
+                <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
               </div>
             </Link>
           </div>
         </div>
-
         {/* Results Count */}
         <div className="mb-8">
-          <p className="text-center text-gray-600 dark:text-gray-400">
+          <p className="text-center text-gray-700 dark:text-gray-300">
             Showing {filteredBrands.length} of {brandLists.length} brands
-            {selectedCategory !== "all" &&
-              ` in ${categories.find((c) => c.id === selectedCategory)?.name}`}
+            {selectedCategory !== "all" && ` in ${categories.find((c) => c.id === selectedCategory)?.name}`}
           </p>
         </div>
-
         {/* Brands Grid/List */}
         <div
           className={`
@@ -326,10 +314,10 @@ const BrandsList = () => {
             <Link href={brand.url} key={`${brand.name}-${index}`}>
               <div
                 className={`
-                  group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-gray-200 bg-white 
-                  shadow-md transition-all duration-500 hover:-translate-y-2 hover:scale-105 hover:border-orange-300 
-                  hover:shadow-xl hover:shadow-orange-500/20 dark:border-gray-600 dark:bg-gray-800 dark:hover:border-orange-500
-                  ${viewMode === "list" ? "flex items-center p-6" : "p-6"}
+                  group relative cursor-pointer overflow-hidden rounded-xl border border-gray-300 bg-white shadow-md
+                  transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20
+                  dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600
+                  ${viewMode === "list" ? "flex items-center p-5" : "p-5"}
                   animate-fade-in-up
                 `}
                 style={{ animationDelay: `${index * 100}ms` }}
@@ -338,66 +326,57 @@ const BrandsList = () => {
               >
                 {/* Hover Background Effect */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${getCategoryColor(brand.category)} rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-5`}
+                  className={`absolute inset-0 bg-gradient-to-br ${getCategoryColor(brand.category)} rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-5`}
                 ></div>
-
                 {/* Category Badge */}
                 <div
-                  className={`absolute right-4 top-4 z-30 ${viewMode === "list" ? "relative right-0 top-0 ml-auto" : ""}`}
+                  className={`absolute right-3 top-3 z-30 ${viewMode === "list" ? "relative right-0 top-0 ml-auto" : ""}`}
                 >
                   <span
-                    className={`inline-flex items-center rounded-full bg-gradient-to-r px-3 py-1 text-xs font-medium text-white ${getCategoryColor(brand.category)} shadow-lg`}
+                    className={`inline-flex items-center rounded-full bg-gradient-to-r px-2.5 py-1 text-xs font-semibold text-white ${getCategoryColor(brand.category)}`}
                   >
                     {brand.category}
                   </span>
                 </div>
-
                 <div
                   className={`relative z-10 ${viewMode === "list" ? "flex flex-1 items-center gap-6" : "flex flex-col items-center space-y-4"}`}
                 >
                   {/* Image Container */}
                   <div
-                    className={`relative ${viewMode === "list" ? "h-16 w-16" : "h-24 w-24"} overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-3 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:shadow-md dark:border-gray-600 dark:bg-gray-700`}
+                    className={`relative ${viewMode === "list" ? "h-16 w-16" : "h-24 w-24"} overflow-hidden rounded-lg border border-gray-300 bg-gray-100 p-3 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:shadow-md dark:border-gray-700 dark:bg-gray-700`}
                   >
                     <Image
-                      src={brand.image}
+                      src={brand.image || "/placeholder.svg"}
                       alt={brand.alt}
                       width={96}
                       height={96}
                       className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-
                   {/* Brand Info */}
-                  <div
-                    className={`${viewMode === "list" ? "flex-1" : "text-center"}`}
-                  >
+                  <div className={`${viewMode === "list" ? "flex-1" : "text-center"}`}>
                     <h3
-                      className={`${viewMode === "list" ? "text-lg" : "text-xl"} mb-2 font-bold text-gray-800 transition-colors duration-300 group-hover:text-orange-600 dark:text-gray-100 dark:group-hover:text-orange-400`}
+                      className={`${viewMode === "list" ? "text-lg" : "text-xl"} mb-2 font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400`}
                     >
                       {brand.name}
                     </h3>
-
                     {viewMode === "grid" && (
-                      <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="space-y-1 text-sm text-gray-700 dark:text-gray-400">
                         <p>Founded: {brand.founded}</p>
                         <p>Origin: {brand.country}</p>
                       </div>
                     )}
-
                     <div
-                      className={`${hoveredBrand === brand.name ? "w-12" : "w-0"} h-1 bg-gradient-to-r ${getCategoryColor(brand.category)} mx-auto mt-3 rounded-full transition-all duration-500`}
+                      className={`${hoveredBrand === brand.name ? "w-12" : "w-0"} h-1 bg-blue-600 dark:bg-blue-400 mx-auto mt-3 rounded-full transition-all duration-500`}
                     ></div>
                   </div>
-
                   {viewMode === "list" && (
-                    <div className="text-right text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-right text-sm text-gray-700 dark:text-gray-400">
                       <p className="font-medium">{brand.founded}</p>
                       <p>{brand.country}</p>
                     </div>
                   )}
                 </div>
-
                 {/* Shine Effect */}
                 <div className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
                   <div className="absolute inset-0 translate-x-[-200%] -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-[200%]"></div>
@@ -406,21 +385,25 @@ const BrandsList = () => {
             </Link>
           ))}
         </div>
-
         {/* Load More Button */}
-        {filteredBrands.length > 8 && (
+        {filteredBrands.length > visibleCount && (
           <div className="mt-12 text-center">
             <button
-              onClick={() => {
-                if (visibleCount >= filteredBrands.length) {
-                  setVisibleCount(8);
-                } else {
-                  setVisibleCount((prev) => prev + 6);
-                }
-              }}
-              className="rounded-xl border border-gray-300 bg-white px-8 py-3 font-medium text-gray-700 shadow-md transition-all duration-300 hover:bg-gray-50 hover:shadow-lg dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              onClick={() => setVisibleCount((prev) => prev + 6)}
+              className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg"
             >
-              {visibleCount >= filteredBrands.length ? "Show Less" : "Load More"}
+              Load More
+            </button>
+          </div>
+        )}
+        {/* Show Less Button (appears only if more than initial 8 are visible) */}
+        {visibleCount > 8 && filteredBrands.length > 8 && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => setVisibleCount(8)}
+              className="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-100 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            >
+              Show Less
             </button>
           </div>
         )}
@@ -428,28 +411,23 @@ const BrandsList = () => {
         {/* Empty State */}
         {filteredBrands.length === 0 && (
           <div className="py-20 text-center">
-            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border-2 border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
-              <MdSearch className="h-12 w-12 text-gray-500" />
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-gray-300 bg-gray-200 dark:border-gray-700 dark:bg-gray-700">
+              <Search className="h-12 w-12 text-gray-500" />
             </div>
-            <h3 className="mb-2 text-2xl font-bold text-gray-800 dark:text-gray-200">
-              No brands found
-            </h3>
-            <p className="mb-6 text-gray-600 dark:text-gray-400">
-              Try adjusting your search or filter criteria
-            </p>
+            <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">No brands found</h3>
+            <p className="mb-6 text-gray-700 dark:text-gray-400">Try adjusting your search or filter criteria</p>
             <button
               onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("all");
+                setSearchTerm("")
+                setSelectedCategory("all")
               }}
-              className="rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 text-white shadow-lg transition-all duration-300 hover:from-orange-600 hover:to-red-600 hover:shadow-xl"
+              className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg"
             >
               Clear Filters
             </button>
           </div>
         )}
       </div>
-
       <style jsx>{`
         @keyframes fade-in-up {
           from {
@@ -461,14 +439,13 @@ const BrandsList = () => {
             transform: translateY(0);
           }
         }
-
         .animate-fade-in-up {
           animation: fade-in-up 0.6s ease-out forwards;
           opacity: 0;
         }
       `}</style>
     </section>
-  );
-};
+  )
+}
 
-export default BrandsList;
+export default BrandsList

@@ -99,7 +99,6 @@ export async function POST(request) {
       };
     }
     
-    // Footer section
     const footerFields = ['mondayHr', 'tuesdayHr', 'wednesdayHr', 'thursdayHr', 'fridayHr', 'saturdayHr'];
     const hasFooterData = footerFields.some(field => {
       const value = formData.get(field);
