@@ -12,6 +12,7 @@ import {
   FaTags,
   FaCalculator,
   FaHandshake,
+  FaCar,
   FaCreditCard,
   FaSun,
   FaMoon,
@@ -241,6 +242,7 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
   };
 
   const quickLinks = [
+    { name: "Find Cars", href: "/car-for-sale", icon: FaCar },
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
     { name: "About us", href: "/cars/about-us", icon: FaHandshake },
