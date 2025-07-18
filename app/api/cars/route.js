@@ -2,9 +2,9 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { verifyUserToken } from "../../lib/auth"
+import { verifyUserToken } from "../../lib/auth";
 import dbConnect from "../../lib/mongodb";
-import Car from "../../models/Car"
+import Car from "../../models/Car";
 
 // Enhanced upload directory handling
 const uploadDir = path.join(process.cwd(), "public", "uploads");
@@ -105,8 +105,8 @@ function safeParseBoolean(value) {
 
 // Helper function to handle string fields - keep empty strings as empty, not null
 const safeParseString = (value) => {
-  return typeof value === "string" ? value : ""
-}
+  return typeof value === "string" ? value : "";
+};
 
 export async function POST(req) {
   try {
@@ -303,10 +303,272 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
+// export async function GET() {
+//   try {
+//     await dbConnect();
+//     const cars = await Car.find({}).lean();
+//     const formattedCars = cars.map((car) => ({
+//       ...car,
+//       _id: car._id.toString(),
+//       userId: car.userId?.toString(),
+//       dealerId: car.dealerId?.toString(),
+//     }));
+//     return NextResponse.json({ cars: formattedCars });
+//   } catch (error) {
+//     console.error("Error fetching cars:", error);
+//     return NextResponse.json(
+//       { error: "Failed to fetch data", details: error.message },
+//       { status: 500 },
+//     );
+//   }
+// }
+
+export async function GET(req) {
   try {
     await dbConnect();
-    const cars = await Car.find({}).lean();
+    const searchParams = req.nextUrl.searchParams;
+    const filterQuery = {};
+
+    // Keyword search (applies to make and model)
+    const keyword = searchParams.get("keyword");
+    if (keyword) {
+      const regex = new RegExp(keyword, "i"); // Case-insensitive search
+      filterQuery.$or = [{ make: regex }, { model: regex }];
+    }
+
+    // Make filter
+    const make = searchParams.get("make");
+    if (make) {
+      filterQuery.make = new RegExp(make, "i"); // Case-insensitive exact match for make
+    }
+
+    // Model filter (from 'made' URL parameter in your client-side code)
+    const model = searchParams.get("made");
+    if (model) {
+      filterQuery.model = new RegExp(model, "i"); // Case-insensitive exact match for model
+    }
+
+    // Condition filter (can be multiple, e.g., ?condition=new&condition=used)
+    const conditions = searchParams.getAll("condition");
+    if (conditions.length > 0) {
+      filterQuery.condition = {
+        $in: conditions.map((c) => new RegExp(c, "i")),
+      };
+    }
+
+    // Location filter (can be multiple)
+    const locations = searchParams.getAll("location");
+    if (locations.length > 0) {
+      filterQuery.location = { $in: locations.map((l) => new RegExp(l, "i")) };
+    }
+
+    // Price range
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+    if (minPrice || maxPrice) {
+      filterQuery.price = {};
+      if (minPrice) {
+        const parsedMinPrice = parseInt(minPrice, 10);
+        if (!isNaN(parsedMinPrice)) filterQuery.price.$gte = parsedMinPrice;
+      }
+      if (maxPrice) {
+        const parsedMaxPrice = parseInt(maxPrice, 10);
+        if (!isNaN(parsedMaxPrice)) filterQuery.price.$lte = parsedMaxPrice;
+      }
+    }
+
+    // Year range (applies to 'year' or 'modelYear')
+    const minYear = searchParams.get("minYear");
+    const maxYear = searchParams.get("maxYear");
+    if (minYear || maxYear) {
+      const yearConditions = [];
+      if (minYear) {
+        const parsedMinYear = parseInt(minYear, 10);
+        if (!isNaN(parsedMinYear)) {
+          yearConditions.push({ year: { $gte: parsedMinYear } });
+          yearConditions.push({ modelYear: { $gte: parsedMinYear } });
+        }
+      }
+      if (maxYear) {
+        const parsedMaxYear = parseInt(maxYear, 10);
+        if (!isNaN(parsedMaxYear)) {
+          yearConditions.push({ year: { $lte: parsedMaxYear } });
+          yearConditions.push({ modelYear: { $lte: parsedMaxYear } });
+        }
+      }
+      if (yearConditions.length > 0) {
+        // If there's already an $or for keyword, combine with $and
+        if (filterQuery.$or) {
+          filterQuery.$and = filterQuery.$and || [];
+          filterQuery.$and.push({ $or: yearConditions });
+        } else {
+          filterQuery.$or = yearConditions;
+        }
+      }
+    }
+
+    // Mileage range (applies to 'kms' or 'mileage')
+    const millageFrom = searchParams.get("millageFrom");
+    const millageTo = searchParams.get("millageTo");
+    if (millageFrom || millageTo) {
+      const mileageConditions = [];
+      if (millageFrom) {
+        const parsedMillageFrom = parseInt(millageFrom, 10);
+        if (!isNaN(parsedMillageFrom)) {
+          mileageConditions.push({ kms: { $gte: parsedMillageFrom } });
+          mileageConditions.push({ mileage: { $gte: parsedMillageFrom } });
+        }
+      }
+      if (millageTo) {
+        const parsedMillageTo = parseInt(millageTo, 10);
+        if (!isNaN(parsedMillageTo)) {
+          mileageConditions.push({ kms: { $lte: parsedMillageTo } });
+          mileageConditions.push({ mileage: { $lte: parsedMillageTo } });
+        }
+      }
+      if (mileageConditions.length > 0) {
+        // If there's already an $or for keyword/year, combine with $and
+        if (filterQuery.$or) {
+          filterQuery.$and = filterQuery.$and || [];
+          filterQuery.$and.push({ $or: mileageConditions });
+        } else {
+          filterQuery.$or = mileageConditions;
+        }
+      }
+    }
+
+    // Gearbox filter
+    const gearBoxes = searchParams.getAll("gearBox");
+    if (gearBoxes.length > 0) {
+      filterQuery.gearbox = { $in: gearBoxes.map((g) => new RegExp(g, "i")) };
+    }
+
+    // Body Type filter
+    const bodyTypes = searchParams.getAll("bodyType");
+    if (bodyTypes.length > 0) {
+      filterQuery.bodyType = { $in: bodyTypes.map((b) => new RegExp(b, "i")) };
+    }
+
+    // Color filter
+    const colors = searchParams.getAll("color");
+    if (colors.length > 0) {
+      filterQuery.color = { $in: colors.map((c) => new RegExp(c, "i")) };
+    }
+
+    // Doors filter
+    const doors = searchParams
+      .getAll("doors")
+      .map(Number)
+      .filter(Number.isInteger);
+    if (doors.length > 0) {
+      filterQuery.doors = { $in: doors };
+    }
+
+    // Seats filter
+    const seats = searchParams
+      .getAll("seats")
+      .map(Number)
+      .filter(Number.isInteger);
+    if (seats.length > 0) {
+      filterQuery.seats = { $in: seats };
+    }
+
+    // Fuel Type filter
+    const fuels = searchParams.getAll("fuel");
+    if (fuels.length > 0) {
+      filterQuery.fuelType = { $in: fuels.map((f) => new RegExp(f, "i")) };
+    }
+
+    // Drive Type filter
+    const driveTypes = searchParams.getAll("driveType");
+    if (driveTypes.length > 0) {
+      filterQuery.driveType = {
+        $in: driveTypes.map((d) => new RegExp(d, "i")),
+      };
+    }
+
+    // Lease filter
+    const lease = searchParams.get("lease");
+    if (lease !== null) {
+      filterQuery.isLease = lease === "true";
+    }
+
+    // Battery Range filter
+    const battery = searchParams.get("battery");
+    if (battery && battery !== "Any") {
+      const parsedBattery = parseInt(battery, 10);
+      if (!isNaN(parsedBattery)) {
+        filterQuery.batteryRange = { $gte: parsedBattery };
+      }
+    }
+
+    // Charging Time filter
+    const charging = searchParams.get("charging");
+    if (charging && charging !== "Any") {
+      const parsedCharging = parseInt(charging, 10);
+      if (!isNaN(parsedCharging)) {
+        filterQuery.chargingTime = { $gte: parsedCharging };
+      }
+    }
+
+    // Engine Size range
+    const engineSizeFrom = searchParams.get("engineSizeFrom");
+    const engineSizeTo = searchParams.get("engineSizeTo");
+    if (engineSizeFrom || engineSizeTo) {
+      filterQuery.engineSize = {};
+      if (engineSizeFrom) {
+        const parsedEngineSizeFrom = parseInt(engineSizeFrom, 10);
+        if (!isNaN(parsedEngineSizeFrom))
+          filterQuery.engineSize.$gte = parsedEngineSizeFrom;
+      }
+      if (engineSizeTo) {
+        const parsedEngineSizeTo = parseInt(engineSizeTo, 10);
+        if (!isNaN(parsedEngineSizeTo))
+          filterQuery.engineSize.$lte = parsedEngineSizeTo;
+      }
+    }
+
+    // Engine Power range
+    const enginePowerFrom = searchParams.get("enginePowerFrom");
+    const enginePowerTo = searchParams.get("enginePowerTo");
+    if (enginePowerFrom || enginePowerTo) {
+      filterQuery.enginePower = {};
+      if (enginePowerFrom) {
+        const parsedEnginePowerFrom = parseInt(enginePowerFrom, 10);
+        if (!isNaN(parsedEnginePowerFrom))
+          filterQuery.enginePower.$gte = parsedEnginePowerFrom;
+      }
+      if (enginePowerTo) {
+        const parsedEnginePowerTo = parseInt(enginePowerTo, 10);
+        if (!isNaN(parsedEnginePowerTo))
+          filterQuery.enginePower.$lte = parsedEnginePowerTo;
+      }
+    }
+
+    // Fuel Consumption filter
+    const fuelConsumption = searchParams.get("fuelConsumption");
+    if (fuelConsumption && fuelConsumption !== "Any") {
+      const parsedFuelConsumption = parseInt(fuelConsumption, 10);
+      if (!isNaN(parsedFuelConsumption)) {
+        filterQuery.fuelConsumption = parsedFuelConsumption;
+      }
+    }
+
+    // CO2 Emission filter
+    const co2Emission = searchParams.get("co2Emission");
+    if (co2Emission && co2Emission !== "Any") {
+      const parsedCo2Emission = parseInt(co2Emission, 10);
+      if (!isNaN(parsedCo2Emission)) {
+        filterQuery.co2Emission = parsedCo2Emission;
+      }
+    }
+
+    console.log(
+      "Server-side filter query:",
+      JSON.stringify(filterQuery, null, 2),
+    );
+
+    const cars = await Car.find(filterQuery).lean();
     const formattedCars = cars.map((car) => ({
       ...car,
       _id: car._id.toString(),

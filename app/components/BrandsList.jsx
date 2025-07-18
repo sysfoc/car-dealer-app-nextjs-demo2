@@ -1,432 +1,344 @@
+// "use client";
+// import Link from "next/link";
+// import { useState, useEffect } from "react";
+// import {
+//   ArrowLeft,
+//   ArrowRight,
+//   Car,
+//   Truck,
+//   Bus,
+//   CarFront,
+//   CarTaxiFront,
+//   TruckIcon as TruckOpen,
+//   LoaderPinwheelIcon as Spinner,
+// } from "lucide-react";
+// import { MdOutlineArrowOutward } from "react-icons/md";
+
+// // Array of Lucide vehicle icons for random assignment
+// const vehicleIcons = [Car, Truck, Bus, CarFront, CarTaxiFront, TruckOpen];
+
+// const BrandsList = () => {
+//   const [brands, setBrands] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [currentSlide, setCurrentSlide] = useState(0); // State for current slide index
+//   const itemsPerSlide = 12; // 6 top, 6 bottom
+
+//   useEffect(() => {
+//     const fetchBrands = async () => {
+//       try {
+//         const response = await fetch("/Vehicle make and model data (2).json");
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data = await response.json();
+//         const extractedBrands = data.Sheet1.map((item) => ({
+//           name: item.Maker.trim(),
+//         }));
+//         setBrands(extractedBrands);
+//       } catch (error) {
+//         console.error("Failed to fetch brands:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchBrands();
+//   }, []);
+
+//   const totalSlides = Math.ceil(brands.length / itemsPerSlide);
+
+//   const handleNext = () => {
+//     setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
+//   };
+
+//   const handlePrev = () => {
+//     setCurrentSlide((prevSlide) => (prevSlide - 1 + totalSlides) % totalSlides);
+//   };
+
+//     if (loading) {
+//     return (
+//       <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
+//         <div className="max-w-7xl mx-auto">
+//           <div className="flex items-center justify-center h-64">
+//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+//             <span className="ml-3 text-slate-600 font-medium">Loading brands...</span>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <section className="relative mx-4 my-6 overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 px-4 py-12 shadow-lg dark:bg-gray-950">
+//       <div className="absolute inset-0 overflow-hidden">
+//         <div className="absolute -right-32 -top-40 h-96 w-96 animate-pulse rounded-full bg-blue-200/15 to-purple-200/15 blur-3xl dark:bg-blue-900/10 dark:to-purple-900/10"></div>
+//         <div className="absolute -bottom-32 -left-40 h-80 w-80 animate-pulse rounded-full bg-orange-200/15 to-red-200/15 blur-3xl delay-1000 dark:bg-orange-900/10 dark:to-red-900/10"></div>
+//       </div>
+
+//       <div className="relative mx-auto max-w-7xl translate-y-0 opacity-100 transition-all duration-1000">
+//         <div className="mb-16 text-center">
+//           <h2 className="mb-8 text-4xl font-bold text-gray-900 dark:text-white">
+//           Browse Cars by Brands
+//           </h2>
+//           {/* <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-100/20 px-4 py-2 text-sm font-semibold text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+//             <span className="h-2 w-2 animate-pulse rounded-full bg-blue-600 dark:bg-blue-400"></span>
+//             Featured Automotive Brands
+//           </div> 
+//           <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-700 dark:text-gray-300">
+//             Explore our curated collection of world-class automotive brands.
+//           </p> */}
+//           <div className="flex justify-center">
+        
+//             <Link
+//               href="/brands"
+//             >
+//               <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
+//                 <div className="flex items-center justify-center gap-2">
+//                   <span>View All Brands</span>
+//                   <MdOutlineArrowOutward className="h-4 w-4 transition-transform duration-300 group-hover/cta:-translate-y-1 group-hover/cta:translate-x-1" />
+//                 </div>
+//               </div>
+//             </Link>
+//           </div>
+//         </div>
+
+//         <div className="relative px-10">
+//           {" "}
+//           {/* Added horizontal padding for buttons */}
+//           <div className="overflow-hidden">
+//             <div
+//               className="flex transition-transform duration-500 ease-in-out"
+//               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+//             >
+//               {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+//                 <div
+//                   key={slideIndex}
+//                   className="grid w-full flex-shrink-0 grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
+//                 >
+//                   {brands
+//                     .slice(
+//                       slideIndex * itemsPerSlide,
+//                       (slideIndex + 1) * itemsPerSlide,
+//                     )
+//                     .map((brand, index) => {
+//                       const Icon = vehicleIcons[index % vehicleIcons.length]; // Randomly select an icon
+//                       return (
+//                         <Link
+//                           href={`/car-for-sale?make=${encodeURIComponent(brand.name)}`}
+//                           key={`${brand.name}-${index}`}
+//                           className="group"
+//                         >
+//                           <div
+//                             className="animate-fade-in-up relative flex flex-col items-center justify-center rounded-xl border border-gray-300 bg-white p-3 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
+//                             style={{ animationDelay: `${index * 50}ms` }}
+//                           >
+//                             <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-gray-100 p-3 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:shadow-md dark:bg-gray-700">
+//                               <Icon className="h-full w-full text-gray-500 dark:text-gray-300" />
+//                             </div>
+//                             <h3 className="mt-3 w-full truncate px-1 text-center text-base font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400">
+//                               {" "}
+//                               {/* Added truncate and w-full px-1 */}
+//                               {brand.name}
+//                             </h3>
+//                             <div className="mx-auto mt-2 h-1 w-0 rounded-full bg-blue-600 transition-all duration-500 dark:bg-blue-400"></div>
+//                           </div>
+//                         </Link>
+//                       );
+//                     })}
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//           {/* Navigation Buttons */}
+//           {totalSlides > 1 && (
+//             <>
+//               <button
+//                 onClick={handlePrev}
+//                 className="absolute left-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-3 text-gray-700 shadow-lg transition-all duration-300 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+//                 aria-label="Previous brands"
+//               >
+//                 <ArrowLeft className="h-6 w-6" />
+//               </button>
+//               <button
+//                 onClick={handleNext}
+//                 className="absolute right-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-3 text-gray-700 shadow-lg transition-all duration-300 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+//                 aria-label="Next brands"
+//               >
+//                 <ArrowRight className="h-6 w-6" />
+//               </button>
+//             </>
+//           )}
+//         </div>
+//       </div>
+
+//       <style jsx>{`
+//         @keyframes fade-in-up {
+//           from {
+//             opacity: 0;
+//             transform: translateY(30px);
+//           }
+//           to {
+//             opacity: 1;
+//             transform: translateY(0);
+//           }
+//         }
+//         .animate-fade-in-up {
+//           animation: fade-in-up 0.6s ease-out forwards;
+//           opacity: 0;
+//         }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// export default BrandsList;
+
+
+
+
 "use client"
-import Image from "next/image"
+
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { ArrowUpRight, Search, Filter, Grid, List, Wallet, Tag, Car, BatteryCharging } from "lucide-react"
+import { ArrowLeft, ArrowRight, Car, Truck, Bus, CarFront, CarTaxiFront, TruckIcon as TruckOpen } from "lucide-react"
+import { MdOutlineArrowOutward } from "react-icons/md"
+
+// Array of Lucide vehicle icons for random assignment
+const vehicleIcons = [Car, Truck, Bus, CarFront, CarTaxiFront, TruckOpen]
 
 const BrandsList = () => {
-  // Removed useTranslations as next-intl is not supported in Next.js
-  // const t = useTranslations("HomePage");
+  const [brands, setBrands] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [currentSlide, setCurrentSlide] = useState(0) // State for current slide index
+  const itemsPerSlide = 12 // 6 top, 6 bottom
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [viewMode, setViewMode] = useState("grid")
-  const [hoveredBrand, setHoveredBrand] = useState(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const brandLists = [
-    {
-      name: "BMW",
-      image: "/bmw.avif",
-      alt: "bmw cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "luxury",
-      founded: "1916",
-      country: "Germany",
-    },
-    {
-      name: "Audi",
-      image: "/audi.png",
-      alt: "audi cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "luxury",
-      founded: "1909",
-      country: "Germany",
-    },
-    {
-      name: "BYD",
-      image: "/byd.png",
-      alt: "byd cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "electric",
-      founded: "2003",
-      country: "China",
-    },
-    {
-      name: "Ford",
-      image: "/ford.png",
-      alt: "ford cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "mainstream",
-      founded: "1903",
-      country: "USA",
-    },
-    {
-      name: "GWM",
-      image: "/gwm.png",
-      alt: "gwm cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "mainstream",
-      founded: "1984",
-      country: "China",
-    },
-    {
-      name: "Jaguar",
-      image: "/jaguar.png",
-      alt: "jaguar cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "luxury",
-      founded: "1922",
-      country: "UK",
-    },
-    {
-      name: "Lexus",
-      image: "/lexus.jpg",
-      alt: "lexus cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "luxury",
-      founded: "1989",
-      country: "Japan",
-    },
-    {
-      name: "Mercedes",
-      image: "/mercedes.jpg",
-      alt: "mercedes cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "luxury",
-      founded: "1926",
-      country: "Germany",
-    },
-    {
-      name: "Porsche",
-      image: "/porsche.png",
-      alt: "porsche cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "luxury",
-      founded: "1931",
-      country: "Germany",
-    },
-    {
-      name: "Tesla",
-      image: "/tesla.png",
-      alt: "tesla cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "electric",
-      founded: "2003",
-      country: "USA",
-    },
-    {
-      name: "Toyota",
-      image: "/toyota.png",
-      alt: "toyota cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "mainstream",
-      founded: "1937",
-      country: "Japan",
-    },
-    {
-      name: "Bentley",
-      image: "/bentley.avif",
-      alt: "bentley cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "luxury",
-      founded: "1919",
-      country: "UK",
-    },
-    {
-      name: "Honda",
-      image: "/honda.avif",
-      alt: "honda cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "mainstream",
-      founded: "1948",
-      country: "Japan",
-    },
-    {
-      name: "Hyundai",
-      image: "/hyundai.avif",
-      alt: "hyundai cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "mainstream",
-      founded: "1967",
-      country: "South Korea",
-    },
-    {
-      name: "Kia",
-      image: "/kia.avif",
-      alt: "Kia cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "mainstream",
-      founded: "1944",
-      country: "South Korea",
-    },
-    {
-      name: "Volvo",
-      image: "/volvo.png",
-      alt: "volvo cars",
-      url: "https://car-dealer-app-nextjs-demo2.vercel.app/car-for-sale",
-      category: "mainstream",
-      founded: "1927",
-      country: "Sweden",
-    },
-  ]
-  const categories = [
-    { id: "all", name: "All Brands", count: brandLists.length },
-    {
-      id: "luxury",
-      name: "Luxury",
-      count: brandLists.filter((b) => b.category === "luxury").length,
-    },
-    {
-      id: "mainstream",
-      name: "Mainstream",
-      count: brandLists.filter((b) => b.category === "mainstream").length,
-    },
-    {
-      id: "electric",
-      name: "Electric",
-      count: brandLists.filter((b) => b.category === "electric").length,
-    },
-  ]
-  const [visibleCount, setVisibleCount] = useState(8)
-  const filteredBrands = brandLists.filter((brand) => {
-    const matchesSearch = brand.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || brand.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
   useEffect(() => {
-    setIsVisible(true)
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch("/Vehicle make and model data (2).json")
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        const extractedBrands = data.Sheet1.map((item) => ({
+          name: item.Maker.trim(),
+          // Assign a truly random icon to each brand
+          icon: vehicleIcons[Math.floor(Math.random() * vehicleIcons.length)],
+        }))
+        setBrands(extractedBrands)
+      } catch (error) {
+        console.error("Failed to fetch brands:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchBrands()
   }, [])
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case "luxury":
-        return "from-amber-600 to-yellow-700" // Stronger gradient
-      case "electric":
-        return "from-emerald-600 to-teal-700" // Stronger gradient
-      case "mainstream":
-        return "from-blue-600 to-cyan-700" // Stronger gradient
-      default:
-        return "from-gray-600 to-slate-700" // Stronger gradient
-    }
+
+  const totalSlides = Math.ceil(brands.length / itemsPerSlide)
+
+  const handleNext = () => {
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides)
   }
-  const getCategoryIcon = (category) => {
-    switch (category) {
-      case "luxury":
-        return <Wallet className="text-yellow-400" /> // Lucide icon, adjusted color
-      case "electric":
-        return <BatteryCharging className="text-emerald-400" /> // Lucide icon, adjusted color
-      case "mainstream":
-        return <Car className="text-blue-400" /> // Lucide icon, adjusted color
-      default:
-        return <Tag className="text-gray-400" /> // Lucide icon
-    }
+
+  const handlePrev = () => {
+    setCurrentSlide((prevSlide) => (prevSlide - 1 + totalSlides) % totalSlides)
   }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <span className="ml-3 text-slate-600 font-medium">Loading brands...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <section className="relative overflow-hidden bg-gray-100 px-4 py-12 dark:bg-gray-950 border border-gray-200 rounded-2xl shadow-lg mx-4 my-6">
-      {/* Subtle Background Elements */}
+    <section className="relative mx-4 my-6 overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 px-4 py-12 shadow-lg dark:bg-gray-950">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -right-32 -top-40 h-96 w-96 animate-pulse rounded-full bg-blue-200/15 to-purple-200/15 blur-3xl dark:bg-blue-900/10 dark:to-purple-900/10"></div>
         <div className="absolute -bottom-32 -left-40 h-80 w-80 animate-pulse rounded-full bg-orange-200/15 to-red-200/15 blur-3xl delay-1000 dark:bg-orange-900/10 dark:to-red-900/10"></div>
       </div>
-      <div
-        className={`relative mx-auto max-w-7xl transition-all duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
-      >
-        {/* Header Section */}
+      <div className="relative mx-auto max-w-7xl translate-y-0 opacity-100 transition-all duration-1000">
         <div className="mb-16 text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-100/20 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-4 py-2 text-sm font-semibold">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-blue-600 dark:bg-blue-400"></span>
-            Featured Automotive Brands
-          </div>
-          <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-700 dark:text-gray-300">
-            Explore our curated collection of world-class automotive brands, from luxury icons to innovative electric
-            pioneers.
-          </p>
-          {/* Controls Section */}
-          <div className="flex flex-col items-center justify-between gap-6 rounded-xl border border-gray-300 bg-white p-6 shadow-md dark:border-gray-700 dark:bg-gray-900 lg:flex-row">
-            {/* Search Bar */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search brands..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500"
-              />
-            </div>
-            {/* Category Filter */}
-            <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-              <select
-                value={selectedCategory}
-                aria-label="Filter by category"
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-              >
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name} ({cat.count})
-                  </option>
-                ))}
-              </select>
-            </div>
-            {/* View Toggle */}
-            <div className="flex items-center gap-2 rounded-lg border border-gray-300 bg-gray-200 p-1 dark:border-gray-700 dark:bg-gray-800">
-              <button
-                onClick={() => setViewMode("grid")}
-                aria-label="Switch to Grid View"
-                className={`rounded-md p-2 transition-all duration-300 ${
-                  viewMode === "grid"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-100"
-                }`}
-              >
-                <Grid className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                aria-label="Switch to List View"
-                className={`rounded-md p-2 transition-all duration-300 ${
-                  viewMode === "list"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-100"
-                }`}
-              >
-                <List className="h-5 w-5" />
-              </button>
-            </div>
-            {/* View All Button */}
+          <h2 className="mb-8 text-4xl font-bold text-gray-900 dark:text-white">Browse Cars by Brands</h2>
+          <div className="flex justify-center">
             <Link href="/brands">
-              <div className="group inline-flex items-center gap-3 rounded-lg bg-blue-600 px-5 py-2.5 text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg">
-                <span className="font-medium">View All</span>
-                <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
-              </div>
-            </Link>
-          </div>
-        </div>
-        {/* Results Count */}
-        <div className="mb-8">
-          <p className="text-center text-gray-700 dark:text-gray-300">
-            Showing {filteredBrands.length} of {brandLists.length} brands
-            {selectedCategory !== "all" && ` in ${categories.find((c) => c.id === selectedCategory)?.name}`}
-          </p>
-        </div>
-        {/* Brands Grid/List */}
-        <div
-          className={`
-          ${
-            viewMode === "grid"
-              ? "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              : "flex flex-col gap-4"
-          }
-        `}
-        >
-          {filteredBrands.slice(0, visibleCount).map((brand, index) => (
-            <Link href={brand.url} key={`${brand.name}-${index}`}>
-              <div
-                className={`
-                  group relative cursor-pointer overflow-hidden rounded-xl border border-gray-300 bg-white shadow-md
-                  transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20
-                  dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600
-                  ${viewMode === "list" ? "flex items-center p-5" : "p-5"}
-                  animate-fade-in-up
-                `}
-                style={{ animationDelay: `${index * 100}ms` }}
-                onMouseEnter={() => setHoveredBrand(brand.name)}
-                onMouseLeave={() => setHoveredBrand(null)}
-              >
-                {/* Hover Background Effect */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${getCategoryColor(brand.category)} rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-5`}
-                ></div>
-                {/* Category Badge */}
-                <div
-                  className={`absolute right-3 top-3 z-30 ${viewMode === "list" ? "relative right-0 top-0 ml-auto" : ""}`}
-                >
-                  <span
-                    className={`inline-flex items-center rounded-full bg-gradient-to-r px-2.5 py-1 text-xs font-semibold text-white ${getCategoryColor(brand.category)}`}
-                  >
-                    {brand.category}
-                  </span>
-                </div>
-                <div
-                  className={`relative z-10 ${viewMode === "list" ? "flex flex-1 items-center gap-6" : "flex flex-col items-center space-y-4"}`}
-                >
-                  {/* Image Container */}
-                  <div
-                    className={`relative ${viewMode === "list" ? "h-16 w-16" : "h-24 w-24"} overflow-hidden rounded-lg border border-gray-300 bg-gray-100 p-3 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:shadow-md dark:border-gray-700 dark:bg-gray-700`}
-                  >
-                    <Image
-                      src={brand.image || "/placeholder.svg"}
-                      alt={brand.alt}
-                      width={96}
-                      height={96}
-                      className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  {/* Brand Info */}
-                  <div className={`${viewMode === "list" ? "flex-1" : "text-center"}`}>
-                    <h3
-                      className={`${viewMode === "list" ? "text-lg" : "text-xl"} mb-2 font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400`}
-                    >
-                      {brand.name}
-                    </h3>
-                    {viewMode === "grid" && (
-                      <div className="space-y-1 text-sm text-gray-700 dark:text-gray-400">
-                        <p>Founded: {brand.founded}</p>
-                        <p>Origin: {brand.country}</p>
-                      </div>
-                    )}
-                    <div
-                      className={`${hoveredBrand === brand.name ? "w-12" : "w-0"} h-1 bg-blue-600 dark:bg-blue-400 mx-auto mt-3 rounded-full transition-all duration-500`}
-                    ></div>
-                  </div>
-                  {viewMode === "list" && (
-                    <div className="text-right text-sm text-gray-700 dark:text-gray-400">
-                      <p className="font-medium">{brand.founded}</p>
-                      <p>{brand.country}</p>
-                    </div>
-                  )}
-                </div>
-                {/* Shine Effect */}
-                <div className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
-                  <div className="absolute inset-0 translate-x-[-200%] -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-[200%]"></div>
+              <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
+                <div className="flex items-center justify-center gap-2">
+                  <span>View All Brands</span>
+                  <MdOutlineArrowOutward className="h-4 w-4 transition-transform duration-300 group-hover/cta:-translate-y-1 group-hover/cta:translate-x-1" />
                 </div>
               </div>
             </Link>
-          ))}
+          </div>
         </div>
-        {/* Load More Button */}
-        {filteredBrands.length > visibleCount && (
-          <div className="mt-12 text-center">
-            <button
-              onClick={() => setVisibleCount((prev) => prev + 6)}
-              className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg"
+        <div className="relative px-10">
+          {" "}
+          {/* Added horizontal padding for buttons */}
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              Load More
-            </button>
-          </div>
-        )}
-        {/* Show Less Button (appears only if more than initial 8 are visible) */}
-        {visibleCount > 8 && filteredBrands.length > 8 && (
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => setVisibleCount(8)}
-              className="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-100 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-            >
-              Show Less
-            </button>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {filteredBrands.length === 0 && (
-          <div className="py-20 text-center">
-            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-gray-300 bg-gray-200 dark:border-gray-700 dark:bg-gray-700">
-              <Search className="h-12 w-12 text-gray-500" />
+              {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+                <div
+                  key={slideIndex}
+                  className="grid w-full flex-shrink-0 grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
+                >
+                  {brands.slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide).map((brand, index) => {
+                    const Icon = brand.icon // Use the pre-assigned random icon
+                    return (
+                      <Link
+                        href={`/car-for-sale?make=${encodeURIComponent(brand.name)}`}
+                        key={`${brand.name}-${index}`}
+                        className="group"
+                      >
+                        <div
+                          className="animate-fade-in-up relative flex flex-col items-center justify-center rounded-xl border border-gray-300 bg-white p-3 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-gray-100 p-3 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:shadow-md dark:bg-gray-700">
+                            <Icon className="h-full w-full text-gray-500 dark:text-gray-300" />
+                          </div>
+                          <h3 className="mt-3 w-full truncate px-1 text-center text-base font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400">
+                            {" "}
+                            {/* Added truncate and w-full px-1 */}
+                            {brand.name}
+                          </h3>
+                          <div className="mx-auto mt-2 h-1 w-0 rounded-full bg-blue-600 transition-all duration-500 dark:bg-blue-400"></div>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              ))}
             </div>
-            <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">No brands found</h3>
-            <p className="mb-6 text-gray-700 dark:text-gray-400">Try adjusting your search or filter criteria</p>
-            <button
-              onClick={() => {
-                setSearchTerm("")
-                setSelectedCategory("all")
-              }}
-              className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg"
-            >
-              Clear Filters
-            </button>
           </div>
-        )}
+          {/* Navigation Buttons */}
+          {totalSlides > 1 && (
+            <>
+              <button
+                onClick={handlePrev}
+                className="absolute left-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-3 text-gray-700 shadow-lg transition-all duration-300 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                aria-label="Previous brands"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+              <button
+                onClick={handleNext}
+                className="absolute right-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-3 text-gray-700 shadow-lg transition-all duration-300 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                aria-label="Next brands"
+              >
+                <ArrowRight className="h-6 w-6" />
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <style jsx>{`
         @keyframes fade-in-up {

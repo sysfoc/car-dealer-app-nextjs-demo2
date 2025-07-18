@@ -59,8 +59,8 @@ export default function Home() {
         <Herosection />
       </MainLayout>
       <VehicalsList loadingState={loading} />
-      <BrowseCars />
       <BrandsList />
+      <BrowseCars />
       <Services />
       <Blog />
       <section className="bg-gray-50 dark:bg-slate-950 py-16 border-t border-gray-200 dark:border-slate-800">
