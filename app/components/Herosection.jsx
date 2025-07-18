@@ -63,14 +63,6 @@ const HeroSection = () => {
                 <span className="relative z-10 mr-3">Explore Our Vehicles</span>
                 <FaArrowRight className="relative z-10 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
               </button>
-
-              <button
-                onClick={() => router.push("/add-ons")}
-                className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-5 py-2.5 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800"
-              >
-                <span className="relative z-10 mr-2">Explore Add-Ons</span>
-                <FaArrowRight className="relative z-10 h-3 w-3 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" />
-              </button>
               
               <button
                 onClick={() => router.push("/liked-cars")}

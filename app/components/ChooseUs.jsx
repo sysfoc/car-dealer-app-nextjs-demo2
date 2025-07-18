@@ -7,10 +7,10 @@ import { MdCleaningServices } from "react-icons/md";
 
 const ChooseUs = () => {
   const features = [
-    {
+     {
       icon: BiSolidOffer,
-      title: "Special Financing Offers",
-      description: "Our stress-free finance department that can find financial solutions to meet your budget and lifestyle needs.",
+      title: "Special Lease Offers",
+      description: "Explore flexible lease options tailored to your needs, making it easy and affordable to drive your next car.",
       color: "from-blue-500 to-cyan-500",
       bgColor: "bg-blue-500/10",
       hoverBgColor: "group-hover:bg-blue-500/20"

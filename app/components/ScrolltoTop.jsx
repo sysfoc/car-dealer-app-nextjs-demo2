@@ -38,7 +38,8 @@ const ScrolltoTop = () => {
     <div>
       {isVisible && (
         <div
-          className="group fixed bottom-28 right-8 cursor-pointer z-30 transform transition-all duration-300 hover:scale-110"
+          className="group fixed bottom-4 right-20 cursor-pointer z-30 transform transition-all duration-300 hover:scale-110"
+          // bottom-24 right-3
           onClick={scrollToTop}
         >
           {/* Main Button Container */}

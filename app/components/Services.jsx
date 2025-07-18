@@ -53,14 +53,16 @@ const Services = () => {
     },
   ]
   return (
-    <section className="py-12 bg-gray-50 border border-gray-200 rounded-2xl shadow-lg mx-4 my-6 dark:bg-gray-950 dark:border-gray-800">
+    <section className="py-12 bg-gray-100 border border-gray-200 rounded-2xl shadow-lg mx-4 my-6 dark:bg-gray-950 dark:border-gray-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center bg-blue-100/20 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-3">
-            <span>Our Services</span>
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3">How Can We Help You?</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
+                  <span className="bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-100 dark:to-purple-100 bg-clip-text text-transparent">
+                    Our Services
+                  </span>
+                </h2>
+          {/* <h4 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3">How Can We Help You?</h4> */}
           <p className="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-5 text-base">
             Whether you are buying or selling, we are here to make your automotive journey seamless and rewarding
           </p>
