@@ -4,6 +4,7 @@ import { BiSolidOffer } from "react-icons/bi";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { IoPricetagsOutline } from "react-icons/io5";
 import { MdCleaningServices } from "react-icons/md";
+import Link from "next/link";
 
 const ChooseUs = () => {
   const features = [
@@ -133,12 +134,21 @@ const ChooseUs = () => {
                 Join thousands of satisfied customers who chose excellence
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <Link
+                href="/car-for-sale"
+                >
                 <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 dark:from-blue-600 dark:to-purple-700 dark:hover:from-blue-700 dark:hover:to-purple-800 text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-sm">
                   Browse Our Inventory
                 </button>
-                <button className="bg-white/20 dark:bg-gray-700/50 backdrop-blur-sm hover:bg-white/30 dark:hover:bg-gray-600/60 text-white dark:text-gray-100 font-semibold px-6 py-2.5 rounded-lg border border-white/30 dark:border-gray-600/50 hover:border-white/50 dark:hover:border-gray-500/70 transition-all duration-300 text-sm">
+                </Link>
+                <Link
+                href="/contact"
+                >
+                <button 
+                className="bg-white/20 dark:bg-gray-700/50 backdrop-blur-sm hover:bg-white/30 dark:hover:bg-gray-600/60 text-white dark:text-gray-100 font-semibold px-6 py-2.5 rounded-lg border border-white/30 dark:border-gray-600/50 hover:border-white/50 dark:hover:border-gray-500/70 transition-all duration-300 text-sm">
                   Contact Us Today
                 </button>
+                </Link>
               </div>
             </div>
           </div>
