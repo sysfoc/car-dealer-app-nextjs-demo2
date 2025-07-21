@@ -237,9 +237,7 @@ export async function POST(req) {
       enginePower: safeParseNumber(formEntries.enginePower),
       fuelConsumption: safeParseNumber(formEntries.fuelConsumption),
       co2Emission: safeParseNumber(formEntries.co2Emission),
-      dealerId: formEntries.dealerId
-        ? safeParseNumber(formEntries.dealerId)
-        : null,
+      dealerId: formEntries.dealerId ? new ObjectId(formEntries.dealerId) : null,
 
       // String fields - keep as strings, even if empty
       type: safeParseString(formEntries.type),
@@ -303,25 +301,6 @@ export async function POST(req) {
   }
 }
 
-// export async function GET() {
-//   try {
-//     await dbConnect();
-//     const cars = await Car.find({}).lean();
-//     const formattedCars = cars.map((car) => ({
-//       ...car,
-//       _id: car._id.toString(),
-//       userId: car.userId?.toString(),
-//       dealerId: car.dealerId?.toString(),
-//     }));
-//     return NextResponse.json({ cars: formattedCars });
-//   } catch (error) {
-//     console.error("Error fetching cars:", error);
-//     return NextResponse.json(
-//       { error: "Failed to fetch data", details: error.message },
-//       { status: 500 },
-//     );
-//   }
-// }
 
 export async function GET(req) {
   try {
@@ -584,3 +563,26 @@ export async function GET(req) {
     );
   }
 }
+
+
+
+
+// export async function GET() {
+//   try {
+//     await dbConnect();
+//     const cars = await Car.find({}).lean();
+//     const formattedCars = cars.map((car) => ({
+//       ...car,
+//       _id: car._id.toString(),
+//       userId: car.userId?.toString(),
+//       dealerId: car.dealerId?.toString(),
+//     }));
+//     return NextResponse.json({ cars: formattedCars });
+//   } catch (error) {
+//     console.error("Error fetching cars:", error);
+//     return NextResponse.json(
+//       { error: "Failed to fetch data", details: error.message },
+//       { status: 500 },
+//     );
+//   }
+// }

@@ -20,7 +20,7 @@ export async function POST(request) {
 
     // Fetch reCAPTCHA settings from DB to check if it's active
     const settingsRes = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/settings/general`,
+      "/api/settings/general",
       {
         cache: "no-store",
         next: { revalidate: 0 },

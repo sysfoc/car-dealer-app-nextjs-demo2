@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const CarSchema = new mongoose.Schema(
   {
-    dealerId: Number,
+    dealerId: mongoose.Schema.Types.ObjectId,
     userId: String,
     tag:String,
     make: { type: String, required: true }, 

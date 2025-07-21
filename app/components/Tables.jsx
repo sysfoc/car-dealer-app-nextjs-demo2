@@ -90,49 +90,49 @@ const Tables = ({ loadingState, carData, translation: t }) => {
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Vehicle
               </TableCell>
-              <TableCell>{carData.makeName}</TableCell>
+              <TableCell>{carData.make}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Doors
               </TableCell>
-              <TableCell>{carData.doors}</TableCell>
+              <TableCell>{carData.doors || "Not provided"}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Seats
               </TableCell>
-              <TableCell>{carData.seats}</TableCell>
+              <TableCell>{carData.seats || "Not provided"}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Cylinders
               </TableCell>
-              <TableCell>{carData.cylinder}</TableCell>
+              <TableCell>{carData.cylinder || "Not provided"}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Fuel Type
               </TableCell>
-              <TableCell>{carData.fuelType}</TableCell>
+              <TableCell>{carData.fuelType || "Not provided"}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Gearbox
               </TableCell>
-              <TableCell>{carData.gearbox}</TableCell>
+              <TableCell>{carData.gearbox || "Not provided"}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Gears
               </TableCell>
-              <TableCell>{carData.noOfGears}</TableCell>
+              <TableCell>{carData.noOfGears || "Not provided"}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-semibold text-blue-950 dark:text-gray-200">
                 Capacity
               </TableCell>
-              <TableCell>{carData.engineCapacity}</TableCell>
+              <TableCell>{carData.engineCapacity || "Not provided"}</TableCell>
             </TableRow>
           </TableBody>
         )}

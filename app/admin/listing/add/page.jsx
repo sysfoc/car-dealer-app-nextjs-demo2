@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useCurrency } from "../../../context/CurrencyContext";
 
 const Page = () => {
   const [dealers, setDealers] = useState([]);
@@ -113,6 +114,7 @@ const Page = () => {
   const [selectedModel, setSelectedModel] = useState("");
   const [jsonData, setJsonData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { currency, selectedCurrency } = useCurrency();
 
   useEffect(() => {
     const fetchJsonData = async () => {
@@ -181,6 +183,7 @@ const Page = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     if (type === "checkbox") {
       setFormData((prev) => ({
         ...prev,
@@ -188,6 +191,12 @@ const Page = () => {
           ...prev.features,
           [name]: checked,
         },
+      }));
+    } else if (type === "number") {
+      const numericValue = parseFloat(value);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: isNaN(numericValue) ? "" : Math.abs(numericValue),
       }));
     } else {
       setFormData((prev) => ({
@@ -354,6 +363,7 @@ const Page = () => {
                 type="number"
                 value={formData.price}
                 onChange={handleChange}
+                addon={selectedCurrency?.name}
               />
             </div>
             <div>
@@ -462,22 +472,20 @@ const Page = () => {
                   name="fuelCapacityPerTank"
                   value={formData.fuelCapacityPerTank}
                   onChange={handleChange}
+                  min="0"
                 />
               </div>
               <div>
                 <Label htmlFor="filling-cost">Fuel Tank Fill Price:</Label>
-                <Select
+                <TextInput
                   id="filling-cost"
                   name="fuelTankFillPrice"
+                  type="number"
                   value={formData.fuelTankFillPrice}
                   onChange={handleChange}
-                >
-                  <option value="">Select</option>
-                  <option value="20">$20</option>
-                  <option value="30">$30</option>
-                  <option value="40">$40</option>
-                  <option value="50">$50</option>
-                </Select>
+                  min="0"
+                  addon={selectedCurrency?.name}
+                />
               </div>
               <div>
                 <Label htmlFor="gearbox">Gear Box:</Label>
@@ -876,6 +884,7 @@ const Page = () => {
                   value={formData.dealerId}
                   onChange={handleChange}
                   className="mt-1"
+                  required // Add this line
                 >
                   <option value="">-- Select Dealer --</option>
                   {dealers?.map((dealer) => (

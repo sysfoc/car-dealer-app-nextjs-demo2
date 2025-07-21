@@ -108,29 +108,27 @@ const Features = ({ loadingState, carData, car, translation: t }) => {
         </div>
       </div>
       <div className="mt-3 border-b-2 border-blue-950 dark:border-gray-700"></div>
-      <div className="my-3">
-        <div className="flex items-center gap-2 bg-blue-950 p-3 dark:bg-gray-700">
-          <div>
-            <BsFillBookmarkFill fontSize={20} className="text-white" />
+      {car.features && car.features.length > 0 && (
+        <div className="my-3">
+          <div className="flex items-center gap-2 bg-blue-950 p-3 dark:bg-gray-700">
+            <div>
+              <BsFillBookmarkFill fontSize={20} className="text-white" />
+            </div>
+            <h3 className="text-lg font-bold uppercase text-white">{t("vehicalFeatures")}</h3>
           </div>
-          <h3 className="text-lg font-bold uppercase text-white">
-            {t("vehicalFeatures")}
-          </h3>
+          <Table hoverable className="mt-3 dark:bg-gray-700">
+            <TableBody className="divide-y">
+              {featureChunks.map((chunk, rowIndex) => (
+                <TableRow key={rowIndex} className="grid grid-cols-2">
+                  {chunk.map((feature, colIndex) => (
+                    <TableCell key={colIndex}>{loading ? <Skeleton height={25} /> : feature}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
-        <Table hoverable className="mt-3 dark:bg-gray-700">
-          <TableBody className="divide-y">
-            {featureChunks.map((chunk, rowIndex) => (
-              <TableRow key={rowIndex} className="grid grid-cols-2">
-                {chunk.map((feature, colIndex) => (
-                  <TableCell key={colIndex}>
-                    {loading ? <Skeleton height={25} /> : feature}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      )}
       <div className="mt-8 flex items-center gap-2 bg-blue-950 p-3 dark:bg-gray-700">
         <div>
           <MdLocationOn fontSize={25} className="text-white" />

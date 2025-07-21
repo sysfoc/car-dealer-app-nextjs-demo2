@@ -1,16 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button, Checkbox, FileInput, Label, Select, Textarea, TextInput } from "flowbite-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useParams } from "next/navigation"
+import { useState, useEffect } from "react";
+import {
+  Button,
+  Checkbox,
+  FileInput,
+  Label,
+  Select,
+  Textarea,
+  TextInput,
+} from "flowbite-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useCurrency } from "../../../../context/CurrencyContext";
 
 const CarEditPage = ({ params }) => {
-  const router = useRouter()
-  const { id } = useParams()
-  const [car, setCar] = useState(null)
+  const router = useRouter();
+  const { id } = useParams();
+  const [car, setCar] = useState(null);
   const [formData, setFormData] = useState({
     make: "",
     model: "",
@@ -57,27 +66,30 @@ const CarEditPage = ({ params }) => {
     year: "",
     engineCapacity: "",
     dealerId: "",
-  })
+  });
 
-  const [makes, setMakes] = useState([])
-  const [models, setModels] = useState([])
-  const [selectedMake, setSelectedMake] = useState("")
-  const [selectedModel, setSelectedModel] = useState("")
-  const [jsonData, setJsonData] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [makes, setMakes] = useState([]);
+  const [models, setModels] = useState([]);
+  const [selectedMake, setSelectedMake] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [jsonData, setJsonData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { currency, selectedCurrency } = useCurrency();
 
   useEffect(() => {
     const fetchCarDetails = async () => {
       try {
-        const res = await fetch(`/api/cars/${id}`, { method: "GET" })
+        const res = await fetch(`/api/cars/${id}`, { method: "GET" });
         if (res.ok) {
-          const data = await res.json()
-          console.log("Fetched Car Data:", data.car)
+          const data = await res.json();
+          console.log("Fetched Car Data:", data.car);
 
           setFormData({
             ...data.car,
             images: data.car.imageUrls || [],
-            slug: data.car.make ? data.car.make.toLowerCase().replace(/\s+/g, "-") : "",
+            slug: data.car.make
+              ? data.car.make.toLowerCase().replace(/\s+/g, "-")
+              : "",
             sold: data.car.sold || false,
             tag: data.car.tag || "default",
             // Ensure numeric fields are properly handled
@@ -121,58 +133,60 @@ const CarEditPage = ({ params }) => {
             engineCapacity: data.car.engineCapacity || "",
             // Handle features array
             features: Array.isArray(data.car.features) ? data.car.features : [],
-          })
+          });
 
           // Set the selected make and model for the dropdowns
-          setSelectedMake(data.car.make || "")
-          setSelectedModel(data.car.model || "")
+          setSelectedMake(data.car.make || "");
+          setSelectedModel(data.car.model || "");
 
-          setCar(data.car)
+          setCar(data.car);
         }
       } catch (error) {
-        console.error("Error fetching car details:", error)
+        console.error("Error fetching car details:", error);
       }
-    }
+    };
 
-    fetchCarDetails()
-  }, [id])
+    fetchCarDetails();
+  }, [id]);
 
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        setLoading(true)
-        const response = await fetch("/Vehicle make and model data (2).json")
-        const data = await response.json()
-        setJsonData(data.Sheet1)
+        setLoading(true);
+        const response = await fetch("/Vehicle make and model data (2).json");
+        const data = await response.json();
+        setJsonData(data.Sheet1);
         // Extract unique makes
-        const uniqueMakes = [...new Set(data.Sheet1.map((item) => item.Maker))]
-        setMakes(uniqueMakes)
+        const uniqueMakes = [...new Set(data.Sheet1.map((item) => item.Maker))];
+        setMakes(uniqueMakes);
       } catch (error) {
-        console.error("Error loading vehicle data:", error)
+        console.error("Error loading vehicle data:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchJsonData()
-  }, [])
+    fetchJsonData();
+  }, []);
 
   useEffect(() => {
     if (selectedMake && jsonData.length > 0) {
-      const makeData = jsonData.find((item) => item.Maker === selectedMake)
+      const makeData = jsonData.find((item) => item.Maker === selectedMake);
       if (makeData && makeData["model "]) {
         // Split models string into array and trim whitespace
-        const modelArray = makeData["model "].split(",").map((model) => model.trim())
-        setModels(modelArray)
+        const modelArray = makeData["model "]
+          .split(",")
+          .map((model) => model.trim());
+        setModels(modelArray);
       } else {
-        setModels([])
+        setModels([]);
       }
       // Don't reset selectedModel if we're loading existing data
       if (!car) {
-        setSelectedModel("")
+        setSelectedModel("");
       }
     }
-  }, [selectedMake, jsonData, car])
+  }, [selectedMake, jsonData, car]);
 
   // Update form data when make changes
   useEffect(() => {
@@ -181,8 +195,8 @@ const CarEditPage = ({ params }) => {
       make: selectedMake,
       // Only reset model if we're not loading existing data
       model: car ? prev.model : "",
-    }))
-  }, [selectedMake, car])
+    }));
+  }, [selectedMake, car]);
 
   // Update form data when model changes
   useEffect(() => {
@@ -190,12 +204,12 @@ const CarEditPage = ({ params }) => {
       setFormData((prev) => ({
         ...prev,
         model: selectedModel,
-      }))
+      }));
     }
-  }, [selectedModel])
+  }, [selectedModel]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
       setFormData((prev) => ({
         ...prev,
@@ -203,67 +217,67 @@ const CarEditPage = ({ params }) => {
           ...prev.features,
           [name]: checked,
         },
-      }))
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: e.target.value,
-      }))
+      }));
     }
-  }
+  };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-    }))
-  }
+    }));
+  };
 
   const handleFeatureChange = (e) => {
-    const feature = e.target.value
+    const feature = e.target.value;
     setFormData((prev) => ({
       ...prev,
       features: prev.features.includes(feature)
         ? prev.features.filter((f) => f !== feature)
         : [...prev.features, feature],
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const formDataToSend = new FormData()
+    e.preventDefault();
+    const formDataToSend = new FormData();
 
     for (const key in formData) {
-      if (key === "_id") continue
+      if (key === "_id") continue;
 
       if (key === "images" && formData.images && formData.images.length > 0) {
         formData.images.forEach((image, index) => {
           if (image instanceof File) {
-            formDataToSend.append("images", image)
+            formDataToSend.append("images", image);
           }
-        })
+        });
       } else if (key === "video" && formData.video) {
         if (formData.video instanceof File) {
-          formDataToSend.append("video", formData.video)
+          formDataToSend.append("video", formData.video);
         }
       } else if (key === "features") {
-        formDataToSend.append(key, JSON.stringify(formData[key]))
+        formDataToSend.append(key, JSON.stringify(formData[key]));
       } else if (key === "description") {
-        formDataToSend.append(key, formData[key] || "")
+        formDataToSend.append(key, formData[key] || "");
       } else if (key === "isLease") {
         // Handle boolean field properly
-        formDataToSend.append(key, formData[key] ? "true" : "false")
+        formDataToSend.append(key, formData[key] ? "true" : "false");
       } else if (key === "description") {
-  formDataToSend.append(key, formData[key] || "")}
-       else if (key === "sold") {
+        formDataToSend.append(key, formData[key] || "");
+      } else if (key === "sold") {
         // Handle boolean field properly
-        formDataToSend.append(key, formData[key] ? "true" : "false")
+        formDataToSend.append(key, formData[key] ? "true" : "false");
       } else {
         // Handle all other fields, including numeric ones
-        const value = formData[key]
+        const value = formData[key];
         if (value !== null && value !== undefined) {
-          formDataToSend.append(key, value.toString())
+          formDataToSend.append(key, value.toString());
         }
       }
     }
@@ -272,33 +286,36 @@ const CarEditPage = ({ params }) => {
       const res = await fetch(`/api/cars/${id}`, {
         method: "PATCH",
         body: formDataToSend,
-      })
+      });
 
       if (res.ok) {
-        const data = await res.json()
-        console.log("Car updated successfully:", data)
-        alert("Car updated successfully!")
-        router.push("/admin/listing/view")
+        const data = await res.json();
+        console.log("Car updated successfully:", data);
+        alert("Car updated successfully!");
+        router.push("/admin/listing/view");
       } else {
-        const errorData = await res.json()
-        console.error("Failed to update car:", errorData)
-        alert(`Failed to update car: ${errorData.error || "Unknown error"}`)
+        const errorData = await res.json();
+        console.error("Failed to update car:", errorData);
+        alert(`Failed to update car: ${errorData.error || "Unknown error"}`);
       }
     } catch (error) {
-      console.error("Error updating car:", error)
-      alert("An error occurred while updating the car.")
+      console.error("Error updating car:", error);
+      alert("An error occurred while updating the car.");
     }
-  }
+  };
 
   if (!car) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
     <section className="my-10">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Edit Car Listing</h2>
-        <Link href={"/admin/listing/view"} className="rounded-lg bg-blue-500 p-3 text-sm text-white">
+        <Link
+          href={"/admin/listing/view"}
+          className="rounded-lg bg-blue-500 p-3 text-sm text-white"
+        >
           View All
         </Link>
       </div>
@@ -342,11 +359,23 @@ const CarEditPage = ({ params }) => {
           </div>
           <div>
             <Label htmlFor="price">Price:</Label>
-            <TextInput id="price" name="price" type="number" value={formData.price} onChange={handleInputChange} />
+            <TextInput
+              id="price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleInputChange}
+              addon={selectedCurrency?.name}
+            />
           </div>
           <div>
             <Label htmlFor="type">Vehicle Type:</Label>
-            <Select id="type" name="type" value={formData.type} onChange={handleInputChange}>
+            <Select
+              id="type"
+              name="type"
+              value={formData.type}
+              onChange={handleInputChange}
+            >
               <option value="">Select Type</option>
               <option value="Sedan">Sedan</option>
               <option value="SUV">SUV</option>
@@ -357,26 +386,50 @@ const CarEditPage = ({ params }) => {
           </div>
           <div>
             <Label htmlFor="fuelType">Fuel Type:</Label>
-            <Select id="fuelType" name="fuelType" value={formData.fuelType} onChange={handleInputChange}>
+            <Select
+              id="fuelType"
+              name="fuelType"
+              value={formData.fuelType}
+              onChange={handleInputChange}
+            >
               <option value="">Select Fuel Type</option>
               <option value="petrol">Petrol (Gasoline)</option>
               <option value="diesel">Diesel</option>
               <option value="Electric">Electric</option>
-              <option value="Hybrid (Petrol/Electric)">Hybrid (Petrol/Electric)</option>
-              <option value="Plug-in Hybrid (PHEV)">Plug-in Hybrid (PHEV)</option>
-              <option value="CNG (Compressed Natural Gas)">CNG (Compressed Natural Gas)</option>
-              <option value="LPG (Liquefied Petroleum Gas)">LPG (Liquefied Petroleum Gas)</option>
+              <option value="Hybrid (Petrol/Electric)">
+                Hybrid (Petrol/Electric)
+              </option>
+              <option value="Plug-in Hybrid (PHEV)">
+                Plug-in Hybrid (PHEV)
+              </option>
+              <option value="CNG (Compressed Natural Gas)">
+                CNG (Compressed Natural Gas)
+              </option>
+              <option value="LPG (Liquefied Petroleum Gas)">
+                LPG (Liquefied Petroleum Gas)
+              </option>
               <option value="Hydrogen Fuel Cell">Hydrogen Fuel Cell</option>
               <option value="Ethanol (Flex-Fuel)">Ethanol (Flex-Fuel)</option>
             </Select>
           </div>
           <div>
             <Label htmlFor="kms">Kilometers:</Label>
-            <TextInput id="kms" name="kms" type="number" value={formData.kms} onChange={handleInputChange} />
+            <TextInput
+              id="kms"
+              name="kms"
+              type="number"
+              value={formData.kms}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="gearbox">Gearbox:</Label>
-            <Select id="gearbox" name="gearbox" value={formData.gearbox} onChange={handleInputChange}>
+            <Select
+              id="gearbox"
+              name="gearbox"
+              value={formData.gearbox}
+              onChange={handleInputChange}
+            >
               <option value="">Select Gearbox</option>
               <option value="manual">Manual</option>
               <option value="automatic">Automatic</option>
@@ -385,7 +438,12 @@ const CarEditPage = ({ params }) => {
           </div>
           <div>
             <Label htmlFor="condition">Condition:</Label>
-            <Select id="condition" name="condition" value={formData.condition} onChange={handleInputChange}>
+            <Select
+              id="condition"
+              name="condition"
+              value={formData.condition}
+              onChange={handleInputChange}
+            >
               <option value="">Select Condition</option>
               <option value="new">New</option>
               <option value="Used">Used</option>
@@ -393,7 +451,12 @@ const CarEditPage = ({ params }) => {
           </div>
           <div>
             <Label htmlFor="year">Year:</Label>
-            <Select id="year" name="modelYear" value={formData.modelYear} onChange={handleInputChange}>
+            <Select
+              id="year"
+              name="modelYear"
+              value={formData.modelYear}
+              onChange={handleInputChange}
+            >
               <option value="">Select Year</option>
               {[...Array(20)].map((_, i) => (
                 <option key={i} value={2025 - i}>
@@ -411,6 +474,7 @@ const CarEditPage = ({ params }) => {
               name="fuelTankFillPrice"
               value={formData.fuelTankFillPrice}
               onChange={handleInputChange}
+              addon={selectedCurrency?.name}
             />
           </div>
           <div>
@@ -522,13 +586,18 @@ const CarEditPage = ({ params }) => {
             />
           </div>
           <div>
-  <Label htmlFor="tag">Tag:</Label>
-  <Select id="tag" name="tag" value={formData.tag} onChange={handleInputChange}>
-    <option value="default">Default</option>
-    <option value="featured">Featured</option>
-    <option value="promotion">Promotion</option>
-  </Select>
-</div>
+            <Label htmlFor="tag">Tag:</Label>
+            <Select
+              id="tag"
+              name="tag"
+              value={formData.tag}
+              onChange={handleInputChange}
+            >
+              <option value="default">Default</option>
+              <option value="featured">Featured</option>
+              <option value="promotion">Promotion</option>
+            </Select>
+          </div>
           <div className="sm:col-span-1">
             <Label htmlFor="description">Description:</Label>
             <Textarea
@@ -542,35 +611,77 @@ const CarEditPage = ({ params }) => {
           </div>
           <div>
             <Label htmlFor="location">Location:</Label>
-            <TextInput id="location" name="location" value={formData.location} onChange={handleInputChange} />
+            <TextInput
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="mileage">Mileage:</Label>
-            <TextInput id="mileage" name="mileage" value={formData.mileage} onChange={handleInputChange} />
+            <TextInput
+              id="mileage"
+              name="mileage"
+              value={formData.mileage}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="bodyType">Body Type:</Label>
-            <TextInput id="bodyType" name="bodyType" value={formData.bodyType} onChange={handleInputChange} />
+            <TextInput
+              id="bodyType"
+              name="bodyType"
+              value={formData.bodyType}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="color">Color:</Label>
-            <TextInput id="color" name="color" value={formData.color} onChange={handleInputChange} />
+            <TextInput
+              id="color"
+              name="color"
+              value={formData.color}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="driveType">Drive Type:</Label>
-            <TextInput id="driveType" name="driveType" value={formData.driveType} onChange={handleInputChange} />
+            <TextInput
+              id="driveType"
+              name="driveType"
+              value={formData.driveType}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="doors">Doors:</Label>
-            <TextInput id="doors" name="doors" type="number" value={formData.doors} onChange={handleInputChange} />
+            <TextInput
+              id="doors"
+              name="doors"
+              type="number"
+              value={formData.doors}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="seats">Seats:</Label>
-            <TextInput id="seats" name="seats" type="number" value={formData.seats} onChange={handleInputChange} />
+            <TextInput
+              id="seats"
+              name="seats"
+              type="number"
+              value={formData.seats}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="isFinance">Finance:</Label>
-            <Select id="isFinance" name="isFinance" value={formData.isFinance} onChange={handleInputChange}>
+            <Select
+              id="isFinance"
+              name="isFinance"
+              value={formData.isFinance}
+              onChange={handleInputChange}
+            >
               <option value="">Select Finance Status</option>
               <option value="finance">On Finance</option>
               <option value="paid">Paid in Full</option>
@@ -578,7 +689,12 @@ const CarEditPage = ({ params }) => {
           </div>
           <div>
             <Label htmlFor="unit">Unit:</Label>
-            <Select id="unit" name="unit" value={formData.unit} onChange={handleInputChange}>
+            <Select
+              id="unit"
+              name="unit"
+              value={formData.unit}
+              onChange={handleInputChange}
+            >
               <option value="km">Kilometers (km)</option>
               <option value="miles">Miles</option>
             </Select>
@@ -604,7 +720,12 @@ const CarEditPage = ({ params }) => {
           </div>
           <div>
             <Label htmlFor="year">Build Date:</Label>
-            <TextInput id="year" name="year" value={formData.year} onChange={handleInputChange} />
+            <TextInput
+              id="year"
+              name="year"
+              value={formData.year}
+              onChange={handleInputChange}
+            />
           </div>
           <div>
             <Label htmlFor="engineCapacity">Engine Capacity:</Label>
@@ -626,13 +747,23 @@ const CarEditPage = ({ params }) => {
             />
           </div>
           <div className="flex items-center">
-            <Checkbox id="isLease" name="isLease" checked={formData.isLease || false} onChange={handleInputChange} />
+            <Checkbox
+              id="isLease"
+              name="isLease"
+              checked={formData.isLease || false}
+              onChange={handleInputChange}
+            />
             <Label htmlFor="isLease" className="ml-2">
               Available for Lease
             </Label>
           </div>
           <div className="flex items-center">
-            <Checkbox id="sold" name="sold" checked={formData.sold || false} onChange={handleInputChange} />
+            <Checkbox
+              id="sold"
+              name="sold"
+              checked={formData.sold || false}
+              onChange={handleInputChange}
+            />
             <Label htmlFor="sold" className="ml-2">
               Mark as Sold
             </Label>
@@ -683,11 +814,17 @@ const CarEditPage = ({ params }) => {
         <div className="mt-5">
           <Label>Existing Images:</Label>
           <div className="flex gap-2">
-            {formData.images && Array.isArray(formData.images) && formData.images.length > 0 ? (
+            {formData.images &&
+            Array.isArray(formData.images) &&
+            formData.images.length > 0 ? (
               formData.images.map((image, index) => (
                 <Image
                   key={index}
-                  src={typeof image === "string" ? image : URL.createObjectURL(image)}
+                  src={
+                    typeof image === "string"
+                      ? image
+                      : URL.createObjectURL(image)
+                  }
                   alt={`Car Image ${index}`}
                   width={100}
                   height={100}
@@ -715,8 +852,8 @@ const CarEditPage = ({ params }) => {
             name="images"
             multiple
             onChange={(e) => {
-              const files = Array.from(e.target.files)
-              setFormData((prev) => ({ ...prev, images: files }))
+              const files = Array.from(e.target.files);
+              setFormData((prev) => ({ ...prev, images: files }));
             }}
           />
         </div>
@@ -726,8 +863,8 @@ const CarEditPage = ({ params }) => {
             id="video"
             name="video"
             onChange={(e) => {
-              const file = e.target.files[0]
-              setFormData((prev) => ({ ...prev, video: file }))
+              const file = e.target.files[0];
+              setFormData((prev) => ({ ...prev, video: file }));
             }}
           />
         </div>
@@ -736,7 +873,7 @@ const CarEditPage = ({ params }) => {
         </div>
       </form>
     </section>
-  )
-}
+  );
+};
 
-export default CarEditPage
+export default CarEditPage;

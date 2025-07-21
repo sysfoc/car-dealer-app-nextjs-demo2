@@ -85,16 +85,23 @@ const AdminSidebar = () => {
   };
 
   const toggleGroup = (groupLabel) => {
-    setExpandedGroups((prev) => ({
-      ...prev,
-      [groupLabel]: !prev[groupLabel],
-    }));
+    setExpandedGroups((prev) => {
+      const isCurrentlyExpanded = prev[groupLabel];
+      // Close all groups and toggle current one
+      const newState = {};
+      Object.keys(prev).forEach(key => {
+        newState[key] = false;
+      });
+      newState[groupLabel] = !isCurrentlyExpanded;
+      return newState;
+    });
   };
 
   const sidebarItems = [
     { label: "Dashboard", href: "/admin/dashboard", icon: HiChartPie },
     { label: "Contact Submissions", href: "/admin/contact", icon: TbCalendarSearch },
     { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
+    { label: "Dealers", href: "/admin/create-dealer", icon: TbCalendarSearch },
   ];
 
   const collapsibleItems = [
@@ -172,7 +179,7 @@ const AdminSidebar = () => {
   return (
     <div className="flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
       {/* Header */}
-      <div className="border-b border-slate-200 p-6">
+      <div className="flex-shrink-0 border-b border-slate-200 p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700">
             <HiChartPie className="h-5 w-5 text-white" />
@@ -186,68 +193,71 @@ const AdminSidebar = () => {
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="flex-1 overflow-y-auto py-4">
-        <nav className="space-y-2 px-4">
-          {/* Single Items */}
-          {sidebarItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
-            >
-              <item.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
-              <span className="text-sm font-medium">{item.label}</span>
-            </a>
-          ))}
-
-          {/* Collapsible Groups */}
-          {collapsibleItems.map((group) => (
-            <div key={group.label} className="space-y-1">
-              <button
-                onClick={() => toggleGroup(group.label)}
-                className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
+      {/* Navigation - Now with proper flex and min-height */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto py-4" style={{ minHeight: 0 }}>
+          <nav className="space-y-2 px-4">
+            {/* Single Items */}
+            {sidebarItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
               >
-                <group.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
-                <span className="flex-1 text-left text-sm font-medium">
-                  {group.label}
-                </span>
-                {expandedGroups[group.label] ? (
-                  <ChevronDown className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
+                <item.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </a>
+            ))}
+
+            {/* Collapsible Groups */}
+            {collapsibleItems.map((group) => (
+              <div key={group.label} className="space-y-1">
+                <button
+                  onClick={() => toggleGroup(group.label)}
+                  className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
+                >
+                  <group.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
+                  <span className="flex-1 text-left text-sm font-medium">
+                    {group.label}
+                  </span>
+                  {expandedGroups[group.label] ? (
+                    <ChevronDown className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
+                  )}
+                </button>
+
+                {expandedGroups[group.label] && (
+                  <div className="ml-4 space-y-1 border-l border-slate-200 pl-4">
+                    {group.links.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        className="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
                 )}
-              </button>
+              </div>
+            ))}
+          </nav>
+        </div>
 
-              {expandedGroups[group.label] && (
-                <div className="ml-4 space-y-1 border-l border-slate-200 pl-4">
-                  {group.links.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      className="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
-      </div>
-
-      <div className="border-t border-slate-200 p-4">
-        <button
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <MdLogout className="h-5 w-5" />
-          <span className="text-sm font-medium">
-            {isLoggingOut ? "Logging Out..." : "Logout"}
-          </span>
-        </button>
+        {/* Logout Button - Always visible at bottom */}
+        <div className="flex-shrink-0 border-t border-slate-200 p-4">
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <MdLogout className="h-5 w-5" />
+            <span className="text-sm font-medium">
+              {isLoggingOut ? "Logging Out..." : "Logout"}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );
