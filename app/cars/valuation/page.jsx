@@ -128,16 +128,16 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               
               {/* Header Section */}
-              <div className="text-center mb-8">
+              <div className="text-center mb-6 mt-14">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 leading-tight">
                   Get Your Cars
                   <span className="text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text">
                     True Value
                   </span>
                 </h1>
-                <p className="text-gray-300 dark:text-gray-400 max-w-xl mx-auto">
+                {/* <p className="text-gray-300 dark:text-gray-400 max-w-xl mx-auto">
                   Professional car valuation in minutes
-                </p>
+                </p> */}
               </div>
 
               {/* Main Form Card */}

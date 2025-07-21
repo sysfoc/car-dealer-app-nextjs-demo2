@@ -1,13 +1,99 @@
+"use client"
 import { Button, Label, Textarea, TextInput } from "flowbite-react";
-import React from "react";
+import React, { useState } from "react";
 
 const ContactUs = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState({ type: "", text: "" });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage({ type: "", text: "" });
+
+    try {
+      const settingsRes = await fetch(
+        "/api/settings/general",
+        { cache: "no-store" }
+      );
+      const settingsData = await settingsRes.json();
+      const recaptchaSettings = settingsData?.settings?.recaptcha;
+      
+      let recaptchaToken = "";
+      if (recaptchaSettings?.status === "active" && recaptchaSettings?.siteKey) {
+        recaptchaToken = await getRecaptchaToken(recaptchaSettings.siteKey);
+      }
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ...formData, recaptchaToken })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit contact message");
+      }
+
+      setSubmitMessage({
+        type: "success",
+        text: "Message sent successfully! We'll get back to you soon."
+      });
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      setSubmitMessage({
+        type: "error",
+        text: error.message || "Failed to submit contact message. Please try again."
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const getRecaptchaToken = (siteKey) => {
+    return new Promise((resolve) => {
+      if (typeof window.grecaptcha === "undefined") {
+        resolve("");
+        return;
+      }
+
+      window.grecaptcha.ready(() => {
+        window.grecaptcha
+          .execute(siteKey, { action: "contact" })
+          .then((token) => resolve(token));
+      });
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-10 mt-10 md:mt-12 dark:bg-gray-800">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <h1 className="mb-10 text-center text-4xl font-bold text-gray-800 dark:text-white">
           Contact Us
         </h1>
+
+        {submitMessage.text && (
+          <div className={`mb-6 rounded-lg p-4 text-center ${
+            submitMessage.type === "success" 
+              ? "bg-green-100 text-green-700" 
+              : "bg-red-100 text-red-700"
+          }`}>
+            {submitMessage.text}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="rounded-lg bg-white p-8 shadow-md dark:bg-gray-700">
@@ -18,7 +104,7 @@ const ContactUs = () => {
               Have questions or want to work with us? Fill out the form below,
               and we&apos;ll get back to you as soon as possible.
             </p>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <Label
                   htmlFor="name"
@@ -26,7 +112,14 @@ const ContactUs = () => {
                 >
                   Name
                 </Label>
-                <TextInput type="text" id="name" placeholder="John Doe" />
+                <TextInput 
+                  type="text" 
+                  id="name" 
+                  placeholder="John Doe"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="mb-4">
                 <Label
@@ -39,6 +132,9 @@ const ContactUs = () => {
                   type="email"
                   id="email"
                   placeholder="john@gmail.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -52,10 +148,30 @@ const ContactUs = () => {
                   id="message"
                   rows="4"
                   placeholder="Your Message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
                 ></Textarea>
               </div>
-              <Button type="submit" color={"blue"} className="w-full">
-                Send Message
+              <Button 
+                type="submit" 
+                color="blue" 
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="mr-2">
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </span>
+                    Sending...
+                  </>
+                ) : (
+                  "Send Message"
+                )}
               </Button>
             </form>
           </div>

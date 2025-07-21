@@ -1,16 +1,56 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const contactSchema = new mongoose.Schema(
-  {
-    heading: { type: String, required: true },
-    content: { type: String, required: true },
-    name: { type: String, required: true },
-    address: { type: String, required: true },
-    phone: { type: String, required: true },
-    map: { type: String, required: true },
+const contactMessageSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
   },
-  { timestamps: true },
-);
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true
+  },
+  message: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  adminReply: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'answered', 'resolved'],
+    default: 'pending'
+  },
+  repliedBy: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  repliedAt: {
+    type: Date
+  }
+}, {
+  timestamps: true
+});
 
-export default mongoose.models.Contact ||
-  mongoose.model("Contact", contactSchema);
+contactMessageSchema.index({ email: 1 });
+contactMessageSchema.index({ status: 1 });
+contactMessageSchema.index({ createdAt: -1 });
+
+contactMessageSchema.pre('save', function(next) {
+  if (this.adminReply && this.adminReply.trim() !== '') {
+    if (this.status === 'pending') {
+      this.status = 'answered';
+      this.repliedAt = new Date();
+    }
+  }
+  next();
+});
+
+export default mongoose.models.ContactMessage || mongoose.model('ContactMessage', contactMessageSchema);

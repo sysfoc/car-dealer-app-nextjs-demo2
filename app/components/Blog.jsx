@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react" // Replaced MdOutlineArrowOutward with ArrowUpRight from lucide-react
+import { ArrowUpRight } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 

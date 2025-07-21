@@ -354,7 +354,7 @@ const AdminEnquiriesPage = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                  <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="rounded-xl bg-blue-50 p-3">
                       <div className="flex items-center gap-3">
                         <Mail className="h-4 w-4 text-gray-400" />
