@@ -22,24 +22,12 @@ const ContactUs = () => {
     setSubmitMessage({ type: "", text: "" });
 
     try {
-      const settingsRes = await fetch(
-        "/api/settings/general",
-        { cache: "no-store" }
-      );
-      const settingsData = await settingsRes.json();
-      const recaptchaSettings = settingsData?.settings?.recaptcha;
-      
-      let recaptchaToken = "";
-      if (recaptchaSettings?.status === "active" && recaptchaSettings?.siteKey) {
-        recaptchaToken = await getRecaptchaToken(recaptchaSettings.siteKey);
-      }
-
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ ...formData, recaptchaToken })
+        body: JSON.stringify(formData)
       });
 
       const data = await response.json();
@@ -61,21 +49,6 @@ const ContactUs = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const getRecaptchaToken = (siteKey) => {
-    return new Promise((resolve) => {
-      if (typeof window.grecaptcha === "undefined") {
-        resolve("");
-        return;
-      }
-
-      window.grecaptcha.ready(() => {
-        window.grecaptcha
-          .execute(siteKey, { action: "contact" })
-          .then((token) => resolve(token));
-      });
-    });
   };
 
   return (
@@ -234,4 +207,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default ContactUs

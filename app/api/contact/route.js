@@ -16,50 +16,7 @@ export async function POST(request) {
     await connectDB()
 
     const body = await request.json()
-    const { name, email, message, recaptchaToken } = body
-
-    // Fetch reCAPTCHA settings from DB to check if it's active
-    const settingsRes = await fetch(
-      "/api/settings/general",
-      {
-        cache: "no-store",
-        next: { revalidate: 0 },
-      },
-    )
-    const settingsData = await settingsRes.json()
-    const recaptchaSettings = settingsData?.settings?.recaptcha
-
-    // --- reCAPTCHA Verification Logic ---
-    if (recaptchaSettings?.status === "active" && recaptchaSettings?.siteKey) {
-      const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY
-
-      if (!RECAPTCHA_SECRET_KEY) {
-        console.error("RECAPTCHA_SECRET_KEY is not set in environment variables.")
-        return NextResponse.json({ error: "Server reCAPTCHA configuration error." }, { status: 500 })
-      }
-
-      if (!recaptchaToken) {
-        return NextResponse.json({ error: "reCAPTCHA token missing." }, { status: 400 })
-      }
-
-      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify`
-      const verifyResponse = await fetch(verifyUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
-      })
-
-      const recaptchaData = await verifyResponse.json()
-
-      if (!recaptchaData.success || recaptchaData.score < 0.5) {
-        console.warn("reCAPTCHA verification failed:", recaptchaData)
-        return NextResponse.json({ error: "reCAPTCHA verification failed. Please try again." }, { status: 400 })
-      }
-      console.log("reCAPTCHA verification successful with score:", recaptchaData.score)
-    }
-    // --- End reCAPTCHA Verification Logic ---
+    const { name, email, message } = body
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "All required fields must be provided." }, { status: 400 })
