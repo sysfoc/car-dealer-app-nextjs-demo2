@@ -40,7 +40,10 @@ export default function Home() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState("");
+    const [recaptchaSiteKey, setRecaptchaSiteKey] = useState(null);
+    const [recaptchaStatus, setRecaptchaStatus] = useState("inactive");
   
+
     const parseBooleanParam = (param) => {
       return param === "true";
     };
@@ -52,20 +55,75 @@ export default function Home() {
         [id]: value,
       }));
     };
+
+     useEffect(() => {
+    const fetchRecaptchaSettings = async () => {
+      try {
+        const response = await fetch("/api/settings/general", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        if (data.settings?.recaptcha) {
+          setRecaptchaSiteKey(data.settings.recaptcha.siteKey);
+          setRecaptchaStatus(data.settings.recaptcha.status);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to fetch reCAPTCHA settings in CardetailCard:",
+          error,
+        );
+      }
+    };
+    fetchRecaptchaSettings();
+  }, []);
+
+
     const handleEnquirySubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage("");
-  
+
+    let recaptchaToken = null;
+
+    if (
+      recaptchaStatus === "active" &&
+      recaptchaSiteKey &&
+      typeof window.grecaptcha !== "undefined"
+    ) {
+      try {
+        recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, {
+          action: "car_enquiry_submit",
+        });
+      } catch (error) {
+        console.error("reCAPTCHA execution failed:", error);
+        setSubmitMessage("reCAPTCHA verification failed. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+    } else if (
+      recaptchaStatus === "active" &&
+      (!recaptchaSiteKey || typeof window.grecaptcha === "undefined")
+    ) {
+      console.error("reCAPTCHA is active but not fully loaded or configured.");
+      setSubmitMessage(
+        "reCAPTCHA is not ready. Please refresh the page and try again.",
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
     const enquiryData = {
-      carId: car?._id,
+      carId: selectedCar?._id,
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
       phone: formData.phone,
       message: formData.message,
+      recaptchaToken: recaptchaToken,
     };
-  
+
     try {
       const response = await fetch("/api/enquiry", {
         method: "POST",
@@ -74,11 +132,11 @@ export default function Home() {
         },
         body: JSON.stringify(enquiryData),
       });
-  
       const result = await response.json();
-  
       if (response.ok) {
-        setSubmitMessage("Enquiry submitted successfully! We will contact you soon.");
+        setSubmitMessage(
+          "Enquiry submitted successfully! We will contact you soon.",
+        );
         setFormData({
           firstName: "",
           lastName: "",
@@ -86,13 +144,15 @@ export default function Home() {
           phone: "",
           message: "",
         });
-  
         setTimeout(() => {
           setOpenModal(false);
           setSubmitMessage("");
+          setSelectedCar(null);
         }, 2000);
       } else {
-        setSubmitMessage(result.error || "Failed to submit enquiry. Please try again.");
+        setSubmitMessage(
+          result.error || "Failed to submit enquiry. Please try again.",
+        );
       }
     } catch (error) {
       console.error("Enquiry submission error:", error);
