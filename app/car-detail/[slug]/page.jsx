@@ -115,7 +115,8 @@ export default function Home() {
     }
 
     const enquiryData = {
-      carId: selectedCar?._id,
+      carId: car?._id,
+   // carId: selectedCar?._id,
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
@@ -147,7 +148,7 @@ export default function Home() {
         setTimeout(() => {
           setOpenModal(false);
           setSubmitMessage("");
-          setSelectedCar(null);
+          // setSelectedCar(null);
         }, 2000);
       } else {
         setSubmitMessage(
