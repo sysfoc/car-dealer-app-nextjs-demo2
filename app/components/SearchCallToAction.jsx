@@ -1,7 +1,25 @@
 "use client";
+import { useState, useEffect } from "react";
 import { FaSearch, FaCar, FaFilter, FaArrowRight } from "react-icons/fa";
 
 const SearchCallToAction = ({ onSearchClick }) => {
+  const [searchData, setSearchData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/homepage");
+        const result = await response.json();
+        if (response.ok) {
+          setSearchData(result?.searchSection);
+        }
+      } catch (error) {
+        console.error("Error fetching homepage data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="absolute inset-0 opacity-5">
@@ -19,11 +37,11 @@ const SearchCallToAction = ({ onSearchClick }) => {
         <div className="text-center">
           <div className="mb-6">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
-              Find Your Perfect Vehicle
+              {searchData?.subheading || "Find Your Perfect Vehicle"}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
-              Search through thousands of quality vehicles with our advanced
-              filtering system. Find the car that matches your needs and budget.
+              {searchData?.descriptionText ||
+                "Search through thousands of quality vehicles with our advanced filtering system. Find the car that matches your needs and budget."}
             </p>
           </div>
 
@@ -79,7 +97,8 @@ const SearchCallToAction = ({ onSearchClick }) => {
             </button>
 
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Use our advanced filters to find exactly what you&apos;re looking for
+              Use our advanced filters to find exactly what you&apos;re looking
+              for
             </p>
           </div>
 

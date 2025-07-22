@@ -26,6 +26,23 @@ const VehicalsList = ({ loadingState }) => {
   const [userLikedCars, setUserLikedCars] = useState([]);
   const [user, setUser] = useState(null);
   const [visibleVehiclesCount, setVisibleVehiclesCount] = useState(3); // State to manage visible vehicles
+  const [listingData, setListingData] = useState(null);
+
+  useEffect(() => {
+    const fetchListingData = async () => {
+      try {
+        const response = await fetch("/api/homepage");
+        const result = await response.json();
+        if (response.ok) {
+          setListingData(result?.listingSection);
+        }
+      } catch (error) {
+        console.error("Error fetching listing data:", error);
+      }
+    };
+
+    fetchListingData();
+  }, []);
 
   // Conversion functions with decimal precision
   const convertKmToMiles = (km) => {
@@ -134,7 +151,7 @@ const VehicalsList = ({ loadingState }) => {
     } else {
       setVisibleVehiclesCount((prevCount) =>
         Math.min(prevCount + 3, vehicles.length),
-      ); 
+      );
     }
   };
 
@@ -157,6 +174,11 @@ const VehicalsList = ({ loadingState }) => {
       </div>
     );
   }
+
+  if (listingData && listingData?.status === 'inactive') {
+  return null;
+}
+
   return (
     <section className="mx-4 my-7 rounded-xl bg-slate-50 py-7 dark:bg-slate-900 sm:mx-8 md:my-10 md:py-10">
       <div className="mb-16">
@@ -166,7 +188,7 @@ const VehicalsList = ({ loadingState }) => {
             <span>Premium Collection</span>
           </div>
           <h2 className="mb-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-4xl font-bold leading-tight text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300 md:text-5xl lg:text-6xl">
-            {t("exploreVehical")}
+            {listingData?.heading}
           </h2>
           <Link href={"/car-for-sale"}>
             <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">

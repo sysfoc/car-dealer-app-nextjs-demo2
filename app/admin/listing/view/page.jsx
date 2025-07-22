@@ -255,16 +255,6 @@ export default function Listing() {
                     alt={`${car.make} ${car.model}`}
                     className="object-cover transition-transform duration-300 hover:scale-105"
                   />
-                  {/* <div className="absolute right-4 top-4 rounded-lg bg-white/90 px-3 py-1 backdrop-blur-sm">
-                    <span className="text-sm font-bold text-slate-800">
-                      {car.modelYear}
-                    </span>
-                  </div>
-                  {car.sold && (
-                    <div className="rounded-lg bg-red-500/90 px-3 py-1 backdrop-blur-sm">
-                      <span className="text-sm font-bold text-white">SOLD</span>
-                    </div>
-                  )} */}
                   <div className="absolute right-4 top-4 flex flex-col gap-2">
                     <div className="rounded-lg bg-white/90 px-3 py-1 backdrop-blur-sm">
                       <span className="text-sm font-bold text-slate-800">
@@ -425,7 +415,7 @@ export default function Listing() {
                       </td>
                       <td className="px-6 py-4">
                         <span className="font-bold text-blue-600">
-                          ${car.price?.toLocaleString()}
+                          {selectedCurrency?.symbol}{" "}{car.price?.toLocaleString()}
                         </span>
                       </td>
                       <td className="px-6 py-4">

@@ -5,6 +5,7 @@ import { FaPencilAlt, FaList, FaUser } from "react-icons/fa";
 import { TiWorld } from "react-icons/ti";
 import { HiChartPie } from "react-icons/hi";
 import { IoSettingsSharp } from "react-icons/io5";
+import { FaIdeal } from "react-icons/fa6";
 import { MdAppSettingsAlt, MdLogout } from "react-icons/md";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import jwt from "jsonwebtoken";
@@ -101,7 +102,8 @@ const AdminSidebar = () => {
     { label: "Dashboard", href: "/admin/dashboard", icon: HiChartPie },
     { label: "Contact Submissions", href: "/admin/contact", icon: TbCalendarSearch },
     { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
-    { label: "Dealers", href: "/admin/create-dealer", icon: TbCalendarSearch },
+    { label: "Dealers", href: "/admin/create-dealer", icon: FaIdeal },
+    { label: "Manage Blogs", href: "/admin/blog", icon: FaPencilAlt },
   ];
 
   const collapsibleItems = [
@@ -126,11 +128,6 @@ const AdminSidebar = () => {
         { label: "Listings", href: "/admin/listing/view" },
         { label: "Pending Listings", href: "/admin/listing/approved" },
       ],
-    },
-    {
-      label: "Manage Blogs",
-      icon: FaPencilAlt,
-      links: [{ label: "Blog", href: "/admin/blog" }],
     },
     {
       label: "Manage Website",

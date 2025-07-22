@@ -191,3 +191,27 @@ export async function PUT(request) {
     return NextResponse.json({ error: "Failed to send reply." }, { status: 500 })
   }
 }
+
+export async function DELETE(request) {
+  try {
+    await connectDB()
+    const body = await request.json()
+    const { messageId } = body
+
+    if (!messageId) {
+      return NextResponse.json({ error: "Message ID is required." }, { status: 400 })
+    }
+
+    const deletedMessage = await ContactMessage.findByIdAndDelete(messageId)
+    
+    if (!deletedMessage) {
+      return NextResponse.json({ error: "Contact message not found." }, { status: 404 })
+    }
+
+    return NextResponse.json({ message: "Contact message deleted successfully." }, { status: 200 })
+    
+  } catch (error) {
+    console.error("Error deleting contact message:", error)
+    return NextResponse.json({ error: "Failed to delete contact message." }, { status: 500 })
+  }
+}

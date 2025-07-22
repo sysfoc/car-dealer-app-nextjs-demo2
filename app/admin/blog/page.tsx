@@ -73,7 +73,7 @@ export default function Page() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            <span className="ml-3 text-slate-600 font-medium">Loading brands...</span>
+            <span className="ml-3 text-slate-600 font-medium">Loading blogs...</span>
           </div>
         </div>
       </div>

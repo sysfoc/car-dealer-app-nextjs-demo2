@@ -1,47 +1,47 @@
 import mongoose from "mongoose";
+
 const homepageSchema = new mongoose.Schema(
   {
-    seoTitle: {
-      type: String,
-      required: false,
-    },
-    seoDescription: {
-      type: String,
-      required: false,
-    },
+    seoTitle: { type: String, required: false },
+    seoDescription: { type: String, required: false },
     searchSection: {
-      heading: String,
-      text: String,
-    },
-    brandSection: {
-      heading: String,
+      mainHeading: String,
       subheading: String,
-      items: String,
-      status: String,
+      descriptionText: String,
     },
-    listingSection: {
-      heading: String,
-      subheading: String,
-      items: String,
-      status: String,
+    brandSection: { 
+      heading: String, 
+      description: String, 
+      status: String 
+    },
+    listingSection: { 
+      heading: String, 
+      status: String 
     },
     chooseUs: {
-      heading: String,
       first: {
         heading: String,
         description: String,
+        buttonText: String,
+        link: String,
       },
       second: {
         heading: String,
         description: String,
+        buttonText: String,
+        link: String,
       },
       third: {
         heading: String,
         description: String,
+        buttonText: String,
+        link: String,
       },
       fourth: {
         heading: String,
         description: String,
+        buttonText: String,
+        link: String,
       },
     },
     footer: {
@@ -52,17 +52,11 @@ const homepageSchema = new mongoose.Schema(
       friday: String,
       saturday: String,
     },
-    backgroundImage: {
-      type: String,
-      required: false,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+    backgroundImage: { type: String, required: false },
+    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true },
 );
 
-export default mongoose.models.Homepage ||
-  mongoose.model("Homepage", homepageSchema);
+export default mongoose.models.Homepage || 
+       mongoose.model("Homepage", homepageSchema);

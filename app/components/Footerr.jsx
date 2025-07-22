@@ -18,7 +18,7 @@ const Footerr = ({ isDarkMode }) => {
       try {
         const res = await fetch("/api/homepage", { cache: "no-store" })
         const data = await res.json()
-        setHomepageData(data?.data || {})
+        setHomepageData(data?.footer)
       } catch (error) {
         console.error("Failed to fetch homepage data:", error)
       }
@@ -59,27 +59,27 @@ const Footerr = ({ isDarkMode }) => {
   const tradingHours = [
     {
       day: t("monday"),
-      hours: homepageData?.footer?.monday || t("openingHours"),
+      hours: homepageData?.monday || t("openingHours"),
     },
     {
       day: t("tuesday"),
-      hours: homepageData?.footer?.tuesday || t("openingHours"),
+      hours: homepageData?.tuesday || t("openingHours"),
     },
     {
       day: t("wednesday"),
-      hours: homepageData?.footer?.wednesday || t("openingHours"),
+      hours: homepageData?.wednesday || t("openingHours"),
     },
     {
       day: t("thursday"),
-      hours: homepageData?.footer?.thursday || t("openingHours"),
+      hours: homepageData?.thursday || t("openingHours"),
     },
     {
       day: t("friday"),
-      hours: homepageData?.footer?.friday || t("openingHours"),
+      hours: homepageData?.friday || t("openingHours"),
     },
     {
       day: t("saturday"),
-      hours: homepageData?.footer?.saturday || t("closedHours"),
+      hours: homepageData?.saturday || t("closedHours"),
     },
     { day: t("sunday"), hours: t("closedHours") },
   ]
