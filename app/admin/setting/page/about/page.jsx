@@ -103,7 +103,7 @@ const PageEditor = () => {
               Static Pages Manager
             </h1>
             <p className="text-gray-600">
-              Edit and update content for your website's static pages
+              Edit and update content for your website static pages
             </p>
           </div>
         </div>
