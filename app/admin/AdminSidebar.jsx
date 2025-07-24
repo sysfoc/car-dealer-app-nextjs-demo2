@@ -7,6 +7,7 @@ import { HiChartPie } from "react-icons/hi";
 import { IoSettingsSharp } from "react-icons/io5";
 import { FaIdeal } from "react-icons/fa6";
 import { MdAppSettingsAlt, MdLogout } from "react-icons/md";
+import { IoIosContact } from "react-icons/io";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import jwt from "jsonwebtoken";
 import Cookies from "js-cookie";
@@ -100,7 +101,7 @@ const AdminSidebar = () => {
 
   const sidebarItems = [
     { label: "Dashboard", href: "/admin/dashboard", icon: HiChartPie },
-    { label: "Contact Submissions", href: "/admin/contact", icon: TbCalendarSearch },
+    { label: "Contact Submissions", href: "/admin/contact", icon: IoIosContact },
     { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
     { label: "Dealers", href: "/admin/create-dealer", icon: FaIdeal },
     { label: "Manage Blogs", href: "/admin/blog", icon: FaPencilAlt },

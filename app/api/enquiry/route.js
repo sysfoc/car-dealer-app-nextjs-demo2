@@ -238,3 +238,40 @@ export async function PUT(request) {
     return NextResponse.json({ error: "Failed to send reply." }, { status: 500 })
   }
 }
+
+
+
+export async function DELETE(request) {
+  try {
+    await connectDB();
+    const body = await request.json();
+    const { enquiryId } = body;
+
+    if (!enquiryId) {
+      return NextResponse.json(
+        { error: "Enquiry ID is required." },
+        { status: 400 }
+      );
+    }
+
+    const deletedEnquiry = await CarEnquiry.findByIdAndDelete(enquiryId);
+
+    if (!deletedEnquiry) {
+      return NextResponse.json(
+        { error: "Enquiry not found." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "Enquiry deleted successfully." },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting enquiry:", error);
+    return NextResponse.json(
+      { error: "Failed to delete enquiry." },
+      { status: 500 }
+    );
+  }
+}

@@ -1,3 +1,4 @@
+
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { Button, Label, Select, TextInput } from "flowbite-react";
@@ -10,6 +11,7 @@ const PageEditor = () => {
   const [type, setType] = useState("about");
   const [formData, setFormData] = useState({ name: "", content: "" });
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const config = {
     readonly: false,
@@ -19,40 +21,55 @@ const PageEditor = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
+        console.log("Fetching data for type:", type);
         const res = await fetch(`/api/pages?type=${type}`);
         const result = await res.json();
+        console.log("Fetch response:", result);
+
         if (result?.data) {
+          console.log("Setting form data:", result.data);
           setFormData({
             name: result.data.name || "",
             content: result.data.content || "",
           });
         } else {
+          console.log("No data found, resetting form");
           setFormData({ name: "", content: "" });
         }
       } catch (error) {
+        console.error("Fetch error:", error);
         Swal.fire({
           title: "Error!",
           text: "Failed to fetch page data. Please try again.",
           icon: "error",
         });
+        setFormData({ name: "", content: "" });
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchData();
   }, [type]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-
     try {
+      const submitData = { type, ...formData };
+      console.log("Submitting data:", submitData);
+
       const res = await fetch("/api/pages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, ...formData }),
+        body: JSON.stringify(submitData),
       });
 
       const data = await res.json();
+      console.log("Submit response:", data);
+
       if (data.message) {
         Swal.fire({
           title: "Success!",
@@ -61,8 +78,11 @@ const PageEditor = () => {
           timer: 2000,
           showConfirmButton: false,
         });
+      } else {
+        throw new Error(data.error || "Failed to save");
       }
     } catch (error) {
+      console.error("Submit error:", error);
       Swal.fire({
         title: "Error!",
         text: "Failed to save page. Please try again.",
@@ -83,11 +103,10 @@ const PageEditor = () => {
               Static Pages Manager
             </h1>
             <p className="text-gray-600">
-              Edit and update content for your website’s static pages
+              Edit and update content for your website's static pages
             </p>
           </div>
         </div>
-
         {/* Form Section */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -103,6 +122,7 @@ const PageEditor = () => {
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                disabled={isLoading}
               >
                 <option value="about">About Us</option>
                 <option value="privacy">Privacy Policy</option>
@@ -112,7 +132,6 @@ const PageEditor = () => {
                 Choose the page you want to edit
               </p>
             </div>
-
             <div>
               <Label
                 htmlFor="name"
@@ -128,12 +147,13 @@ const PageEditor = () => {
                 }
                 placeholder="Enter page name"
                 className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                disabled={isLoading}
+                required
               />
               <p className="text-sm text-gray-500 mt-1">
                 The title or name of the page
               </p>
             </div>
-
             <div>
               <Label
                 htmlFor="content"
@@ -141,26 +161,31 @@ const PageEditor = () => {
               >
                 Page Content
               </Label>
-              <Suspense fallback={<p className="text-gray-500">Loading editor...</p>}>
-                <LazyJoditEditor
-                  config={config}
-                  value={formData.content}
-                  onBlur={(newContent) =>
-                    setFormData({ ...formData, content: newContent })
-                  }
-                  onChange={() => {}}
-                />
-              </Suspense>
+              {isLoading ? (
+                <div className="h-[500px] bg-gray-50 rounded-lg flex items-center justify-center">
+                  <p className="text-gray-500">Loading editor...</p>
+                </div>
+              ) : (
+                <Suspense fallback={<p className="text-gray-500">Loading editor...</p>}>
+                  <LazyJoditEditor
+                    config={config}
+                    value={formData.content}
+                    onBlur={(newContent) =>
+                      setFormData({ ...formData, content: newContent })
+                    }
+                    onChange={() => {}}
+                  />
+                </Suspense>
+              )}
               <p className="text-sm text-gray-500 mt-1">
                 Enter the main content for the selected page
               </p>
             </div>
-
             <div className="flex justify-end">
               <Button
                 type="submit"
                 className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
-                disabled={isSaving}
+                disabled={isSaving || isLoading}
               >
                 {isSaving ? (
                   <>

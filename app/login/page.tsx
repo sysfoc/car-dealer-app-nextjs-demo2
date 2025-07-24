@@ -216,8 +216,8 @@ export default function LoginPage() {
                   <button
                     onClick={() =>
                       setUser({
-                        email: "sysfoc_user1@gmail.com",
-                        password: "sysfoc_user1@gmail.com",
+                        email: "Sysfoc_User@gmail.com",
+                        password: "Sysfoc_User@gmail.com",
                         role: "user",
                         pin: "123456",
                       })

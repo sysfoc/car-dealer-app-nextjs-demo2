@@ -23,6 +23,7 @@ import {
   MessageSquare,
   ChevronRight,
   ChevronLeft,
+  Trash2,
 } from "lucide-react";
 
 const AdminEnquiriesPage = () => {
@@ -36,6 +37,14 @@ const AdminEnquiriesPage = () => {
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const enquiriesPerPage = 2;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [enquiryToDelete, setEnquiryToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const openDeleteModal = (enquiry) => {
+    setEnquiryToDelete(enquiry);
+    setShowDeleteModal(true);
+  };
 
   const fetchEnquiries = async () => {
     try {
@@ -143,6 +152,37 @@ const AdminEnquiriesPage = () => {
       </span>
     );
   };
+
+    const handleDelete = async () => {
+      if (!enquiryToDelete) return;
+
+      setDeleting(true);
+      try {
+        const response = await fetch("/api/enquiry", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            enquiryId: enquiryToDelete._id,
+          }),
+        });
+
+        if (response.ok) {
+          setEnquiries((prev) =>
+            prev.filter((enq) => enq._id !== enquiryToDelete._id),
+          );
+          setShowDeleteModal(false);
+          setEnquiryToDelete(null);
+        } else {
+          console.error("Failed to delete enquiry");
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+      } finally {
+        setDeleting(false);
+      }
+    };
 
   const filteredEnquiries = enquiries.filter((enquiry) => {
     if (filter === "all") return true;
@@ -340,6 +380,13 @@ const AdminEnquiriesPage = () => {
                     </div>
                     <div className="flex items-center gap-3">
                       {getStatusBadge(enquiry.status)}
+                      <button
+                        onClick={() => openDeleteModal(enquiry)}
+                        className="flex items-center gap-2 rounded-xl bg-red-100 px-4 py-2 text-sm font-medium text-red-700 transition-all duration-200 hover:bg-red-200"
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </button>
                       <button
                         onClick={() => openReplyModal(enquiry)}
                         className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 ${
@@ -621,6 +668,62 @@ const AdminEnquiriesPage = () => {
           </div>
         </ModalBody>
       </Modal>
+      <Modal
+  dismissible
+  show={showDeleteModal}
+  onClose={() => setShowDeleteModal(false)}
+  size="md"
+  className="backdrop-blur-sm"
+>
+  <ModalHeader className="border-b border-gray-200 pb-4">
+    <h3 className="text-xl font-bold text-gray-900">Delete Enquiry</h3>
+  </ModalHeader>
+  <ModalBody className="p-6">
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 rounded-xl bg-red-50 p-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+          <Trash2 className="h-5 w-5 text-red-600" />
+        </div>
+        <div>
+          <p className="font-medium text-gray-900">
+            Are you sure you want to delete this enquiry?
+          </p>
+          <p className="text-sm text-gray-600">
+            From: {enquiryToDelete?.firstName} {enquiryToDelete?.lastName}
+          </p>
+        </div>
+      </div>
+      <p className="text-sm text-gray-600">
+        This action cannot be undone. The enquiry will be permanently removed from the system.
+      </p>
+      <div className="flex justify-end gap-3 pt-4">
+        <button
+          type="button"
+          onClick={() => setShowDeleteModal(false)}
+          className="rounded-xl bg-gray-100 px-6 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-200"
+          disabled={deleting}
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={deleting}
+          className="rounded-xl bg-red-600 px-6 py-2 font-semibold text-white transition-all duration-200 hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+        >
+          {deleting ? (
+            <div className="flex items-center gap-2">
+              <Spinner size="sm" />
+              Deleting...
+            </div>
+          ) : (
+            "Delete"
+          )}
+        </button>
+      </div>
+    </div>
+  </ModalBody>
+</Modal>
     </div>
   );
 };
