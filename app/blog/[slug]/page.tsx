@@ -4,11 +4,11 @@ import { Avatar } from "flowbite-react";
 import ClientBlog from "./ClientBlog"
 import { headers } from "next/headers";
 import CommentSection from "../../components/CommentSection"
+import { Metadata } from "next";
 
 type ParamsType = {
   slug: string;
 };
-
 
 interface BlogType {
   _id: string;
@@ -43,6 +43,22 @@ async function getBlog(slug: string): Promise<BlogType | null> {
   }
 }
 
+// Generate metadata for the page
+export async function generateMetadata({ params }: { params: ParamsType }): Promise<Metadata> {
+  const blog = await getBlog(params.slug);
+
+  if (!blog) {
+    return {
+      title: "Blog Not Found",
+      description: "The requested blog post could not be found.",
+    };
+  }
+
+  return {
+    title: blog.metaTitle || blog.title,
+    description: blog.metaDescription,
+  };
+}
 
 const Page = async ({ params }: { params: ParamsType }) => {
   const blog = await getBlog(params.slug);
@@ -92,4 +108,3 @@ const Page = async ({ params }: { params: ParamsType }) => {
 };
 
 export default Page;
-

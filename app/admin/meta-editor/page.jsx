@@ -1,56 +1,42 @@
 "use client"
-import { useEffect, useState, Suspense } from "react"
+import { useEffect, useState } from "react"
 import { Button, Label, Select, TextInput } from "flowbite-react"
-import dynamic from "next/dynamic"
 import Swal from "sweetalert2"
 
-const LazyJoditEditor = dynamic(() => import("jodit-react"), { ssr: false })
-
-const PageEditor = () => {
-  const [type, setType] = useState("about")
+const MetaEditor = () => {
+  const [type, setType] = useState("car-valuation")
   const [formData, setFormData] = useState({
-    name: "",
-    content: "",
-    metaTitle: "", // Added metaTitle
-    metaDescription: "", // Added metaDescription
+    metaTitle: "",
+    metaDescription: "",
   })
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
-  const config = {
-    readonly: false,
-    placeholder: "Start typing...",
-    height: 500,
-  }
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       try {
-        console.log("Fetching data for type:", type)
-        const res = await fetch(`/api/pages?type=${type}`, { cache: "no-store" })
+        console.log("Fetching meta data for type:", type)
+        const res = await fetch(`/api/meta-pages?type=${type}`, { cache: "no-store" })
         const result = await res.json()
-        console.log("Fetch response:", result)
+        console.log("Meta Fetch response:", result)
+
         if (result?.data) {
-          console.log("Setting form data:", result.data)
           setFormData({
-            name: result.data.name || "",
-            content: result.data.content || "",
-            metaTitle: result.data.metaTitle || "", // Populate metaTitle
-            metaDescription: result.data.metaDescription || "", // Populate metaDescription
+            metaTitle: result.data.metaTitle || "",
+            metaDescription: result.data.metaDescription || "",
           })
         } else {
-          console.log("No data found, resetting form")
-          setFormData({ name: "", content: "", metaTitle: "", metaDescription: "" })
+          setFormData({ metaTitle: "", metaDescription: "" })
         }
       } catch (error) {
-        console.error("Fetch error:", error)
+        console.error("Meta Fetch error:", error)
         Swal.fire({
           title: "Error!",
-          text: "Failed to fetch page data. Please try again.",
+          text: "Failed to fetch meta data. Please try again.",
           icon: "error",
         })
-        setFormData({ name: "", content: "", metaTitle: "", metaDescription: "" })
+        setFormData({ metaTitle: "", metaDescription: "" })
       } finally {
         setIsLoading(false)
       }
@@ -63,30 +49,30 @@ const PageEditor = () => {
     setIsSaving(true)
     try {
       const submitData = { type, ...formData }
-      console.log("Submitting data:", submitData)
-      const res = await fetch("/api/pages", {
+      console.log("Submitting meta data:", submitData)
+      const res = await fetch("/api/meta-pages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submitData),
       })
       const data = await res.json()
-      console.log("Submit response:", data)
+      console.log("Meta Submit response:", data)
       if (data.message) {
         Swal.fire({
           title: "Success!",
-          text: "Page saved successfully!",
+          text: "Meta data saved successfully!",
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
         })
       } else {
-        throw new Error(data.error || "Failed to save")
+        throw new Error(data.error || "Failed to save meta data")
       }
     } catch (error) {
-      console.error("Submit error:", error)
+      console.error("Meta Submit error:", error)
       Swal.fire({
         title: "Error!",
-        text: "Failed to save page. Please try again.",
+        text: "Failed to save meta data. Please try again.",
         icon: "error",
       })
     } finally {
@@ -100,8 +86,10 @@ const PageEditor = () => {
         {/* Header Section */}
         <div className="mb-8">
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Static Pages Manager</h1>
-            <p className="text-gray-600">Edit and update content for your website static pages</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">SEO Meta Data Manager</h1>
+            <p className="text-gray-600">
+              Manage meta titles and descriptions for specific pages like Car Valuation, Brands, Blog, and Contact.
+            </p>
           </div>
         </div>
         {/* Form Section */}
@@ -118,28 +106,16 @@ const PageEditor = () => {
                 className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                 disabled={isLoading}
               >
-                <option value="about">About Us</option>
-                <option value="privacy">Privacy Policy</option>
-                <option value="terms">Terms & Conditions</option>
+                <option value="car-valuation">Car Valuation</option>
+                <option value="brands">Brands</option>
+                <option value="blog">Blog</option>
+                <option value="contact">Contact</option>
+                <option value="leasing">Leasing</option>
+                <option value="car-for-sale">Cars For Sale</option>
+                <option value="about-us">Vehicle Services</option>
               </Select>
-              <p className="text-sm text-gray-500 mt-1">Choose the page you want to edit</p>
+              <p className="text-sm text-gray-500 mt-1">Choose the page to edit its SEO meta data</p>
             </div>
-            <div>
-              <Label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Page Name
-              </Label>
-              <TextInput
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Enter page name"
-                className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                disabled={isLoading}
-                required
-              />
-              <p className="text-sm text-gray-500 mt-1">The title or name of the page</p>
-            </div>
-            {/* New: Meta Title Input */}
             <div>
               <Label htmlFor="metaTitle" className="block text-sm font-medium text-gray-700 mb-2">
                 Meta Title
@@ -151,12 +127,12 @@ const PageEditor = () => {
                 placeholder="Enter meta title for SEO"
                 className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                 disabled={isLoading}
+                required
               />
               <p className="text-sm text-gray-500 mt-1">
                 The title that appears in search engine results and browser tabs.
               </p>
             </div>
-            {/* New: Meta Description Input */}
             <div>
               <Label htmlFor="metaDescription" className="block text-sm font-medium text-gray-700 mb-2">
                 Meta Description
@@ -168,28 +144,9 @@ const PageEditor = () => {
                 placeholder="Enter meta description for SEO"
                 className="rounded-lg border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                 disabled={isLoading}
+                required
               />
               <p className="text-sm text-gray-500 mt-1">A brief summary of the page content for search engines.</p>
-            </div>
-            <div>
-              <Label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-                Page Content
-              </Label>
-              {isLoading ? (
-                <div className="h-[500px] bg-gray-50 rounded-lg flex items-center justify-center">
-                  <p className="text-gray-500">Loading editor...</p>
-                </div>
-              ) : (
-                <Suspense fallback={<p className="text-gray-500">Loading editor...</p>}>
-                  <LazyJoditEditor
-                    config={config}
-                    value={formData.content}
-                    onBlur={(newContent) => setFormData({ ...formData, content: newContent })}
-                    onChange={() => {}}
-                  />
-                </Suspense>
-              )}
-              <p className="text-sm text-gray-500 mt-1">Enter the main content for the selected page</p>
             </div>
             <div className="flex justify-end">
               <Button
@@ -233,4 +190,4 @@ const PageEditor = () => {
   )
 }
 
-export default PageEditor
+export default MetaEditor

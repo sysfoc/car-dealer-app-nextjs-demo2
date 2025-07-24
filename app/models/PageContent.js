@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const PageContentSchema = new mongoose.Schema(
   {
@@ -10,9 +10,10 @@ const PageContentSchema = new mongoose.Schema(
     },
     name: { type: String, required: true },
     content: { type: String, required: true },
+    metaTitle: { type: String },
+    metaDescription: { type: String },
   },
   { timestamps: true },
-);
+)
 
-export default mongoose.models.PageContent ||
-  mongoose.model("PageContent", PageContentSchema);
+export default mongoose.models.PageContent || mongoose.model("PageContent", PageContentSchema)

@@ -245,7 +245,7 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
     { name: "Find Cars", href: "/car-for-sale", icon: FaCar },
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
-    { name: "About us", href: "/cars/about-us", icon: FaHandshake },
+    { name: "Vehicle Services", href: "/cars/about-us", icon: FaHandshake },
   ];
 
   return (

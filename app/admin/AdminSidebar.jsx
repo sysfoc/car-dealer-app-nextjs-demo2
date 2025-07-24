@@ -12,6 +12,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import jwt from "jsonwebtoken";
 import Cookies from "js-cookie";
 import { TbCalendarSearch } from "react-icons/tb";
+import { MdOutlineSubtitles } from "react-icons/md";
 
 const AdminSidebar = () => {
   const router = useRouter();
@@ -104,6 +105,7 @@ const AdminSidebar = () => {
     { label: "Contact Submissions", href: "/admin/contact", icon: IoIosContact },
     { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
     { label: "Dealers", href: "/admin/create-dealer", icon: FaIdeal },
+    { label: "Meta Editor", href: "/admin/meta-editor", icon: MdOutlineSubtitles },
     { label: "Manage Blogs", href: "/admin/blog", icon: FaPencilAlt },
   ];
 
