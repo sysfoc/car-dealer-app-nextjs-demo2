@@ -109,7 +109,7 @@ export default function Home() {
       const data = await response.json()
 
       if (response.ok) {
-        Swal.fire("Success", "Valuation request submitted successfully! We'll get back to you soon.", "success")
+        Swal.fire("Success", "Valuation request submitted successfully! We will get back to you soon.", "success")
         // Reset form
         setFormData({
           name: "",
@@ -180,7 +180,7 @@ export default function Home() {
                         }`}
                       >
                         <AiOutlineDollar className="mr-2 text-lg" />
-                        I'm Selling
+                        I&apos;m Selling
                       </button>
                       <button
                         type="button"
@@ -192,7 +192,7 @@ export default function Home() {
                         }`}
                       >
                         <MdSell className="mr-2 text-lg" />
-                        I'm Buying
+                        I&apos;m Buying
                       </button>
                       <button
                         type="button"
@@ -204,7 +204,7 @@ export default function Home() {
                         }`}
                       >
                         <FaExchangeAlt className="mr-2 text-lg" />
-                        I'm Trading
+                        I&apos;m Trading
                       </button>
                     </div>
                   </div>
