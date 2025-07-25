@@ -19,8 +19,8 @@ export async function GET(req, { params }) {
         {
           name: `${type.charAt(0).toUpperCase() + type.slice(1)} Page`,
           content: `<p>Content for ${type} page is being updated. Please check back later.</p>`,
-          metaTitle: `${type.charAt(0).toUpperCase() + type.slice(1)} Page`, // Default meta title
-          metaDescription: `Default description for ${type} page.`, // Default meta description
+          metaTitle: `${type.charAt(0).toUpperCase() + type.slice(1)} Page`,
+          metaDescription: `Default description for ${type} page.`,
         },
         { status: 200 },
       )

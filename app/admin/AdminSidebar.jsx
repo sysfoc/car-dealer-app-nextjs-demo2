@@ -103,6 +103,7 @@ const AdminSidebar = () => {
   const sidebarItems = [
     { label: "Dashboard", href: "/admin/dashboard", icon: HiChartPie },
     { label: "Contact Submissions", href: "/admin/contact", icon: IoIosContact },
+    { label: "Value Submissions", href: "/admin/valuation", icon: IoIosContact },
     { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
     { label: "Dealers", href: "/admin/create-dealer", icon: FaIdeal },
     { label: "Meta Editor", href: "/admin/meta-editor", icon: MdOutlineSubtitles },

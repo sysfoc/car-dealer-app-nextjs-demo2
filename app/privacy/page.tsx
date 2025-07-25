@@ -1,7 +1,6 @@
 import { headers } from "next/headers"
 import type { Metadata, ResolvingMetadata } from "next"
 
-// Define the type for the fetched data
 interface PageData {
   name: string
   content: string
@@ -11,13 +10,12 @@ interface PageData {
 
 async function getPrivacyContent(baseUrl: string): Promise<PageData | null> {
   const res = await fetch(`${baseUrl}/api/page-content/privacy`, {
-    cache: "no-store", // Ensure no caching for this fetch
+    cache: "no-store",
   })
   if (!res.ok) return null
   return res.json()
 }
 
-// Dynamic metadata generation for Privacy Policy page
 export async function generateMetadata(
   { params }: { params: { slug: string } },
   parent: ResolvingMetadata,
@@ -68,3 +66,4 @@ const PrivacyPage = async () => {
 }
 
 export default PrivacyPage
+

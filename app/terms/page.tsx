@@ -11,13 +11,13 @@ interface PageData {
 
 async function getTermsContent(baseUrl: string): Promise<PageData | null> {
   const res = await fetch(`${baseUrl}/api/page-content/terms`, {
-    cache: "no-store", // Ensure no caching for this fetch
+    cache: "no-store",
   })
   if (!res.ok) return null
   return res.json()
 }
 
-// Dynamic metadata generation for Terms and Conditions page
+
 export async function generateMetadata(
   { params }: { params: { slug: string } },
   parent: ResolvingMetadata,
