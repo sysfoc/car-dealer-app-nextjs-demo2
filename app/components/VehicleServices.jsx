@@ -387,30 +387,22 @@ export default function SellMyCar() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-600 py-20">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-600 py-20 dark:from-gray-800 dark:to-gray-900">
+        <div className="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="mb-6 text-4xl font-bold text-white">
+          <h2 className="mb-6 text-4xl font-bold text-white dark:text-gray-100">
             Ready to Sell Your Car?
           </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-xl text-blue-100">
+          <p className="mx-auto mb-8 max-w-2xl text-xl text-blue-100 dark:text-gray-300">
             Contact our automotive experts today to learn more about our
             professional car selling services and get expert guidance for your
             vehicle.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-            {/* <button
-              onClick={handleContactUs}
-              className="group flex items-center justify-center rounded-xl bg-white px-8 py-4 font-semibold text-blue-600 shadow-lg transition-all duration-300 hover:bg-gray-100 hover:shadow-xl hover:-translate-y-1"
-            >
-              Contact Our Experts
-              <FaPhone className="ml-2 transition-transform group-hover:scale-110" />
-            </button> */}
-
             <button
               onClick={handleContactUs}
-              className="group flex items-center justify-center rounded-xl border border-transparent bg-gradient-to-r from-pink-500 to-indigo-500 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:from-pink-600 hover:to-indigo-600 hover:shadow-xl"
+              className="group flex items-center justify-center rounded-xl border border-transparent bg-gradient-to-r from-pink-500 to-indigo-500 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:from-pink-600 hover:to-indigo-600 hover:shadow-xl dark:from-blue-600 dark:to-purple-700 dark:hover:from-blue-700 dark:hover:to-purple-800"
             >
               Contact Our Experts
               <FaPhone className="ml-2 transition-transform group-hover:scale-110" />
@@ -418,7 +410,7 @@ export default function SellMyCar() {
 
             <Link
               href="/about"
-              className="flex items-center justify-center rounded-xl border-2 border-white/30 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
+              className="flex items-center justify-center rounded-xl border-2 border-white/30 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/50 hover:bg-white/20 dark:border-gray-600/50 dark:bg-gray-700/50 dark:text-gray-100 dark:hover:border-gray-500/70 dark:hover:bg-gray-600/60"
             >
               Learn More About Us
             </Link>

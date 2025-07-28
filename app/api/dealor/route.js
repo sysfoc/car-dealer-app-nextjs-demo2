@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import connectDB from "../../lib/mongodb"
 import Dealer from "../../models/Dealer"
 
-
-
 export const GET = async () => {
   await connectDB();
   try {

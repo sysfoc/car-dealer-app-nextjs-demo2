@@ -33,7 +33,6 @@ const CommentsSection = ({ slug }: { slug: string }) => {
   useEffect(() => {
     fetchComments();
   }, [fetchComments]);
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,37 +131,41 @@ const CommentsSection = ({ slug }: { slug: string }) => {
       </form>
 
       <div className="mt-10 space-y-6">
-  {loadingComments ? (
-    <div className="flex justify-center items-center space-x-2 py-6">
-    <span className="dot bg-gray-500 animate-bounce delay-0"></span>
-    <span className="dot bg-gray-500 animate-bounce delay-150"></span>
-    <span className="dot bg-gray-500 animate-bounce delay-300"></span>
-  </div>
-  ) : comments.length === 0 ? (
-    <p className="text-base text-gray-500">Be the first one to comment.</p>
-  ) : (
-    comments.map((c) => (
-      <div
-        key={c._id}
-        className="border-b pb-6 px-4 bg-white hover:bg-gray-50 rounded-lg transition-all duration-300 ease-in-out"
-      >
-        <div className="flex items-center space-x-3">
-          <p className="text-lg font-medium text-gray-800">
-            {c.name || "Anonymous"}
+        {loadingComments ? (
+          <div className="flex items-center justify-center space-x-2 py-6">
+            <span className="dot animate-bounce bg-gray-500 delay-0 dark:bg-gray-400"></span>
+            <span className="dot animate-bounce bg-gray-500 delay-150 dark:bg-gray-400"></span>
+            <span className="dot animate-bounce bg-gray-500 delay-300 dark:bg-gray-400"></span>
+          </div>
+        ) : comments.length === 0 ? (
+          <p className="text-base text-gray-500 dark:text-gray-400">
+            Be the first one to comment.
           </p>
-          <p className="text-xs text-gray-500">
-            {new Date(c.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        </div>
-        <p className="mt-2 text-base text-gray-700 font-normal">{c.comment}</p>
+        ) : (
+          comments.map((c) => (
+            <div
+              key={c._id}
+              className="rounded-lg border-b bg-white px-4 pb-6 transition-all duration-300 ease-in-out hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+            >
+              <div className="flex items-center space-x-3">
+                <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                  {c.name || "Anonymous"}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {new Date(c.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              </div>
+              <p className="mt-2 text-base font-normal text-gray-700 dark:text-gray-300">
+                {c.comment}
+              </p>
+            </div>
+          ))
+        )}
       </div>
-    ))
-  )}
-</div>
     </div>
   );
 };

@@ -106,7 +106,7 @@ const AdminSidebar = () => {
     { label: "Contact Submissions", href: "/admin/contact", icon: IoIosContact },
     { label: "Value Submissions", href: "/admin/valuation", icon: BiMessageSquareEdit },
     { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
-    { label: "Dealers", href: "/admin/create-dealer", icon: FaIdeal },
+    // { label: "Dealers", href: "/admin/create-dealer", icon: FaIdeal },
     { label: "Meta Editor", href: "/admin/meta-editor", icon: MdOutlineSubtitles },
     { label: "Manage Blogs", href: "/admin/blog", icon: FaPencilAlt },
   ];
@@ -120,6 +120,14 @@ const AdminSidebar = () => {
             links: [
               { label: "All users", href: "/admin/manage-users" },
               { label: "Create User", href: "/admin/createUser" },
+            ],
+          },
+          {
+            label: "Manage Dealers",
+            icon: FaIdeal,
+            links: [
+              { label: "All Dealers", href: "/admin/view-dealer" },
+              { label: "Create Dealers", href: "/admin/create-dealer" },
             ],
           },
         ]

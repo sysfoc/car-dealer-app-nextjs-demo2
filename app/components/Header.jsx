@@ -262,7 +262,7 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
                 />
                 <div className="flex flex-col">
                   <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-                    AutomotiveWebSolutions
+                    Front Seat
                   </span>
                   <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                     Built to Sell Cars
