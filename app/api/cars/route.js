@@ -14,13 +14,11 @@ async function ensureUploadDir() {
   try {
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
-      console.log("Upload directory created:", uploadDir);
     }
     // Test write permissions
     const testFile = path.join(uploadDir, "test-write.tmp");
     await fs.promises.writeFile(testFile, "test");
     await fs.promises.unlink(testFile);
-    console.log("Upload directory is writable");
     return true;
   } catch (error) {
     console.error("Upload directory setup failed:", error);
@@ -275,8 +273,6 @@ export async function POST(req) {
       sold: false,
       status: userData.role === "superadmin" ? 1 : 0,
     };
-
-    console.log("Processed car data:", carData);
 
     const newCar = new Car(carData);
     const result = await newCar.save();
@@ -541,11 +537,6 @@ export async function GET(req) {
         filterQuery.co2Emission = parsedCo2Emission;
       }
     }
-
-    console.log(
-      "Server-side filter query:",
-      JSON.stringify(filterQuery, null, 2),
-    );
 
     const cars = await Car.find(filterQuery).lean();
     const formattedCars = cars.map((car) => ({

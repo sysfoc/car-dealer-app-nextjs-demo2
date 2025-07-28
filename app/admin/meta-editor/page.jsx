@@ -16,10 +16,8 @@ const MetaEditor = () => {
     const fetchData = async () => {
       setIsLoading(true)
       try {
-        console.log("Fetching meta data for type:", type)
         const res = await fetch(`/api/meta-pages?type=${type}`, { cache: "no-store" })
         const result = await res.json()
-        console.log("Meta Fetch response:", result)
 
         if (result?.data) {
           setFormData({
@@ -49,14 +47,12 @@ const MetaEditor = () => {
     setIsSaving(true)
     try {
       const submitData = { type, ...formData }
-      console.log("Submitting meta data:", submitData)
       const res = await fetch("/api/meta-pages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submitData),
       })
       const data = await res.json()
-      console.log("Meta Submit response:", data)
       if (data.message) {
         Swal.fire({
           title: "Success!",

@@ -9,7 +9,8 @@ import { iconComponentsMap, allSocialPlatforms } from "../lib/social-icons"
 const Footerr = ({ isDarkMode }) => {
   const t = useTranslations("Footer")
   const [footerSettings, setFooterSettings] = useState(null)
-  const [logo, setLogo] = useState("/logo.png")
+  const [logo, setLogo] = useState("")
+  const [logoLoading, setLogoLoading] = useState(true)
   const [homepageData, setHomepageData] = useState(null)
   const [fetchedSocials, setFetchedSocials] = useState([])
 
@@ -100,11 +101,14 @@ const Footerr = ({ isDarkMode }) => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
+        setLogoLoading(true)
         const res = await fetch("/api/settings/general", { cache: "no-store" })
         const data = await res.json()
-        setLogo(data?.settings?.logo || "/logo.png")
+        setLogo(data?.settings?.logo)
       } catch (error) {
         console.error("Failed to fetch footer Logo:", error)
+      } finally {
+        setLogoLoading(false)
       }
     }
     fetchLogo()
@@ -134,14 +138,18 @@ const Footerr = ({ isDarkMode }) => {
           <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {/* Logo */}
             <div className="space-y-4">
-              <Image
-                src={logo || "/placeholder.svg"}
-                alt="Sysfoc Cars Dealer"
-                priority
-                width={180}
-                height={90}
-                className="h-auto w-auto max-w-[180px] object-contain"
-              />
+              {logoLoading ? (
+                <div className="h-[90px] w-[180px] bg-gray-300 dark:bg-gray-600 animate-pulse rounded"></div>
+              ) : logo ? (
+                <Image
+                  src={logo}
+                  alt="Sysfoc Cars Dealer"
+                  priority
+                  width={180}
+                  height={90}
+                  className="h-auto w-auto max-w-[180px] object-contain"
+                />
+              ) : null}
             </div>
 
             {/* Quick Links */}

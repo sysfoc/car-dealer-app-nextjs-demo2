@@ -30,13 +30,9 @@ export default function LoginPage() {
         withCredentials: true,
       });
 
-      console.log("Login Response:", response.data);
       toast.success(`${response.data.role.charAt(0).toUpperCase() + response.data.role?.slice(1)} Login successful!`);
-      // alert(`User Role: ${response.data.role}`);
       
       const receivedRole = response.data.role?.toLowerCase()?.trim();
-      console.log("Processed Role:", receivedRole);
-
       if (!receivedRole) {
         throw new Error("No role received from server");
       }

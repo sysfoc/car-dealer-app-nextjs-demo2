@@ -11,8 +11,6 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { email, password, pin } = reqBody;
-    console.log("Received Request Body:", reqBody);
-
     const user = await User.findOne({ email });
     
     if (!user) {
@@ -21,9 +19,6 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-
-    console.log("User Found in DB:", user);
-
     const validPassword = await bcryptjs.compare(password, user.password);
     if (!validPassword) {
       return NextResponse.json({ error: "Invalid password" }, { status: 400 });

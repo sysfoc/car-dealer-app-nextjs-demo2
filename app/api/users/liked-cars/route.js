@@ -36,7 +36,6 @@ export async function POST(request) {
         { new: true }
       );
       
-      console.log(`Car ${carId} removed from user ${user.username}'s liked cars`);
       return NextResponse.json({ 
         message: "Car removed from favorites", 
         isLiked: false,
@@ -50,7 +49,6 @@ export async function POST(request) {
         { new: true, upsert: false }
       );
       
-      console.log(`Car ${carId} added to user ${user.username}'s liked cars`);
       return NextResponse.json({ 
         message: "Car added to favorites", 
         isLiked: true,

@@ -116,7 +116,6 @@ const CardetailCard = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Response:", data);
         setUserLikedCars(Array.isArray(data.likedCars) ? data.likedCars : []);
 
         setUser((prev) => ({
@@ -396,8 +395,6 @@ const CardetailCard = () => {
   useEffect(() => {
     const query = new URLSearchParams(filters).toString();
     const apiUrl = "/api";
-    console.log("API URL:", `${apiUrl}/cars?${query}`);
-
     setLoading(true);
     fetch(`${apiUrl}/cars?${query}`)
       .then((res) => {
@@ -408,7 +405,6 @@ const CardetailCard = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("API Data:", data);
         setCars(data.cars || []);
         setLoading(false);
       })
@@ -622,8 +618,6 @@ const CardetailCard = () => {
         matchesDriveType
       );
     });
-
-    console.log("Filtered Cars:", filtered);
     setFilteredCars(filtered);
   }, [cars, parsedFilters]);
 

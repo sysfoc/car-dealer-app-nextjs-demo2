@@ -29,10 +29,6 @@ export async function POST(request) {
 
     const body = await request.json()
     const { heading, content, email, workingHours, address, phone, map } = body
-
-     console.log("Received data from frontend:", body)
-
-    // Find existing contact page or create new one
     let contactPage = await ContactPage.findOne()
 
     if (contactPage) {
@@ -59,8 +55,6 @@ export async function POST(request) {
       })
     }
 
-     console.log("Saved contactPage data to DB:", contactPage)
-     
     return NextResponse.json({
       success: true,
       message: "Contact page updated successfully",

@@ -242,7 +242,6 @@ const Page = () => {
         body: formData,
       });
       const result = await response.json();
-      console.log("result", result);
       if (response.ok) {
         Swal.fire("Success!", result.message, "success");
         formElement.reset();

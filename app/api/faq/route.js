@@ -7,8 +7,6 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    console.log("Received Body:", body);
-
     const { title, content, order } = body;
 
     if (!title || !content) {

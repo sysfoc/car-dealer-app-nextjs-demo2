@@ -155,16 +155,12 @@ export async function GET() {
       );
     }
 
-    console.log('Fetching general settings...');
-    
     const settings = await GeneralSettings.findOne();
     
     if (!settings) {
-      console.log('No settings found, returning default settings');
-      
       const defaultSettings = {
-        logo: "/logo.png",
-        favicon: "/logo.png",
+        logo: "",
+        favicon: "",
         top: {
           hideDarkMode: false,
           hideFavourite: false,
@@ -204,7 +200,6 @@ export async function GET() {
       });
     }
 
-    console.log('Settings retrieved successfully');
     return NextResponse.json({ 
       settings,
       isDefault: false 
@@ -257,8 +252,6 @@ export async function POST(req) {
       );
     }
 
-    console.log('Received settings data:', body);
-
     const validationErrors = validateSettingsInput(body);
     if (validationErrors.length > 0) {
       console.error('Validation errors:', validationErrors);
@@ -272,12 +265,10 @@ export async function POST(req) {
     }
 
     const sanitizedData = sanitizeInput(body);
-    console.log('Data sanitized successfully');
 
     let settings = await GeneralSettings.findOne();
     
     if (settings) {
-      console.log('Updating existing settings...');
       
       const hasChanges = JSON.stringify(sanitizedData) !== JSON.stringify({
         ...settings.toObject(),
@@ -288,7 +279,6 @@ export async function POST(req) {
       });
       
       if (!hasChanges) {
-        console.log('No changes detected, returning existing settings');
         return NextResponse.json({
           success: true,
           settings,
@@ -318,19 +308,13 @@ export async function POST(req) {
         );
       }
       
-      console.log('Settings updated successfully');
-      
     } else {
-      console.log('Creating new settings...');
-      
       try {
         settings = await GeneralSettings.create({
           ...sanitizedData,
           createdAt: new Date(),
           updatedAt: new Date()
         });
-        
-        console.log('Settings created successfully');
         
       } catch (createError) {
         console.error('Error creating settings:', createError);
@@ -349,9 +333,6 @@ export async function POST(req) {
         throw createError;
       }
     }
-
-    console.log('Settings operation completed successfully');
-
     return NextResponse.json({
       success: true,
       settings,

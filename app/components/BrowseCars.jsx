@@ -1,17 +1,20 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useRef } from "react";
-import {
-  Car,
-  CarFront,
-  CaravanIcon as Van,
-  Search,
-  Filter,
-  ChevronDown,
-  X,
-  BatteryCharging,
-  Wrench,
-} from "lucide-react";
+import { useState, useEffect } from "react"
+import { Car, CarFront, CaravanIcon as Van, BatteryCharging, Wrench } from "lucide-react"
+
+const getInitialVisibleCount = () => {
+  if (typeof window !== "undefined") {
+    if (window.innerWidth < 640) {
+      // For screens smaller than 'sm' breakpoint
+      return 3
+    } else {
+      // For 'sm' and larger screens
+      return 6
+    }
+  }
+  return 6 // Default for server-side rendering or if window is not defined
+}
 
 const BrowseCars = () => {
   const allItems = [
@@ -68,88 +71,31 @@ const BrowseCars = () => {
       popular: false,
     },
     { category: "Vintage Models", icon: <Car />, count: 23, popular: false },
-  ];
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
-  const [showFilters, setShowFilters] = useState(false);
-  const [filteredItems, setFilteredItems] = useState(allItems);
-  const [viewMode, setViewMode] = useState("grid");
-  const [isLoading, setIsLoading] = useState(false);
-  const searchRef = useRef(null);
-  const filterDropdownRef = useRef(null); // Ref for the filter dropdown container
-  const [visibleCount, setVisibleCount] = useState(6); // shows 2 rows of 3 items each
-  // Filter options
-  const filterOptions = [
-    { value: "all", label: "All Categories" },
-    { value: "popular", label: "Popular" },
-    { value: "electric", label: "Electric & Hybrid" },
-    { value: "luxury", label: "Luxury & Sports" },
-  ];
+  ]
 
-  // Effect to handle clicks outside the filter dropdown
+  const [filteredItems, setFilteredItems] = useState(allItems)
+  const [isLoading, setIsLoading] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(getInitialVisibleCount())
+
+  // Effect to update visibleCount on window resize
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        filterDropdownRef.current &&
-        !filterDropdownRef.current.contains(event.target)
-      ) {
-        setShowFilters(false);
-      }
-    };
-
-    if (showFilters) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+    const handleResize = () => {
+      setVisibleCount(getInitialVisibleCount())
     }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showFilters]);
-
+  // Effect to simulate loading and set initial items
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(true)
     const timer = setTimeout(() => {
-      let filtered = allItems;
-      // Apply search filter
-      if (searchTerm) {
-        filtered = filtered.filter((item) =>
-          item.category.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
-      }
-      // Apply category filter
-      switch (selectedFilter) {
-        case "popular":
-          filtered = filtered.filter((item) => item.popular);
-          break;
-        case "electric":
-          filtered = filtered.filter(
-            (item) =>
-              item.category.toLowerCase().includes("electric") ||
-              item.category.toLowerCase().includes("hybrid"),
-          );
-          break;
-        case "luxury":
-          filtered = filtered.filter(
-            (item) =>
-              item.category.toLowerCase().includes("sports") ||
-              item.category.toLowerCase().includes("classic") ||
-              item.category.toLowerCase().includes("vintage"),
-          );
-          break;
-        default:
-          break;
-      }
-      setFilteredItems(filtered);
-      setIsLoading(false);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchTerm, selectedFilter]);
-  const clearSearch = () => {
-    setSearchTerm("");
-    searchRef.current?.focus();
-  };
+      setFilteredItems(allItems) // No filtering, just set all items
+      setIsLoading(false)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [])
+
   const CategoryCard = ({ item, index }) => (
     <div
       className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
@@ -173,16 +119,14 @@ const BrowseCars = () => {
           <h3 className="truncate text-sm font-semibold text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-gray-50 dark:group-hover:text-blue-400">
             {item.category}
           </h3>
-          <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400">
-            {item.count} available
-          </p>
+          <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400">{item.count} available</p>
         </div>
       </div>
     </div>
-  );
+  )
+
   return (
     <section className="relative mx-4 my-6 overflow-hidden rounded-2xl border border-gray-300 bg-gray-100 px-6 py-8 shadow-xl dark:border-gray-800 dark:bg-gray-900">
-
       <div className="absolute left-0 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-200/20 blur-3xl dark:bg-blue-900/15"></div>
       <div className="absolute bottom-0 right-0 h-72 w-72 translate-x-1/2 translate-y-1/2 rounded-full bg-purple-200/20 blur-3xl dark:bg-purple-900/15"></div>
       <div className="relative mx-auto max-w-6xl">
@@ -197,129 +141,46 @@ const BrowseCars = () => {
           </p>
           <div className="w-16 h-1.5 bg-blue-600 dark:bg-blue-400 mx-auto rounded-full"></div>
         </div>
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-          <div className="relative flex-1">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Search className="h-4 w-4 text-gray-500" />
-            </div>
-            <input
-              ref={searchRef}
-              type="text"
-              placeholder="Search categories..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="block w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-10 text-sm placeholder-gray-500 transition-all duration-200 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-400"
-            />
-            {searchTerm && (
-              <button
-                onClick={clearSearch}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 transition-colors duration-200 hover:text-gray-700 dark:hover:text-gray-300"
-              >
-                <X className="h-4 w-4 text-gray-500" />
-              </button>
-            )}
-          </div>
-          {/* Filter Dropdown */}
-          <div className="relative" ref={filterDropdownRef}>
-            {" "}
-            {/* Added ref here */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700"
-            >
-              <Filter className="h-4 w-4 text-gray-500" />
-              <span>
-                {
-                  filterOptions.find((opt) => opt.value === selectedFilter)
-                    ?.label
-                }
-              </span>
-              <ChevronDown
-                className={`h-3 w-3 text-gray-500 transition-transform duration-200 ${showFilters ? "rotate-180" : ""}`}
-              />
-            </button>
-            {showFilters && (
-              <div className="absolute left-0 right-0 top-full z-50 mt-2 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-                {" "}
-                {/* Increased z-index */}
-                {filterOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      setSelectedFilter(option.value);
-                      setShowFilters(false);
-                    }}
-                    className={`w-full px-4 py-2.5 text-left text-sm text-gray-800 transition-colors duration-200 first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-700 ${
-                      selectedFilter === option.value
-                        ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
-                        : ""
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+
         {/* Results count and loading */}
         <div className="mb-4 flex items-center justify-between">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             {isLoading ? (
               <span className="flex items-center space-x-2">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-                <span>Searching...</span>
+                <span>Loading categories...</span>
               </span>
             ) : (
-              `${filteredItems.length} categories found`
+              `${filteredItems.length} categories available`
             )}
-          </p>
+          </div>
         </div>
+
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
           {filteredItems.length > 0 ? (
             filteredItems
               .slice(0, visibleCount)
-              .map((item, index) => (
-                <CategoryCard
-                  key={`${item.category}-${index}`}
-                  item={item}
-                  index={index}
-                />
-              ))
-          ) : !isLoading ? (
+              .map((item, index) => <CategoryCard key={`${item.category}-${index}`} item={item} index={index} />)
+          ) : (
             <div className="col-span-full py-12 text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
-                <Search className="h-6 w-6 text-gray-500" />
+                <Car className="h-6 w-6 text-gray-500" />
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
-                No categories found
-              </h3>
-              <p className="mb-4 text-gray-600 dark:text-gray-400">
-                Try adjusting your search or filter criteria
-              </p>
-              <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedFilter("all");
-                }}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700"
-              >
-                Clear filters
-              </button>
+              <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">No categories found</h3>
+              <p className="mb-4 text-gray-600 dark:text-gray-400">There are no car categories to display.</p>
             </div>
-          ) : null}
+          )}
         </div>
-        {filteredItems.length > 6 && (
-          <div
-            className={`${viewMode === "grid" ? "col-span-full" : "w-full"} mt-8 text-center`}
-          >
+
+        {filteredItems.length > getInitialVisibleCount() && (
+          <div className="mt-8 text-center">
             <button
               onClick={() => {
                 if (visibleCount >= filteredItems.length) {
-                  setVisibleCount(6);
+                  setVisibleCount(getInitialVisibleCount())
                 } else {
-                  setVisibleCount((prev) => prev + 6);
+                  setVisibleCount((prev) => prev + 6)
                 }
               }}
               className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:from-blue-700 hover:to-purple-700"
@@ -328,6 +189,7 @@ const BrowseCars = () => {
             </button>
           </div>
         )}
+
         {filteredItems.length > 0 && (
           <div className="mt-10 border-t border-gray-300 pt-6 dark:border-gray-700">
             <div className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
@@ -335,40 +197,30 @@ const BrowseCars = () => {
                 <div className="text-xl font-bold text-blue-800 dark:text-blue-200">
                   {filteredItems.reduce((sum, item) => sum + item.count, 0)}
                 </div>
-                <div className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-                  Total Cars
-                </div>
+                <div className="text-xs font-semibold text-blue-700 dark:text-blue-300">Total Cars</div>
               </div>
               <div className="rounded-lg border border-purple-400 bg-purple-100 p-4 shadow-md dark:border-purple-600 dark:bg-purple-900/30">
-                <div className="text-xl font-bold text-purple-800 dark:text-purple-200">
-                  {filteredItems.length}
-                </div>
-                <div className="text-xs font-semibold text-purple-700 dark:text-purple-300">
-                  Categories
-                </div>
+                <div className="text-xl font-bold text-purple-800 dark:text-purple-200">{filteredItems.length}</div>
+                <div className="text-xs font-semibold text-purple-700 dark:text-purple-300">Categories</div>
               </div>
               <div className="rounded-lg border border-green-400 bg-green-100 p-4 shadow-md dark:border-green-600 dark:bg-green-900/30">
                 <div className="text-xl font-bold text-green-800 dark:text-green-200">
                   {filteredItems.filter((item) => item.popular).length}
                 </div>
-                <div className="text-xs font-semibold text-green-700 dark:text-green-300">
-                  Popular
-                </div>
+                <div className="text-xs font-semibold text-green-700 dark:text-green-300">Popular</div>
               </div>
               <div className="rounded-lg border border-orange-400 bg-orange-100 p-4 shadow-md dark:border-orange-600 dark:bg-orange-900/30">
                 <div className="text-xl font-bold text-orange-800 dark:text-orange-200">
                   {Math.max(...filteredItems.map((item) => item.count))}
                 </div>
-                <div className="text-xs font-semibold text-orange-700 dark:text-orange-300">
-                  Most Stock
-                </div>
+                <div className="text-xs font-semibold text-orange-700 dark:text-orange-300">Most Stock</div>
               </div>
             </div>
           </div>
         )}
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default BrowseCars;
+export default BrowseCars

@@ -177,20 +177,15 @@ export default function Home() {
         })
         .then((data) => {
           const selectedCar = data.cars?.find((c) => c.slug === slug);
-          console.log("Car Data:", selectedCar);
           setCar(selectedCar || null);
 
           if (selectedCar?.dealerId) {
             fetch(`/api/dealor`)
               .then((res) => res.json())
               .then((dealerData) => {
-                console.log("Dealer Data:", dealerData);
-
                 const matchedDealer = dealerData.find(
                   (dealer) => dealer._id === selectedCar.dealerId,
                 );
-                console.log("Matched Dealer:", matchedDealer);
-
                 setDealer(matchedDealer || null);
               })
               .catch((err) => console.error("Error fetching dealer:", err));

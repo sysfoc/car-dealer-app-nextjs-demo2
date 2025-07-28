@@ -51,7 +51,6 @@ const ContactPageModal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSaving(true)
-     console.log("Sending contact form data:", formData)
     try {
       const res = await fetch("/api/settings/contactPage", {
         method: "POST",

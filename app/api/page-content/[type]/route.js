@@ -5,16 +5,12 @@ import dbconnect from "../../../lib/mongodb.js"
 export async function GET(req, { params }) {
   try {
     const { type } = params
-    console.log("Page content GET request - Type:", type)
     if (!type) {
       return NextResponse.json({ error: "Type parameter is required" }, { status: 400 })
     }
     await dbconnect()
-    console.log("Database connected for page content fetch")
     const pageData = await PageContent.findOne({ type })
-    console.log("Page content found:", pageData)
     if (!pageData) {
-      console.log("No page content found for type:", type)
       return NextResponse.json(
         {
           name: `${type.charAt(0).toUpperCase() + type.slice(1)} Page`,

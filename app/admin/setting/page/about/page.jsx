@@ -27,12 +27,9 @@ const PageEditor = () => {
     const fetchData = async () => {
       setIsLoading(true)
       try {
-        console.log("Fetching data for type:", type)
         const res = await fetch(`/api/pages?type=${type}`, { cache: "no-store" })
         const result = await res.json()
-        console.log("Fetch response:", result)
         if (result?.data) {
-          console.log("Setting form data:", result.data)
           setFormData({
             name: result.data.name || "",
             content: result.data.content || "",
@@ -40,7 +37,6 @@ const PageEditor = () => {
             metaDescription: result.data.metaDescription || "", // Populate metaDescription
           })
         } else {
-          console.log("No data found, resetting form")
           setFormData({ name: "", content: "", metaTitle: "", metaDescription: "" })
         }
       } catch (error) {
@@ -63,14 +59,12 @@ const PageEditor = () => {
     setIsSaving(true)
     try {
       const submitData = { type, ...formData }
-      console.log("Submitting data:", submitData)
       const res = await fetch("/api/pages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submitData),
       })
       const data = await res.json()
-      console.log("Submit response:", data)
       if (data.message) {
         Swal.fire({
           title: "Success!",

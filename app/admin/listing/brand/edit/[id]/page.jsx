@@ -21,11 +21,9 @@ const Page = () => {
   useEffect(() => {
     if (!id) return; // Ensure id is available
 
-    console.log("Fetching brand data for ID:", id);
     fetch(`/api/brand/${id}`) // Using RESTful API convention
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched Data:", data);
         if (data) {
           setFormData({
             id: data._id || "",

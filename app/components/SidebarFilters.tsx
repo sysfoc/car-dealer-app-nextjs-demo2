@@ -189,6 +189,17 @@ const SidebarFilters = () => {
     });
   };
 
+   const handleLeaseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      handleInputChange("lease", "true", "lease-filter");
+    } else {
+      setLocalFilters(prev => {
+        const { lease, ...rest } = prev;
+        return rest;
+      });
+    }
+  };
+
   const handleApplyFilters = () => {
     debouncedUpdateURL.flush();
   };
@@ -329,36 +340,6 @@ const SidebarFilters = () => {
                 className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 font-medium text-gray-800 placeholder-gray-500 shadow-lg transition-all duration-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 dark:focus:ring-violet-900/50"
               />
             </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      label: "Lease",
-      content: "lease",
-      symbol: <FaHandshake />,
-      render: !isLeasingPage && (
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="lease-filter"
-              checked={localFilters.lease === "true"}
-              onChange={(e) =>
-                handleInputChange(
-                  "lease",
-                  e.target.checked ? "true" : "false",
-                  "lease-filter",
-                )
-              }
-              className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
-            />
-            <label
-              htmlFor="lease-filter"
-              className="ml-3 text-sm text-gray-700 dark:text-gray-300"
-            >
-              Show Lease Cars Only
-            </label>
           </div>
         </div>
       ),
@@ -633,29 +614,6 @@ const SidebarFilters = () => {
         </div>
       ),
     },
-    // {
-    //   label: t("color"),
-    //   content: "color",
-    //   symbol: <IoIosColorPalette />,
-    //   render: (
-    //     <div className="space-y-4">
-    //       <div className="flex flex-wrap gap-3">
-    //         {Object.entries(colorMap).map(([id, hex]) => {
-    //           const label = id.charAt(0).toUpperCase() + id.slice(1);
-    //           return (
-    //             <ColorDot
-    //               key={id}
-    //               color={hex}
-    //               selected={Array.isArray(localFilters.color) && localFilters.color.includes(id)}
-    //               onClick={() => handleCheckboxChange("color", id)}
-    //               label={label}
-    //             />
-    //           );
-    //         })}
-    //       </div>
-    //     </div>
-    //   ),
-    // },
     {
       label: t("doors"),
       content: "doors",
@@ -1046,11 +1004,18 @@ const SidebarFilters = () => {
   ];
   const isLightColor = (colorId: any) => ["white", "silver"].includes(colorId);
   const visibleSections = sections.filter(section => 
-    section.content !== 'lease' || section.render !== false
+    section.content !== 'lease'
   );
+  useEffect(() => {
+    document.documentElement.classList.add("no-scrollbar")
+    return () => {
+      document.documentElement.classList.remove("no-scrollbar")
+    }
+  }, [])
   return (
-    <div className="scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-transparent max-h-screen overflow-y-auto rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
-      <h2 className="mb-6 border-b border-gray-200 pb-4 text-2xl font-bold text-gray-800 dark:border-gray-800 dark:text-white">
+    // <div className="scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-transparent max-h-screen overflow-y-auto rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
+     <div className="max-h-screen overflow-y-auto no-scrollbar rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
+     <h2 className="mb-6 border-b border-gray-200 pb-4 text-2xl font-bold text-gray-800 dark:border-gray-800 dark:text-white">
         Filter Vehicles
       </h2>
 
@@ -1168,6 +1133,49 @@ const SidebarFilters = () => {
         </div>
       </div>
 
+      {!isLeasingPage && (
+        <div className="mb-6 border-b border-gray-200 pb-4 last:border-0 dark:border-gray-800">
+          <button
+            className="group mb-4 flex w-full items-center justify-between"
+            onClick={() => toggleSection("lease")}
+          >
+            <div className="flex items-center gap-3">
+              <FaHandshake className="text-violet-600 dark:text-violet-400" />
+              <h3 className="text-left font-semibold text-gray-800 dark:text-gray-200">
+                Lease
+              </h3>
+            </div>
+            <div className="text-gray-500 group-hover:text-violet-600 dark:text-gray-400 dark:group-hover:text-violet-400">
+              {openSections.includes("lease") ? (
+                <IoArrowUpSharp className="h-5 w-5" />
+              ) : (
+                <IoArrowDownSharp className="h-5 w-5" />
+              )}
+            </div>
+          </button>
+
+          {openSections.includes("lease") && (
+            <div className="pl-9 space-y-4">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="lease-filter"
+                  checked={localFilters.lease === "true"}
+                  onChange={handleLeaseChange}
+                  className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+                />
+                <label
+                  htmlFor="lease-filter"
+                  className="ml-3 text-sm text-gray-700 dark:text-gray-300"
+                >
+                  Show Lease Cars Only
+                </label>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Filter Sections */}
       <div className="space-y-6">
         {visibleSections.map((section, index) => (
@@ -1207,3 +1215,37 @@ const SidebarFilters = () => {
 };
 
 export default SidebarFilters;
+
+
+
+// {
+    //   label: "Lease",
+    //   content: "lease",
+    //   symbol: <FaHandshake />,
+    //   render: !isLeasingPage && (
+    //     <div className="space-y-4">
+    //       <div className="flex items-center">
+    //         <input
+    //           type="checkbox"
+    //           id="lease-filter"
+    //           checked={localFilters.lease === "true"}
+    //           onChange={(e) =>
+    //             handleInputChange(
+    //               "lease",
+    //               e.target.checked ? "true" : "false",
+    //               "lease-filter",
+    //             )
+    //           }
+    //           className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+    //         />
+    //         <label
+    //           htmlFor="lease-filter"
+    //           className="ml-3 text-sm text-gray-700 dark:text-gray-300"
+    //         >
+    //           Show Lease Cars Only
+    //         </label>
+    //       </div>
+    //     </div>
+    //   ),
+    // },
+

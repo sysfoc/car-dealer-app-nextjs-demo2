@@ -11,13 +11,11 @@ async function ensureUploadDir() {
   try {
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
-      console.log("Upload directory created:", uploadDir);
     }
     // Test write permissions
     const testFile = path.join(uploadDir, "test-write.tmp");
     await fs.promises.writeFile(testFile, "test");
     await fs.promises.unlink(testFile);
-    console.log("Upload directory is writable");
     return true;
   } catch (error) {
     console.error("Upload directory setup failed:", error);
@@ -276,8 +274,6 @@ export async function PATCH(req, { params }) {
     };
 
     delete updatedData._id;
-
-    console.log("Updated car data:", updatedData);
 
     const result = await Car.updateOne(
       { _id: new ObjectId(id) },

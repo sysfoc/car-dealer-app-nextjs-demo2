@@ -26,7 +26,6 @@ const GeoChart = () => {
               const selection = chart.getSelection();
               if (selection.length === 0) return;
               const region = data[selection[0].row + 1];
-              console.log(`Selected region: ${region[0]}`);
             },
           },
         ]}

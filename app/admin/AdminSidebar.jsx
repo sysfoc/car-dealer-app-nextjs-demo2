@@ -33,7 +33,6 @@ const AdminSidebar = () => {
         if (response.ok) {
           const data = await response.json();
           setUserRole(data.user.role);
-          console.log("User Role from API:", data.user.role);
         } else {
           console.error("Failed to fetch user data");
           const token = Cookies.get("token");
@@ -48,7 +47,6 @@ const AdminSidebar = () => {
         if (token) {
           const decoded = jwt.decode(token);
           setUserRole(decoded?.role);
-          console.log("User Role from token fallback:", decoded?.role);
         }
       } finally {
         setIsLoading(false);

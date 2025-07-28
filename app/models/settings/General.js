@@ -3,11 +3,9 @@ import mongoose from 'mongoose';
 const SettingsSchema = new mongoose.Schema({
   logo: {
     type: String,
-    default: '/logo.png'
   },
   favicon: {
     type: String,
-    default: '/logo.png'
   },
   top: {
     hideDarkMode: {

@@ -91,7 +91,6 @@ const CardetailCard = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Response:", data);
         setUserLikedCars(Array.isArray(data.likedCars) ? data.likedCars : []);
 
         setUser((prev) => ({
@@ -331,7 +330,6 @@ const CardetailCard = () => {
   useEffect(() => {
     const query = new URLSearchParams(filters).toString();
     const apiUrl = "/api";
-    console.log("API URL:", `${apiUrl}/cars?${query}`);
 
     setLoading(true);
     fetch(`${apiUrl}/cars?${query}`)
@@ -343,7 +341,6 @@ const CardetailCard = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("API Data:", data);
         setCars(data.cars || []);
         setLoading(false);
       })
@@ -551,8 +548,6 @@ const CardetailCard = () => {
         matchesDriveType
       );
     });
-
-    console.log("Filtered Cars:", filtered);
     setFilteredCars(filtered);
   }, [cars, parsedFilters]);
 
@@ -728,13 +723,12 @@ const CardetailCard = () => {
   }
   return (
     <>
-      {/* Results Header */}
       <div className="my-5">
-        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-6 dark:border-gray-600 dark:from-gray-800 dark:to-gray-700 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-4 dark:border-gray-600 dark:from-gray-800 dark:to-gray-700 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 animate-pulse rounded-full bg-blue-600"></div>
-              <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+              <span className="text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
                 <span className="text-blue-600 dark:text-blue-400">
                   {paginationData.startIndex + 1}-{paginationData.endIndex}
                 </span>
@@ -751,9 +745,9 @@ const CardetailCard = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Select
-              className="min-w-[130px] rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700"
+              className="w-full rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:min-w-[130px]"
               value={itemsPerPage}
               onChange={(e) => {
                 setItemsPerPage(parseInt(e.target.value));
@@ -768,7 +762,7 @@ const CardetailCard = () => {
 
             <Select
               icon={GrSort}
-              className="min-w-[180px] rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700"
+              className="w-full rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:min-w-[180px]"
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
             >
@@ -781,7 +775,7 @@ const CardetailCard = () => {
               <option value="mileage-hl">{t("mileageHighToLow")}</option>
             </Select>
 
-            <div className="flex rounded-xl border border-slate-300 bg-white p-1 shadow-sm dark:border-gray-600 dark:bg-gray-700">
+            <div className="flex self-center rounded-xl border border-slate-300 bg-white p-1 shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:self-auto">
               <button
                 onClick={() => setIsGridView(false)}
                 className={`rounded-lg p-2.5 transition-all duration-200 ${

@@ -82,7 +82,6 @@ const CarEditPage = ({ params }) => {
         const res = await fetch(`/api/cars/${id}`, { method: "GET" });
         if (res.ok) {
           const data = await res.json();
-          console.log("Fetched Car Data:", data.car);
 
           setFormData({
             ...data.car,
@@ -290,7 +289,6 @@ const CarEditPage = ({ params }) => {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Car updated successfully:", data);
         alert("Car updated successfully!");
         router.push("/admin/listing/view");
       } else {

@@ -95,8 +95,6 @@ const Cookiebox = ({ cookieConsent: propsCookieConsent }: CookieboxProps) => {
     const retryDelay = 1000 * Math.pow(2, attempt) // Exponential backoff
 
     try {
-      console.log(`Fetching cookie settings (attempt ${attempt + 1}/${maxRetries + 1})...`)
-
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
       const response = await fetch("/api/settings/general", {
@@ -122,23 +120,18 @@ const Cookiebox = ({ cookieConsent: propsCookieConsent }: CookieboxProps) => {
 
       let finalSettings: NonNullable<CookieboxProps["cookieConsent"]>
       if (data.settings && data.settings.cookieConsent) {
-        console.log("Cookie settings fetched successfully from API")
         finalSettings = sanitizeCookieConsent(data.settings.cookieConsent)
       } else {
-        console.log("No cookie settings found in API response, using props or defaults")
         finalSettings = sanitizeCookieConsent(propsCookieConsent)
       }
 
       setCookieConsent(finalSettings)
       setFetchError(null)
     } catch (error) {
-      console.error(`Failed to fetch cookie settings (attempt ${attempt + 1}):`, error)
-
       const errorMessage = error instanceof Error ? error.message : "Unknown error"
       setFetchError(errorMessage)
 
       if (attempt < maxRetries) {
-        console.log(`Retrying in ${retryDelay}ms...`)
         setRetryCount(attempt + 1)
 
         setTimeout(() => {
@@ -181,13 +174,10 @@ const Cookiebox = ({ cookieConsent: propsCookieConsent }: CookieboxProps) => {
 
       // Always show if no consent exists AND consent is active
       if (!isValidStoredConsent && cookieConsent.status === "active") {
-        console.log("No valid cookie consent found, showing cookie box")
         setIsVisible(true)
       } else if (isValidStoredConsent) {
-        console.log(`Valid cookie consent found: ${stored}`)
         setIsVisible(false)
       } else if (cookieConsent.status === "inactive") {
-        console.log("Cookie consent is inactive, hiding cookie box")
         setIsVisible(false)
       }
     }
@@ -207,7 +197,6 @@ const Cookiebox = ({ cookieConsent: propsCookieConsent }: CookieboxProps) => {
 
   const handleConsent = (value: "essential" | "all") => {
     try {
-      console.log(`Cookie consent selected: ${value}`)
 
       // Validate consent value
       if (value !== "essential" && value !== "all") {
@@ -221,7 +210,6 @@ const Cookiebox = ({ cookieConsent: propsCookieConsent }: CookieboxProps) => {
       // Handle Google Analytics consent
       if (typeof window !== "undefined" && typeof window.gtag === "function") {
         const analyticsValue = value === "all" ? "granted" : "denied"
-        console.log(`Updating Google Analytics consent: ${analyticsValue}`)
 
         window.gtag("consent", "update", {
           analytics_storage: analyticsValue,

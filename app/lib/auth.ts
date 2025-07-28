@@ -5,7 +5,6 @@ import jwt , { JwtPayload } from 'jsonwebtoken'
 export async function verifyUserToken(request: NextRequest) {
   try {
     const token = request.cookies.get("token")?.value;
-    console.log("Received Token:", token);
 
     if (!token) {
       console.error("❌ No token found in request");
@@ -21,7 +20,6 @@ export async function verifyUserToken(request: NextRequest) {
       [key: string]: any;
     }
 
-    console.log("Decoded Payload:", payload);
     return payload as JwtPayload;
   } catch (error: any) {
     console.error("JWT Verification Error:", error);

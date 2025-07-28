@@ -151,7 +151,7 @@ export default function Page() {
                       <TableCell className="py-4 px-6">
                         <div className="relative">
                           <Image
-                            src={car.imageUrls?.[0] || "/placeholder.jpg"}
+                            src={car.imageUrls?.[0]}
                             width={100}
                             height={75}
                             alt="Car Image"

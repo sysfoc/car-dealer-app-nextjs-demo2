@@ -146,7 +146,6 @@ const Page = () => {
     formData.append("thursdayHr", refs.thursdayHr.current?.value || "");
     formData.append("fridayHr", refs.fridayHr.current?.value || "");
     formData.append("saturdayHr", refs.saturdayHr.current?.value || "");
-    console.log("Sending data:", Object.fromEntries(formData));
     try {
       const response = await fetch("/api/homepage", {
         method: "POST",

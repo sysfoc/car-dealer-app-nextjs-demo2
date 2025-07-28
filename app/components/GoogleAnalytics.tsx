@@ -126,7 +126,6 @@ export default function GoogleAnalytics({
             });
           }
           
-          console.log('GA initialized: ID=${analyticsSettings.trackingId}, Consent=' + validConsent);
         `}
       </Script>
     </>

@@ -38,10 +38,6 @@ export async function POST(request) {
 
     // Send confirmation email to customer
     try {
-      console.log("Attempting to send confirmation email to:", email)
-      console.log("EMAIL_USER:", process.env.EMAIL_USER ? "Set" : "Not set")
-      console.log("EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD ? "Set" : "Not set") // Corrected env var name
-
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -52,8 +48,7 @@ export async function POST(request) {
 
       // Test the connection
       await transporter.verify()
-      console.log("Email transporter verified successfully for POST")
-
+    
       const customerMailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
@@ -83,9 +78,7 @@ export async function POST(request) {
       }
 
       const result = await transporter.sendMail(customerMailOptions)
-      console.log("Confirmation email sent successfully:", result.messageId)
-
-      // Send notification email to admin for new request
+    
       const adminNotificationMailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER, // Send to admin's email
@@ -112,7 +105,6 @@ export async function POST(request) {
         `,
       }
       await transporter.sendMail(adminNotificationMailOptions)
-      console.log("Admin notification email sent for new request.")
     } catch (emailError) {
       console.error("Detailed email error (POST):", emailError)
       console.error("Error code:", emailError.code)
@@ -160,9 +152,6 @@ export async function PUT(request) {
 
     // Send reply email to customer
     try {
-      console.log("Attempting to send reply email to:", updatedValuation.email)
-      console.log("EMAIL_USER:", process.env.EMAIL_USER ? "Set" : "Not set")
-      console.log("EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD ? "Set" : "Not set") // Corrected env var name
 
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -174,8 +163,6 @@ export async function PUT(request) {
 
       // Test the connection
       await transporter.verify()
-      console.log("Email transporter verified successfully for PUT")
-
       const replyMailOptions = {
         from: process.env.EMAIL_USER,
         to: updatedValuation.email,
@@ -213,9 +200,6 @@ export async function PUT(request) {
       }
 
       const result = await transporter.sendMail(replyMailOptions)
-      console.log("Reply email sent successfully:", result.messageId)
-
-      // Send notification email to admin that a reply was sent
       const adminReplyNotificationMailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER, // Send to admin's email
@@ -244,7 +228,6 @@ export async function PUT(request) {
         `,
       }
       await transporter.sendMail(adminReplyNotificationMailOptions)
-      console.log("Admin notification email sent for reply.")
     } catch (emailError) {
       console.error("Detailed reply email error (PUT):", emailError)
       console.error("Error code:", emailError.code)

@@ -22,7 +22,6 @@ const Page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log("Submitting:", { title, content, order });
 
     if (!title || !content.trim()) {
       toast.error("Title and content are required!");

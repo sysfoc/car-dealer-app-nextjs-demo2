@@ -10,7 +10,6 @@ const Page = () => {
   const router = useRouter();
   const params = useParams();
   const id = params.id;
-  console.log("Fetching testimonial for ID:", id);
 
   const [testimonial, setTestimonial] = useState({
     name: "",
@@ -85,7 +84,6 @@ const Page = () => {
       });
 
       const result = await response.json();
-      console.log("Update response:", result);
       if (response.ok) {
         Swal.fire(
           "Success!",

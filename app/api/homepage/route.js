@@ -3,12 +3,9 @@ import connectDB from "../../lib/mongodb";
 
 export async function GET() {
   try {
-    console.log("Attempting to connect to database...");
     await connectDB();
-    console.log("Database connected successfully");
     
     const homepage = await Homepage.findOne();
-    console.log("Homepage data fetched:", homepage ? "found" : "not found");
     
     return Response.json(homepage || {});
   } catch (error) {
@@ -28,17 +25,9 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    console.log("POST request received");
-    
-    // Connect to database with better error handling
-    console.log("Connecting to database...");
     await connectDB();
-    console.log("Database connection successful");
     
     const formData = await request.formData();
-    console.log("Form data received");
-    
-    // Helper function to check if a value exists and is not empty
     const hasValue = (value) => value !== null && value !== undefined && value.toString().trim() !== "";
     
     // Build update object only with fields that have values
@@ -105,35 +94,24 @@ export async function POST(request) {
       }
     });
     
-    console.log("Update data prepared:", Object.keys(updateData));
-    
     // Check if we have any data to update
     if (Object.keys(updateData).length === 0) {
-      console.log("No valid data provided");
       return Response.json(
         { success: false, error: "No valid data provided for update" },
         { status: 400 }
       );
     }
 
-    // Check if a homepage document already exists
-    console.log("Checking for existing homepage...");
     const existingHomepage = await Homepage.findOne();
-    console.log("Existing homepage:", existingHomepage ? "found" : "not found");
     
     let homepage;
     if (existingHomepage) {
-      // Update existing document using $set to preserve other fields
-      console.log("Updating existing homepage...");
       homepage = await Homepage.findByIdAndUpdate(
         existingHomepage._id,
         { $set: updateData },
         { new: true, runValidators: true }
       );
-      console.log("Homepage updated successfully");
     } else {
-      // Create new document with default structure
-      console.log("Creating new homepage...");
       const defaultData = {
         seoTitle: "",
         seoDescription: "",
@@ -169,7 +147,6 @@ export async function POST(request) {
       
       homepage = new Homepage(newData);
       await homepage.save();
-      console.log("New homepage created successfully");
     }
 
     return Response.json({

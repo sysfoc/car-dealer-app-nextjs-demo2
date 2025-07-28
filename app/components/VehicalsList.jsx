@@ -93,12 +93,9 @@ const VehicalsList = ({ loadingState }) => {
       const response = await fetch("/api/cars");
       if (!response.ok) throw new Error("Failed to fetch vehicles");
       const data = await response.json();
-      console.log("API response:", data);
-      console.log("All cars:", data.cars);
       const filteredCars = data.cars.filter(
         (car) => car.status === 1 || car.status === "1",
       );
-      console.log("Filtered cars (status=1):", filteredCars);
       setVehicles(filteredCars);
       setIsLoading(false);
     } catch (err) {
@@ -131,7 +128,6 @@ const VehicalsList = ({ loadingState }) => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Response:", data);
         setUserLikedCars(Array.isArray(data.likedCars) ? data.likedCars : []);
         setUser((prev) => ({
           ...prev,
@@ -240,7 +236,7 @@ const VehicalsList = ({ loadingState }) => {
                   <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-900">
                     <div className="relative aspect-[16/10]">
                       <Image
-                        src={vehicle.imageUrls?.[0] || "/placeholder.svg"}
+                        src={vehicle.imageUrls?.[0]}
                         fill
                         alt={`${vehicle.make} ${vehicle.model}`}
                         className="object-cover transition-all duration-700 group-hover:scale-110"

@@ -27,8 +27,6 @@ export async function generateMetadata(
 
   const data = await getAboutContent(baseUrl)
 
-  console.log("Data received by generateMetadata:", data)
-
   return {
     title: data?.metaTitle || "About Us - Auto Car Dealers",
     description:
@@ -40,7 +38,6 @@ export async function generateMetadata(
 const AboutPage = async () => {
   const headersList = headers()
   const host = headersList.get("host")
-  console.log("Host:", host)
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
   const baseUrl = `${protocol}://${host}`
   const data = await getAboutContent(baseUrl)

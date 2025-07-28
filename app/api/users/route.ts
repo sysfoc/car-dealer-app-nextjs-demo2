@@ -9,23 +9,17 @@ import jwt from "jsonwebtoken";
 export async function GET(request: NextRequest) {
   await connectToMongoDB();
   try {
-    console.log("Incoming Request to /api/users");
 
     const token = request.cookies.get("token")?.value;
-    console.log("Token from cookies:", token);
 
     if (!token) {
-      console.log("Unauthorized access - Missing token");
       return NextResponse.json(
         { error: "Unauthorized access, token missing" },
         { status: 403 },
       );
     }
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET!);
-    console.log("Decoded Token:", decoded);
-
     if (!decoded) {
-      console.log("Invalid Token");
       return NextResponse.json(
         { error: "Invalid token, authorization denied" },
         { status: 403 },
@@ -33,7 +27,6 @@ export async function GET(request: NextRequest) {
     }
 
     const users = await User.find({}, "username email role");
-    console.log("Fetched Users:", users);
 
     return NextResponse.json({ users, totalPages: 1 });
   } catch (error) {

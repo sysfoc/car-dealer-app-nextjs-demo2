@@ -58,7 +58,6 @@ export async function POST(request) {
         console.warn("reCAPTCHA verification failed:", recaptchaData)
         return NextResponse.json({ error: "reCAPTCHA verification failed. Please try again." }, { status: 400 })
       }
-      console.log("reCAPTCHA verification successful with score:", recaptchaData.score)
     }
     // --- End reCAPTCHA Verification Logic ---
 

@@ -7,16 +7,12 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url)
     const type = searchParams.get("type")
-    console.log("GET request - Type:", type)
     if (!type) {
       return NextResponse.json({ error: "Type parameter is required" }, { status: 400 })
     }
     await dbconnect()
-    console.log("Database connected successfully")
     const pageData = await PageContent.findOne({ type })
-    console.log("Found page data:", pageData)
     if (!pageData) {
-      console.log("No page data found for type:", type)
       return NextResponse.json({ data: null }, { status: 200 })
     }
     return NextResponse.json({ data: pageData }, { status: 200 })
@@ -30,20 +26,15 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const body = await req.json()
-    console.log("POST request - Received data:", body)
     const { type, name, content, metaTitle, metaDescription } = body // Destructure new fields
     // Validation
     if (!type || !name || !content) {
-      console.log("Validation failed - Missing required fields")
       return NextResponse.json({ error: "Type, name, and content are required" }, { status: 400 })
     }
     if (!["about", "privacy", "terms"].includes(type)) {
-      console.log("Validation failed - Invalid type:", type)
       return NextResponse.json({ error: "Invalid page type" }, { status: 400 })
     }
     await dbconnect()
-    console.log("Database connected successfully")
-    // Use findOneAndUpdate with upsert to create or update
     const result = await PageContent.findOneAndUpdate(
       { type: type },
       {
@@ -59,7 +50,6 @@ export async function POST(req) {
         runValidators: true,
       },
     )
-    console.log("Saved/Updated page data:", result)
     return NextResponse.json(
       {
         message: "Page saved successfully",

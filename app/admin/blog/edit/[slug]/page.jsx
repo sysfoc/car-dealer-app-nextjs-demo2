@@ -47,7 +47,6 @@ export default function EditBlogPage() {
       try {
         const response = await fetch(`/api/blog/${blogSlug}`);
         const data = await response.json();
-        console.log("Blog Data:", data);
         if (response.ok) {
           setH1(data.h1);
           setCurrentSlug(data.slug);

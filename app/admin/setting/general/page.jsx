@@ -14,8 +14,8 @@ import React, { useEffect, useState } from "react";
 const Page = () => {
   const [activeSection, setActiveSection] = useState("Logo");
   const [settings, setSettings] = useState({
-    logo: "/logo.png",
-    favicon: "/logo.png",
+    logo: "",
+    favicon: "",
     top: {
       hideDarkMode: false,
       hideFavourite: false,
@@ -95,8 +95,8 @@ const Page = () => {
               ...prev.themeColor,
               ...(data.settings.themeColor || {})
             },
-            logo: data.settings.logo || "/logo.png",
-            favicon: data.settings.favicon || "/logo.png",
+            logo: data.settings.logo,
+            favicon: data.settings.favicon,
           }));
         }
       } catch (error) {

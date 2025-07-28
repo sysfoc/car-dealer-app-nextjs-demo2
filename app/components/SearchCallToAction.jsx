@@ -45,41 +45,62 @@ const SearchCallToAction = ({ onSearchClick }) => {
             </p>
           </div>
 
-          <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div className="flex flex-col items-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                <FaCar className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          {/* Updated grid layout for responsive behavior */}
+          <div className="mb-10">
+            {/* First row with 2 items on small screens */}
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 justify-items-center mb-4 sm:mb-0 sm:grid-cols-3">
+              <div className="flex flex-col items-center">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                  <FaCar className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="mt-2 text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                  10,000+
+                </p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  Vehicles Available
+                </p>
               </div>
-              <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-                10,000+
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Vehicles Available
-              </p>
+              <div className="flex flex-col items-center">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
+                  <FaFilter className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="mt-2 text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                  20+
+                </p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  Filter Options
+                </p>
+              </div>
+              {/* Third item - hidden on small screens, shown on sm and up */}
+              <div className="hidden sm:flex flex-col items-center">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
+                  <FaArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="mt-2 text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                  24/7
+                </p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  Instant Search
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-                <FaFilter className="h-6 w-6 text-green-600 dark:text-green-400" />
+            
+            {/* Second row with 1 centered item on small screens only */}
+            <div className="flex justify-center sm:hidden">
+              <div className="flex flex-col items-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
+                  <FaArrowRight className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="mt-2 text-xl font-bold text-gray-900 dark:text-white">
+                  24/7
+                </p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  Instant Search
+                </p>
               </div>
-              <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-                20+
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Filter Options
-              </p>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
-                <FaArrowRight className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-              </div>
-              <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-                24/7
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Instant Search
-              </p>
             </div>
           </div>
+
           <div className="flex flex-col items-center space-y-4">
             <button
               onClick={onSearchClick}

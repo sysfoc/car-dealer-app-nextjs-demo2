@@ -15,7 +15,7 @@ import { useAuth } from "../context/UserContext"
 
 const Header = ({ isDarkMode }) => {
   const { user } = useAuth();
-  const [logo, setLogo] = useState("/logo.png");
+  const [logo, setLogo] = useState("");
   useEffect(() => {
     const fetchLogo = async () => {
       try {
