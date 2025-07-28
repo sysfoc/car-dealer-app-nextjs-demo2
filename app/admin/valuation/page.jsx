@@ -241,10 +241,6 @@ const AdminValuationPage = () => {
         color: "bg-emerald-50 text-emerald-700 border-emerald-200",
         icon: CheckCircle,
       },
-      completed: {
-        color: "bg-blue-50 text-blue-700 border-blue-200",
-        icon: CheckCircle,
-      },
     }
 
     const config = statusConfig[status] || statusConfig.pending
@@ -327,7 +323,6 @@ const AdminValuationPage = () => {
     total: valuations.length,
     pending: valuations.filter((val) => val.status === "pending").length,
     responded: valuations.filter((val) => val.status === "responded").length,
-    completed: valuations.filter((val) => val.status === "completed").length,
   }
 
   const handleDeleteValuation = async () => {
@@ -429,18 +424,6 @@ const AdminValuationPage = () => {
               </div>
             </div>
           </div>
-
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:scale-[1.015] hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Completed</p>
-                <p className="text-3xl font-bold text-blue-600">{stats.completed}</p>
-              </div>
-              <div className="rounded-xl bg-blue-100 p-3">
-                <DollarSign className="h-6 w-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Search and Filter Section */}
@@ -474,7 +457,6 @@ const AdminValuationPage = () => {
                 { key: "all", label: "All", count: stats.total },
                 { key: "pending", label: "Pending", count: stats.pending },
                 { key: "responded", label: "Responded", count: stats.responded },
-                { key: "completed", label: "Completed", count: stats.completed },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -785,8 +767,10 @@ const AdminValuationPage = () => {
                   <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                     <h4 className="mb-2 font-medium text-gray-900">Valuation Status</h4>
                     <div className="space-y-2">
+                      <div className="flex  space-x-2">
                       {getStatusBadge(selectedValuation.status)}
                       {getValuationTypeBadge(selectedValuation.valuationType)}
+                      </div>
                       <div className="text-xs text-gray-500">
                         <div>Created: {new Date(selectedValuation.createdAt).toLocaleString()}</div>
                         {selectedValuation.repliedAt && (
