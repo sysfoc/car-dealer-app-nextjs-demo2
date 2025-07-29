@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { Car, CarFront, CaravanIcon as Van, BatteryCharging, Wrench } from "lucide-react"
 
@@ -13,7 +12,6 @@ const getInitialVisibleCount = () => {
   }
   return 6
 }
-
 const BrowseCars = () => {
   const allItems = [
     { category: "Automatic Cars", icon: <Car />, count: 245, popular: true },
@@ -75,7 +73,6 @@ const BrowseCars = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [visibleCount, setVisibleCount] = useState(6)
 
-  // Adjust visibleCount after mount
   useEffect(() => {
     const updateVisibleCount = () => {
       if (window.innerWidth < 640) {
@@ -89,8 +86,7 @@ const BrowseCars = () => {
     window.addEventListener("resize", updateVisibleCount)
     return () => window.removeEventListener("resize", updateVisibleCount)
   }, [])
-
-  // Loading effect
+  
   useEffect(() => {
     setIsLoading(true)
     const timer = setTimeout(() => {
@@ -99,26 +95,23 @@ const BrowseCars = () => {
     }, 300)
     return () => clearTimeout(timer)
   }, [])
-  
+
   const CategoryCard = ({ item, index }) => (
     <div
       className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-1 sm:p-4 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
       style={{ animationDelay: `${index * 50}ms` }}
     >
-      {/* Gradient background on hover */}
       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-blue-900/20 dark:via-transparent dark:to-purple-900/20"></div>
-      {/* Popular badge */}
+    
       {item.popular && (
         <div className="absolute -right-1 -top-1 h-3 w-3 animate-pulse rounded-full bg-gradient-to-r from-blue-500 to-purple-600"></div>
       )}
       <div className="relative z-10 flex items-center space-x-3">
-        {/* Icon */}
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 transition-transform duration-300 group-hover:scale-110 dark:from-blue-900/50 dark:to-purple-900/50">
           <div className="text-xl text-blue-600 transition-colors duration-300 group-hover:text-purple-600 dark:text-blue-400 dark:group-hover:text-purple-400">
             {item.icon}
           </div>
         </div>
-        {/* Content */}
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-sm font-semibold text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-gray-50 dark:group-hover:text-blue-400">
             {item.category}

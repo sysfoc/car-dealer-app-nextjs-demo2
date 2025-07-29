@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
-  DarkThemeToggle,
   Dropdown,
   DropdownHeader,
   Navbar,
@@ -11,11 +10,13 @@ import {
 } from "flowbite-react";
 import Image from "next/image";
 import { FiLogOut } from "react-icons/fi";
-import { useAuth } from "../context/UserContext"
+import { useAuth } from "../context/UserContext";
 
 const Header = ({ isDarkMode }) => {
   const { user } = useAuth();
   const [logo, setLogo] = useState("");
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchLogo = async () => {
       try {
@@ -26,32 +27,40 @@ const Header = ({ isDarkMode }) => {
         }
       } catch (error) {
         console.error("Failed to fetch logo:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchLogo();
-  }, [logo]);
+  }, []);
 
   return (
     <Navbar
       fluid
       rounded
-      className="border-b border-gray-300 dark:border-gray-700 dark:shadow-xl"
+      className="border-b border-gray-300 dark:border-gray-700 dark:shadow-xl min-h-[80px]"
     >
       <NavbarBrand href="/admin/dashboard">
-        <div className="flex">
-          <div className="relative h-12 w-20 md:h-14 md:w-24">
-            <Image
-              src={logo}
-              alt="Sysfoc-cars-dealer"
-              fill
-              className="object-cover"
-              priority
-            />
+        <div className="flex items-center gap-0">
+          <div className="flex items-center justify-center h-16 w-20 md:h-16 md:w-24 overflow-hidden">
+            {loading ? (
+              <div className="h-12 w-16 md:h-14 md:w-20 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-md" />
+            ) : (
+              <div className="relative h-16 w-16 md:h-20 md:w-20">
+                <Image
+                  src={logo}
+                  alt="Sysfoc-cars-dealer"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            )}
           </div>
           <div className="flex flex-col items-start justify-center">
             <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-              AutomotiveWebSloution
+              FrontSeat
             </span>
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
               Built to sell cars
@@ -61,11 +70,10 @@ const Header = ({ isDarkMode }) => {
       </NavbarBrand>
       <div className="flex items-center gap-x-5 md:order-2">
         <div className="hidden md:block">
-          <Button color={"gray"} href="/">
+          <Button color="gray" href="/">
             <FiLogOut fontSize={20} className="text-gray-500" />
           </Button>
         </div>
-        {/* <DarkThemeToggle /> */}
         <Dropdown
           arrowIcon={false}
           inline
