@@ -1,9 +1,9 @@
-// "use client";
+"use client";
 import { useState, useEffect } from "react";
 import { FaSearch, FaCar, FaFilter, FaArrowRight } from "react-icons/fa";
 import { useSidebar } from "../context/SidebarContext";
 
-const SearchCallToAction = () => { // Remove onSearchClick prop
+const SearchCallToAction = () => { 
   const [searchData, setSearchData] = useState(null);
   const { openSidebar } = useSidebar();
 
@@ -24,7 +24,7 @@ const SearchCallToAction = () => { // Remove onSearchClick prop
   }, []);
 
   const handleSearchClick = () => {
-    openSidebar(); // Open the sidebar when button is clicked
+    openSidebar();
   };
 
   return (
@@ -52,9 +52,7 @@ const SearchCallToAction = () => { // Remove onSearchClick prop
             </p>
           </div>
 
-          {/* Updated grid layout for responsive behavior */}
           <div className="mb-10">
-            {/* First row with 2 items on small screens */}
             <div className="grid grid-cols-2 gap-4 sm:gap-6 justify-items-center mb-4 sm:mb-0 sm:grid-cols-3">
               <div className="flex flex-col items-center">
                 <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
@@ -78,7 +76,6 @@ const SearchCallToAction = () => { // Remove onSearchClick prop
                   Filter Options
                 </p>
               </div>
-              {/* Third item - hidden on small screens, shown on sm and up */}
               <div className="hidden sm:flex flex-col items-center">
                 <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
                   <FaArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600 dark:text-purple-400" />
@@ -92,7 +89,6 @@ const SearchCallToAction = () => { // Remove onSearchClick prop
               </div>
             </div>
             
-            {/* Second row with 1 centered item on small screens only */}
             <div className="flex justify-center sm:hidden">
               <div className="flex flex-col items-center">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
@@ -110,7 +106,7 @@ const SearchCallToAction = () => { // Remove onSearchClick prop
 
           <div className="flex flex-col items-center space-y-4">
             <button
-              onClick={handleSearchClick} // Use the new handler
+              onClick={handleSearchClick}
               className="hover:shadow-3xl group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 px-8 py-4 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-700 to-blue-900 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
