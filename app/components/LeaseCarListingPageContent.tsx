@@ -43,7 +43,7 @@ const CarListingPageContent = () => {
       <div
         className={`transition-all duration-300 md:w-1/4 ${
           isMobile
-            ? `fixed right-0 top-0 z-50 h-screen !w-[67vw] max-w-xs transform overflow-y-auto bg-white shadow-xl ${
+            ? `fixed right-0 top-0 z-50 h-screen !w-[80vw] max-w-xs transform overflow-y-auto bg-white shadow-xl ${
                 isMobileFiltersOpen ? "translate-x-0" : "translate-x-full"
               }`
             : ""

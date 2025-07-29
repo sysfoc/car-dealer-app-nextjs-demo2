@@ -1,9 +1,11 @@
-"use client";
+// "use client";
 import { useState, useEffect } from "react";
 import { FaSearch, FaCar, FaFilter, FaArrowRight } from "react-icons/fa";
+import { useSidebar } from "../context/SidebarContext";
 
-const SearchCallToAction = ({ onSearchClick }) => {
+const SearchCallToAction = () => { // Remove onSearchClick prop
   const [searchData, setSearchData] = useState(null);
+  const { openSidebar } = useSidebar();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,6 +22,11 @@ const SearchCallToAction = ({ onSearchClick }) => {
 
     fetchData();
   }, []);
+
+  const handleSearchClick = () => {
+    openSidebar(); // Open the sidebar when button is clicked
+  };
+
   return (
     <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="absolute inset-0 opacity-5">
@@ -103,7 +110,7 @@ const SearchCallToAction = ({ onSearchClick }) => {
 
           <div className="flex flex-col items-center space-y-4">
             <button
-              onClick={onSearchClick}
+              onClick={handleSearchClick} // Use the new handler
               className="hover:shadow-3xl group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 px-8 py-4 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-700 to-blue-900 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
