@@ -6,14 +6,12 @@ import { Car, CarFront, CaravanIcon as Van, BatteryCharging, Wrench } from "luci
 const getInitialVisibleCount = () => {
   if (typeof window !== "undefined") {
     if (window.innerWidth < 640) {
-      // For screens smaller than 'sm' breakpoint
       return 3
     } else {
-      // For 'sm' and larger screens
       return 6
     }
   }
-  return 6 // Default for server-side rendering or if window is not defined
+  return 6
 }
 
 const BrowseCars = () => {
@@ -75,30 +73,36 @@ const BrowseCars = () => {
 
   const [filteredItems, setFilteredItems] = useState(allItems)
   const [isLoading, setIsLoading] = useState(false)
-  const [visibleCount, setVisibleCount] = useState(getInitialVisibleCount())
+  const [visibleCount, setVisibleCount] = useState(6)
 
-  // Effect to update visibleCount on window resize
+  // Adjust visibleCount after mount
   useEffect(() => {
-    const handleResize = () => {
-      setVisibleCount(getInitialVisibleCount())
+    const updateVisibleCount = () => {
+      if (window.innerWidth < 640) {
+        setVisibleCount(3)
+      } else {
+        setVisibleCount(6)
+      }
     }
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+
+    updateVisibleCount() // Run on mount
+    window.addEventListener("resize", updateVisibleCount)
+    return () => window.removeEventListener("resize", updateVisibleCount)
   }, [])
 
-  // Effect to simulate loading and set initial items
+  // Loading effect
   useEffect(() => {
     setIsLoading(true)
     const timer = setTimeout(() => {
-      setFilteredItems(allItems) // No filtering, just set all items
+      setFilteredItems(allItems)
       setIsLoading(false)
     }, 300)
     return () => clearTimeout(timer)
   }, [])
-
+  
   const CategoryCard = ({ item, index }) => (
     <div
-      className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
+      className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-1 sm:p-4 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Gradient background on hover */}
@@ -126,7 +130,7 @@ const BrowseCars = () => {
   )
 
   return (
-    <section className="relative mx-4 my-6 overflow-hidden rounded-2xl border border-gray-300 bg-gray-100 px-6 py-8 shadow-xl dark:border-gray-800 dark:bg-gray-900">
+    <section className="relative sm:mx-4 my-6 overflow-hidden rounded-2xl border border-gray-300 bg-gray-100 px-3 sm:px-6 py-8 shadow-xl dark:border-gray-800 dark:bg-gray-900">
       <div className="absolute left-0 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-200/20 blur-3xl dark:bg-blue-900/15"></div>
       <div className="absolute bottom-0 right-0 h-72 w-72 translate-x-1/2 translate-y-1/2 rounded-full bg-purple-200/20 blur-3xl dark:bg-purple-900/15"></div>
       <div className="relative mx-auto max-w-6xl">
@@ -142,7 +146,6 @@ const BrowseCars = () => {
           <div className="w-16 h-1.5 bg-blue-600 dark:bg-blue-400 mx-auto rounded-full"></div>
         </div>
 
-        {/* Results count and loading */}
         <div className="mb-4 flex items-center justify-between">
           <div className="text-sm text-gray-700 dark:text-gray-300">
             {isLoading ? (
@@ -156,7 +159,6 @@ const BrowseCars = () => {
           </div>
         </div>
 
-        {/* Categories Grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
           {filteredItems.length > 0 ? (
             filteredItems

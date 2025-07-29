@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation"
 import { FaHeart, FaSearch, FaTimes, FaCalculator, FaHandshake, FaCar, FaSun, FaMoon, FaTags } from "react-icons/fa"
 import { useTranslations } from "next-intl"
 import CarSearchSidebar from "../components/Car-search-sidebar"
+import { useSidebar } from "../context/SidebarContext"
 
-const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
+const Header = () => {
   const t = useTranslations("HomePage")
   const [darkMode, setDarkMode] = useState(false)
   const [logo, setLogo] = useState("")
@@ -15,18 +16,8 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
   const [topSettings, setTopSettings] = useState({})
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    if (isSidebarOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
-    return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [isSidebarOpen])
-
+  
+  const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar()
   useEffect(() => {
     setDarkMode(document.documentElement.classList.contains("dark"))
   }, [])
@@ -64,7 +55,7 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
   }
 
   const toggleSearchSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
+    toggleSidebar() // Use context function
   }
 
   const quickLinks = [
@@ -242,12 +233,7 @@ const Header = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
           </div>
         </div>
       </div>
-
-      <CarSearchSidebar
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-        onSidebarClose={onSidebarClose}
-      />
+      <CarSearchSidebar />
     </>
   )
 }

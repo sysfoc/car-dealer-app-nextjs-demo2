@@ -14,6 +14,7 @@ import GoogleAnalytics from "./components/GoogleAnalytics"
 import GoogleRecaptcha from "./components/GoogleRecaptcha"
 import { CurrencyProvider } from "./context/CurrencyContext"
 import { AuthProvider } from "./context/UserContext"
+import { SidebarProvider } from './context/SidebarContext'
 import { DistanceProvider } from "./context/DistanceContext"
 import { Suspense } from "react"
 
@@ -115,6 +116,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`transition-all dark:bg-gray-800 dark:text-gray-200 ${poppins.className}`}>
+        <SidebarProvider>
         <ThemeModeScript />
         <GoogleAnalytics />
         <GoogleRecaptcha />
@@ -133,6 +135,7 @@ export default async function RootLayout({
           </AuthProvider>
         </NextIntlClientProvider>
         <ToastContainer autoClose={3000} />
+        </SidebarProvider>
       </body>
     </html>
   )

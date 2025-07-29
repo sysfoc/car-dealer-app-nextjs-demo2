@@ -54,8 +54,6 @@ export async function POST(request) {
       const recaptchaData = await verifyResponse.json()
 
       if (!recaptchaData.success || recaptchaData.score < 0.5) {
-        // Adjust score threshold as needed (0.0 to 1.0)
-        console.warn("reCAPTCHA verification failed:", recaptchaData)
         return NextResponse.json({ error: "reCAPTCHA verification failed. Please try again." }, { status: 400 })
       }
     }

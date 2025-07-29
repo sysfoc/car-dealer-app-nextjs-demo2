@@ -1,16 +1,13 @@
-import { headers } from "next/headers" // Required for dynamic metadata fetching
+import { headers } from "next/headers"
 import type { Metadata } from "next"
-import LeasingCarsDetail from "../../components/LeasingCarsDetail"
-import SidebarFilters from "../../components/SidebarFilters"
 import { useTranslations } from "next-intl";
+import LeaseCarListingPageContent from "../../components/LeaseCarListingPageContent" 
 
-// Define the expected shape of the API metadata response
 type MetaPageData = {
   metaTitle: string | null
   metaDescription: string | null
 }
 
-// Fetch metadata from backend
 async function getLeasingMetaData(baseUrl: string): Promise<MetaPageData | null> {
   const res = await fetch(`${baseUrl}/api/meta-pages?type=leasing`, {
     cache: "no-store",
@@ -20,7 +17,6 @@ async function getLeasingMetaData(baseUrl: string): Promise<MetaPageData | null>
   return result.data || null
 }
 
-// Dynamic metadata generation for Leasing page (Server Component)
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = headers()
   const host = headersList.get("host")
@@ -35,21 +31,11 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-// Server Component Page
 export default function Home() {
   const t = useTranslations("carLeasing");
   return (
-    <section className="mx-4 my-16 sm:mx-8">
-      <div className="relative mt-4 flex flex-wrap justify-between gap-5 md:flex-nowrap">
-        <div className="w-full md:w-2/5">
-          <SidebarFilters />
-        </div>
-        <div className="w-full md:w-5/6">
-          <div>
-            <LeasingCarsDetail />
-          </div>
-        </div>
-      </div>
+     <section className="mx-4 sm:mx-8">
+      <LeaseCarListingPageContent />
     </section>
   )
 }

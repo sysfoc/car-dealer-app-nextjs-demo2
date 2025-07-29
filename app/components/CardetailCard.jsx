@@ -723,85 +723,85 @@ const CardetailCard = () => {
   }
   return (
     <>
-      <div className="my-5">
-        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-4 dark:border-gray-600 dark:from-gray-800 dark:to-gray-700 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 animate-pulse rounded-full bg-blue-600"></div>
-              <span className="text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
-                <span className="text-blue-600 dark:text-blue-400">
-                  {paginationData.startIndex + 1}-{paginationData.endIndex}
-                </span>
-                <span className="mx-2 text-gray-500 dark:text-gray-400">
-                  of
-                </span>
-                <span className="text-gray-800 dark:text-gray-200">
-                  {paginationData.totalItems}
-                </span>
-                <span className="ml-2 text-gray-500 dark:text-gray-400">
-                  vehicles found
-                </span>
-              </span>
-            </div>
-          </div>
+    <div className="my-5">
+  <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-4 dark:border-gray-600 dark:from-gray-800 dark:to-gray-700 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+    <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-2">
+        <div className="h-3 w-3 animate-pulse rounded-full bg-blue-600"></div>
+        <span className="text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
+          <span className="text-blue-600 dark:text-blue-400">
+            {paginationData.startIndex + 1}-{paginationData.endIndex}
+          </span>
+          <span className="mx-2 text-gray-500 dark:text-gray-400">
+            of
+          </span>
+          <span className="text-gray-800 dark:text-gray-200">
+            {paginationData.totalItems}
+          </span>
+          <span className="ml-2 text-gray-500 dark:text-gray-400">
+            vehicles found
+          </span>
+        </span>
+      </div>
+    </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Select
-              className="w-full rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:min-w-[130px]"
-              value={itemsPerPage}
-              onChange={(e) => {
-                setItemsPerPage(parseInt(e.target.value));
-                setCurrentPage(1);
-              }}
-            >
-              <option value={3}>3 per page</option>
-              <option value={6}>6 per page</option>
-              <option value={9}>9 per page</option>
-              <option value={12}>12 per page</option>
-            </Select>
+    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <Select
+        className="w-full min-w-0 flex-shrink rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:w-auto sm:min-w-[130px]"
+        value={itemsPerPage}
+        onChange={(e) => {
+          setItemsPerPage(parseInt(e.target.value));
+          setCurrentPage(1);
+        }}
+      >
+        <option value={3}>3 per page</option>
+        <option value={6}>6 per page</option>
+        <option value={9}>9 per page</option>
+        <option value={12}>12 per page</option>
+      </Select>
 
-            <Select
-              icon={GrSort}
-              className="w-full rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:min-w-[180px]"
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-            >
-              <option value="default">Sort by</option>
-              <option value="price-lh">{t("priceLowToHigh")}</option>
-              <option value="price-hl">{t("priceHighToLow")}</option>
-              <option value="model-latest">{t("modelLatest")}</option>
-              <option value="model-oldest">{t("modelOldest")}</option>
-              <option value="mileage-lh">{t("mileageLowToHigh")}</option>
-              <option value="mileage-hl">{t("mileageHighToLow")}</option>
-            </Select>
+      <Select
+        icon={GrSort}
+        className="w-full min-w-0 flex-shrink rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:w-auto sm:min-w-[180px]"
+        value={sortOption}
+        onChange={(e) => setSortOption(e.target.value)}
+      >
+        <option value="default">Sort by</option>
+        <option value="price-lh">{t("priceLowToHigh")}</option>
+        <option value="price-hl">{t("priceHighToLow")}</option>
+        <option value="model-latest">{t("modelLatest")}</option>
+        <option value="model-oldest">{t("modelOldest")}</option>
+        <option value="mileage-lh">{t("mileageLowToHigh")}</option>
+        <option value="mileage-hl">{t("mileageHighToLow")}</option>
+      </Select>
 
-            <div className="flex self-center rounded-xl border border-slate-300 bg-white p-1 shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:self-auto">
-              <button
-                onClick={() => setIsGridView(false)}
-                className={`rounded-lg p-2.5 transition-all duration-200 ${
-                  !isGridView
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                }`}
-              >
-                <FiList size={18} />
-              </button>
-              <button
-                onClick={() => setIsGridView(true)}
-                className={`rounded-lg p-2.5 transition-all duration-200 ${
-                  isGridView
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                }`}
-              >
-                <FiGrid size={18} />
-              </button>
-            </div>
-          </div>
+      <div className="flex justify-center sm:justify-start">
+        <div className="flex rounded-xl border border-slate-300 bg-white p-1 shadow-sm dark:border-gray-600 dark:bg-gray-700">
+          <button
+            onClick={() => setIsGridView(false)}
+            className={`rounded-lg p-2.5 transition-all duration-200 ${
+              !isGridView
+                ? "bg-blue-600 text-white shadow-md"
+                : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            }`}
+          >
+            <FiList size={18} />
+          </button>
+          <button
+            onClick={() => setIsGridView(true)}
+            className={`rounded-lg p-2.5 transition-all duration-200 ${
+              isGridView
+                ? "bg-blue-600 text-white shadow-md"
+                : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            }`}
+          >
+            <FiGrid size={18} />
+          </button>
         </div>
       </div>
-
-      {/* Car Cards Container */}
+    </div>
+  </div>
+</div>
       <div
         className={`gap-4 transition-opacity duration-200 ${
           isPageTransitioning ? "opacity-50" : "opacity-100"

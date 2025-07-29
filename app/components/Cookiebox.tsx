@@ -50,7 +50,6 @@ const sanitizeCookieConsent = (
 
   // Handle undefined or null settings
   if (!settings || !isValidCookieConsent(settings)) {
-    console.warn("Invalid cookie consent settings, using defaults")
     return defaultSettings
   }
 
@@ -64,20 +63,6 @@ const sanitizeCookieConsent = (
       : defaultSettings.buttonTextColor,
     buttonBgColor: isValidHexColor(settings.buttonBgColor) ? settings.buttonBgColor : defaultSettings.buttonBgColor,
     status: settings.status || defaultSettings.status,
-  }
-
-  // Log warnings for invalid colors
-  if (settings.textColor && !isValidHexColor(settings.textColor)) {
-    console.warn("Invalid textColor format, using default")
-  }
-  if (settings.bgColor && !isValidHexColor(settings.bgColor)) {
-    console.warn("Invalid bgColor format, using default")
-  }
-  if (settings.buttonTextColor && !isValidHexColor(settings.buttonTextColor)) {
-    console.warn("Invalid buttonTextColor format, using default")
-  }
-  if (settings.buttonBgColor && !isValidHexColor(settings.buttonBgColor)) {
-    console.warn("Invalid buttonBgColor format, using default")
   }
 
   return sanitized
@@ -247,10 +232,6 @@ const Cookiebox = ({ cookieConsent: propsCookieConsent }: CookieboxProps) => {
     return null
   }
 
-  // Additional safety checks before rendering
-  if (!cookieConsent.message || !cookieConsent.buttonText) {
-    console.warn("Missing required cookie consent text, using defaults")
-  }
 
   return (
     <section className="fixed bottom-3 right-3 z-10 shadow-lg flex">

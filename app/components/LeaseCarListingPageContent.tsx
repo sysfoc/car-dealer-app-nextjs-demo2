@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { HiMenu } from "react-icons/hi"
 import SidebarFilters from "./SidebarFilters"
-import CardetailCard from "./CardetailCard"
+import LeasingCarsDetail from "./LeasingCarsDetail"
 
 const CarListingPageContent = () => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
@@ -52,7 +52,7 @@ const CarListingPageContent = () => {
         <SidebarFilters />
       </div>
       <div className={`w-full md:w-3/4  mt-10 sm:mt-10 md:mt-0 ${isMobileFiltersOpen ? "opacity-30 md:opacity-100" : ""}`}>
-        <CardetailCard />
+        <LeasingCarsDetail />
       </div>
       {isMobile && isMobileFiltersOpen && (
         <div className="fixed inset-0 z-20 bg-black bg-opacity-50" onClick={() => setIsMobileFiltersOpen(false)} />

@@ -7,7 +7,7 @@ const SellerComment = ({ loadingState, car, translation: t }) => {
   const loading = loadingState;
   return (
     <div className="sticky top-1">
-      <div className="mt-8 flex items-center gap-3 bg-blue-950 p-3 dark:bg-gray-700">
+      <div className="mt-2 flex items-center gap-3 bg-blue-950 p-3 dark:bg-gray-700">
         <div>
           <FaCommentDots fontSize={25} className="text-white" />
         </div>

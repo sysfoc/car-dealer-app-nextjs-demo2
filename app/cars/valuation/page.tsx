@@ -1,6 +1,6 @@
 
 import { headers } from "next/headers"
-import Valuation from "../../components/Valuation" // Client component
+import Valuation from "../../components/Valuation"
 import type { Metadata } from "next"
 
 type MetaPageData = {

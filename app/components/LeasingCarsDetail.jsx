@@ -16,7 +16,6 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { GrSort } from "react-icons/gr";
 import { FiGrid, FiList } from "react-icons/fi";
-import { CiHeart } from "react-icons/ci";
 import {
   FaLocationCrosshairs,
   FaCalendarCheck,
@@ -79,7 +78,6 @@ const CardetailCard = () => {
       return;
     }
   };
-
 
   useEffect(() => {
     const fetchRecaptchaSettings = async () => {
@@ -219,7 +217,6 @@ const CardetailCard = () => {
       setIsSubmitting(false);
     }
   };
-
 
   // 2. ADD THESE PAGINATION CALCULATIONS (after your existing useMemo declarations)
 
@@ -752,13 +749,12 @@ const CardetailCard = () => {
   }
   return (
     <>
-      {/* Results Header */}
       <div className="my-5">
-        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-6 dark:border-gray-600 dark:from-gray-800 dark:to-gray-700 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-4 dark:border-gray-600 dark:from-gray-800 dark:to-gray-700 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 animate-pulse rounded-full bg-blue-600"></div>
-              <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+              <span className="text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
                 <span className="text-blue-600 dark:text-blue-400">
                   {paginationData.startIndex + 1}-{paginationData.endIndex}
                 </span>
@@ -775,9 +771,9 @@ const CardetailCard = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Select
-              className="min-w-[130px] rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700"
+              className="w-full min-w-0 flex-shrink rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:w-auto sm:min-w-[130px]"
               value={itemsPerPage}
               onChange={(e) => {
                 setItemsPerPage(parseInt(e.target.value));
@@ -792,7 +788,7 @@ const CardetailCard = () => {
 
             <Select
               icon={GrSort}
-              className="min-w-[180px] rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700"
+              className="w-full min-w-0 flex-shrink rounded-xl border-slate-300 bg-white text-sm font-medium shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:w-auto sm:min-w-[180px]"
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
             >
@@ -805,41 +801,37 @@ const CardetailCard = () => {
               <option value="mileage-hl">{t("mileageHighToLow")}</option>
             </Select>
 
-            <div className="flex rounded-xl border border-slate-300 bg-white p-1 shadow-sm dark:border-gray-600 dark:bg-gray-700">
-              <button
-                onClick={() => setIsGridView(false)}
-                className={`rounded-lg p-2.5 transition-all duration-200 ${
-                  !isGridView
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                }`}
-              >
-                <FiList size={18} />
-              </button>
-              <button
-                onClick={() => setIsGridView(true)}
-                className={`rounded-lg p-2.5 transition-all duration-200 ${
-                  isGridView
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                }`}
-              >
-                <FiGrid size={18} />
-              </button>
+            <div className="flex justify-center sm:justify-start">
+              <div className="flex rounded-xl border border-slate-300 bg-white p-1 shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                <button
+                  onClick={() => setIsGridView(false)}
+                  className={`rounded-lg p-2.5 transition-all duration-200 ${
+                    !isGridView
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  }`}
+                >
+                  <FiList size={18} />
+                </button>
+                <button
+                  onClick={() => setIsGridView(true)}
+                  className={`rounded-lg p-2.5 transition-all duration-200 ${
+                    isGridView
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  }`}
+                >
+                  <FiGrid size={18} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Car Cards Container */}
       <div
         className={`gap-4 transition-opacity duration-200 ${
           isPageTransitioning ? "opacity-50" : "opacity-100"
-        } ${
-          isGridView
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-            : "space-y-6"
-        }`}
+        } ${isGridView ? "grid grid-cols-1 sm:grid-cols-2" : "space-y-6"}`}
       >
         {paginationData.currentItems.map((car, index) => (
           <div
@@ -853,9 +845,7 @@ const CardetailCard = () => {
             {/* Image Section */}
             <div
               className={`relative flex-shrink-0 ${
-                isGridView
-                  ? "h-40 w-full sm:h-44"
-                  : "h-64 sm:h-64 sm:w-80 md:w-96"
+                isGridView ? "h-44 w-full" : "h-60 sm:h-64 sm:w-80 md:w-96"
               }`}
             >
               <Carousel
@@ -963,7 +953,7 @@ const CardetailCard = () => {
                 <div className="flex-1 pr-3">
                   <Link href={`/car-detail/${car.slug}`} className="group/link">
                     <h3
-                      className={`line-clamp-2 font-bold text-gray-900 transition-colors group-hover/link:text-blue-600 dark:text-white dark:group-hover/link:text-blue-400 ${
+                      className={`line-clamp-1 font-bold text-gray-900 transition-colors group-hover/link:text-blue-600 dark:text-white dark:group-hover/link:text-blue-400 ${
                         isGridView
                           ? "text-base leading-tight"
                           : "text-xl sm:text-2xl"
@@ -1218,15 +1208,15 @@ const CardetailCard = () => {
                     setOpenModal(true);
                   }}
                   className={`flex-1 rounded-xl border-2 border-blue-600 text-center font-semibold text-blue-600 transition-all duration-200 hover:bg-blue-600 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-400 dark:hover:text-white ${
-                    isGridView ? "px-3 py-2 text-sm" : "px-6 py-3"
+                    isGridView ? "px-2 py-2 text-sm" : "px-4 py-2"
                   }`}
                 >
                   {t("enquireNow")}
                 </button>
                 <Link href={`/car-detail/${car.slug}`} className="flex-1">
                   <button
-                    className={`w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl ${
-                      isGridView ? "px-3 py-2 text-sm" : "px-6 py-3"
+                    className={`w-full rounded-xl border-2 border-blue-600 bg-blue-600 font-semibold text-white shadow-lg transition-all duration-200 hover:border-blue-700 hover:bg-blue-700 hover:shadow-xl ${
+                      isGridView ? "px-2 py-2 text-sm" : "px-4 py-2"
                     }`}
                   >
                     {t("viewDetails")}

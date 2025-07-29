@@ -247,7 +247,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mt-16">
+      <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8 py-6 mt-16">
         {/* Header Section */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-red-600 dark:to-red-700 px-6 py-4">
@@ -368,7 +368,7 @@ export default function Home() {
                   Seller Information
                 </h3>
               </div>
-              <div className="p-6">
+              <div className="p-4">
                 {car ? (
                   <SellerComment loadingState={loading} car={car} translation={t} />
                 ) : (

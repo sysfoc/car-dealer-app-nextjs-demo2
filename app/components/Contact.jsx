@@ -109,6 +109,7 @@ const ContactUs = () => {
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={handleChange}
+                  autoComplete="name"
                   required
                 />
               </div>
@@ -122,6 +123,7 @@ const ContactUs = () => {
                   placeholder="john@gmail.com"
                   value={formData.email}
                   onChange={handleChange}
+                  autoComplete="email"
                   required
                 />
               </div>

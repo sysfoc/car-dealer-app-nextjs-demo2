@@ -116,7 +116,6 @@ const Footerr = ({ isDarkMode }) => {
 
   return (
     <div className="relative mt-5">
-      {/* Curved Top Edge */}
       <div className="absolute left-0 top-0 w-full overflow-hidden leading-none">
         <svg
           className="relative block h-12 w-full md:h-16"
@@ -132,11 +131,9 @@ const Footerr = ({ isDarkMode }) => {
         </svg>
       </div>
 
-      {/* Footer Content */}
       <footer className="relative bg-gray-200 dark:bg-gray-800 shadow-inner pt-8 pb-3 rounded-t-3xl">
-      <div className="mx-auto w-full max-w-7xl px-4">
+        <div className="mx-auto w-full max-w-7xl px-4">
           <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {/* Logo */}
             <div className="space-y-4">
               {logoLoading ? (
                 <div className="h-[90px] w-[180px] bg-gray-300 dark:bg-gray-600 animate-pulse rounded"></div>
@@ -152,7 +149,6 @@ const Footerr = ({ isDarkMode }) => {
               ) : null}
             </div>
 
-            {/* Quick Links */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                 {footerSettings?.col1Heading || t("quickLinks")}
@@ -188,7 +184,6 @@ const Footerr = ({ isDarkMode }) => {
               </div>
             </div>
 
-            {/* Language Switcher */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                 {footerSettings?.col3Heading || t("language")}
@@ -196,58 +191,55 @@ const Footerr = ({ isDarkMode }) => {
               <div className="mb-2 h-0.5 w-10 rounded-full bg-purple-500"></div>
               <div className="space-y-4">
                 <LanguageSwitching />
+                
+                <div className="pt-2">
+                  <h4 className="text-sm font-medium text-black dark:text-gray-300 mb-3">Follow us:</h4>
+                  <div className="flex items-center space-x-3 flex-wrap gap-2">
+                    {fetchedSocials.length > 0 ? (
+                      fetchedSocials.map((platform, index) => {
+                        const IconComponent = platform.iconType === "react-icon"
+                          ? iconComponentsMap[platform.iconValue]
+                          : null
+
+                        return (
+                          <a
+                            key={index}
+                            href={platform.url}
+                            target="_blank"
+                            aria-label={`Follow us on ${platform.iconValue}`}
+                            className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transform text-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-110"
+                            rel="noreferrer"
+                          >
+                            {IconComponent ? (
+                              <IconComponent className="h-5 w-5" />
+                            ) : platform.iconType === "svg-code" ? (
+                              <div className="h-5 w-5" dangerouslySetInnerHTML={{ __html: platform.iconValue }} />
+                            ) : (
+                              <div className="h-5 w-5 text-gray-500">?</div>
+                            )}
+                          </a>
+                        )
+                      })
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-400">No social media links configured yet.</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom Footer */}
-          <div className="mt-8 border-t border-gray-200 pt-6 dark:border-gray-700">
-            <div className="flex flex-col items-center justify-between space-y-4 lg:flex-row lg:space-y-0">
-              {/* Copyright */}
+          <div className="mt-8 border-t border-gray-200 pt-6 dark:border-gray-700 mb-3 sm:mb-2">
+            <div className="flex flex-col items-center justify-center space-y-2 text-center">
               <div className="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   &copy; {2024} {t("copyright")} by Sysfoc. All Rights Reserved.
                 </p>
                 <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-400 hidden sm:inline">•</span>
                   <Link href="/sitemap" className="hover:text-blue-600 dark:hover:text-blue-400">
                     Sitemap
                   </Link>
-                </div>
-              </div>
-
-              {/* Social Icons */}
-              <div className="flex items-center space-x-4 mr-5 md:mr-40">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Follow us:</span>
-                <div className="flex items-center space-x-3">
-                  {fetchedSocials.length > 0 ? (
-                    fetchedSocials.map((platform, index) => {
-                      const IconComponent = platform.iconType === "react-icon"
-                        ? iconComponentsMap[platform.iconValue]
-                        : null
-
-                      return (
-                        <a
-                          key={index}
-                          href={platform.url}
-                          target="_blank"
-                          aria-label={`Follow us on ${platform.iconValue}`}
-                          className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transform text-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-110"
-                          rel="noreferrer"
-                        >
-                          {IconComponent ? (
-                            <IconComponent className="h-5 w-5" />
-                          ) : platform.iconType === "svg-code" ? (
-                            <div className="h-5 w-5" dangerouslySetInnerHTML={{ __html: platform.iconValue }} />
-                          ) : (
-                            <div className="h-5 w-5 text-gray-500">?</div>
-                          )}
-                        </a>
-                      )
-                    })
-                  ) : (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">No social media links configured yet.</p>
-                  )}
                 </div>
               </div>
             </div>

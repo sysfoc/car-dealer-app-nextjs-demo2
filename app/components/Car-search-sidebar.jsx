@@ -195,7 +195,7 @@
 //             {/* Make and Model Selection */}
 //             <div className="grid grid-cols-2 gap-3">
 //               <div>
-//                 <label htmlFor="make" className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+//                 <label htmlFor={`${idPrefix}-make`} className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
 //                   Make
 //                 </label>
 //                 <div className="relative">
@@ -222,7 +222,7 @@
 //                 </div>
 //               </div>
 //               <div>
-//                 <label htmlFor="model" className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+//                 <label htmlFor={`${idPrefix}-model`} className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
 //                   Model
 //                 </label>
 //                 <div className="relative">
@@ -250,13 +250,13 @@
 //               </div>
 //             </div>
 //             <div className="mb-6">
-//               <label className="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+//               <div className="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">
 //                 <span className="flex items-center space-x-1">
 //                   <FaTags className="h-3 w-3 text-green-600" />
 //                   <span>{t("priceRange")}</span>
 //                 </span>
-//               </label>
-//               <div className="rounded-xl border-2 border-gray-200 bg-white/60 p-4 shadow-sm backdrop-blur-sm dark:border-gray-600 dark:bg-gray-800/60">
+//               </div>
+//               <div id="priceRangeOne" className="rounded-xl border-2 border-gray-200 bg-white/60 p-4 shadow-sm backdrop-blur-sm dark:border-gray-600 dark:bg-gray-800/60">
 //                 <div className="mb-2 flex items-center justify-between">
 //                   <div className="flex items-center space-x-2">
 //                     <div className="rounded-lg bg-green-100 px-3 py-1 dark:bg-green-900/30">
@@ -274,8 +274,7 @@
 //                 </div>
 //                 <div className="relative mb-4">
 //                   <input
-                  
-//                   id={`${idPrefix}-minPriceSlider`}
+//                     id={`${idPrefix}-minPriceSlider`}
 //                     type="range"
 //                     min="100"
 //                     max="100000"
@@ -289,7 +288,7 @@
 //                     className="absolute h-2 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-20 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-green-600 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:scale-110"
 //                   />
 //                   <input
-//                   id={`${idPrefix}-maxPriceSlider`}
+//                     id={`${idPrefix}-maxPriceSlider`}
 //                     type="range"
 //                     min="100"
 //                     max="100000"
@@ -316,7 +315,7 @@
 //                   <div>
 //                     <label htmlFor={`${idPrefix}-minPriceInput`} className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Minimum</label>
 //                     <input
-//                      id={`${idPrefix}-minPriceInput`}
+//                       id={`${idPrefix}-minPriceInput`}
 //                       type="number"
 //                       min="100"
 //                       max="100000"
@@ -332,7 +331,7 @@
 //                   <div>
 //                     <label htmlFor={`${idPrefix}-maxPriceInput`} className="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Maximum</label>
 //                     <input
-//                      id={`${idPrefix}-maxPriceInput`}
+//                       id={`${idPrefix}-maxPriceInput`}
 //                       type="number"
 //                       min="100"
 //                       max="100000"
@@ -350,8 +349,8 @@
 //             </div>
 //             {/* Color Selection - Compact */}
 //             <div>
-//               <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Colors</label>
-//               <div className="flex flex-wrap gap-2">
+//               <div className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Colors</div>
+//               <div className="flex flex-wrap gap-2" role="group" aria-label="Color selection">
 //                 {Object.entries(colorMap).map(([id, hex]) => {
 //                   const label = id.charAt(0).toUpperCase() + id.slice(1)
 //                   const isSelected = selectedColors.includes(id)
@@ -364,6 +363,7 @@
 //                       style={{ backgroundColor: hex }}
 //                       onClick={() => handleColorSelection(id)}
 //                       title={label}
+//                       aria-label={`${label} color ${isSelected ? 'selected' : ''}`}
 //                     >
 //                       {isSelected && (
 //                         <div className="absolute inset-0 flex items-center justify-center">
@@ -387,8 +387,8 @@
 //             </div>
 //             {/* Condition Selection - Compact */}
 //             <div>
-//               <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Condition</label>
-//               <div className="flex gap-2">
+//               <div className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Condition</div>
+//               <div className="flex gap-2" role="group" aria-label="Condition selection">
 //                 <ConditionButton
 //                   condition="new"
 //                   selected={selectedConditions.includes("new")}
@@ -429,13 +429,13 @@
 // }
 
 // export default CarSearchSidebar
-
 "use client"
 
 import { useState, useEffect, useId } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { FaSearch, FaTimes, FaTags } from "react-icons/fa"
+import { useSidebar } from "../context/SidebarContext"
 
 const isLightColor = (colorId) => {
   const lightColors = ["white", "yellow", "beige", "silver"]
@@ -467,8 +467,10 @@ const ConditionButton = ({ condition, selected, onClick }) => {
   )
 }
 
-const CarSearchSidebar = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) => {
+const CarSearchSidebar = () => {
   const t = useTranslations("HomePage")
+  const { isSidebarOpen, closeSidebar } = useSidebar() // Use context
+  
   const [makes, setMakes] = useState([])
   const [models, setModels] = useState([])
   const [selectedMake, setSelectedMake] = useState("")
@@ -483,16 +485,17 @@ const CarSearchSidebar = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) =
   const router = useRouter()
   const idPrefix = useId();
 
-  useEffect(() => {
-    if (isSidebarOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
-    return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [isSidebarOpen])
+  // Remove body overflow effect since it's now handled in context
+  // useEffect(() => {
+  //   if (isSidebarOpen) {
+  //     document.body.style.overflow = "hidden"
+  //   } else {
+  //     document.body.style.overflow = "auto"
+  //   }
+  //   return () => {
+  //     document.body.style.overflow = "auto"
+  //   }
+  // }, [isSidebarOpen])
 
   // Fetch JSON data on component mount
   useEffect(() => {
@@ -573,7 +576,7 @@ const CarSearchSidebar = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) =
       }
       const queryString = queryParams.join("&")
       router.push(`/car-for-sale?${queryString}`)
-      closeSidebar()
+      closeSidebar() // Use context function
     } catch (error) {
       console.error("Error searching cars:", error)
       alert("An error occurred. Please try again.")
@@ -587,13 +590,6 @@ const CarSearchSidebar = ({ isSidebarOpen, setIsSidebarOpen, onSidebarClose }) =
       return `$${(price / 1000).toFixed(0)}k`
     }
     return `$${price.toLocaleString()}`
-  }
-
-  const closeSidebar = () => {
-    setIsSidebarOpen(false)
-    if (onSidebarClose) {
-      onSidebarClose()
-    }
   }
 
   return (
