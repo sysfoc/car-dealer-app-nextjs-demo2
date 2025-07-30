@@ -147,21 +147,28 @@ const CommentsSection = ({ slug }: { slug: string }) => {
               key={c._id}
               className="rounded-lg border-b bg-white px-4 pb-6 transition-all duration-300 ease-in-out hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
             >
-              <div className="flex items-center space-x-3">
-                <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
-                  {c.name || "Anonymous"}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {new Date(c.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
+              <div className="flex pt-4 space-x-3">
+                <div className="flex relative bottom-1 h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 font-semibold text-white">
+                  {(c.name || "Anonymous").charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3">
+                    <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                      {c.name || "Anonymous"}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {new Date(c.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <p className="mt-2 text-base font-normal text-gray-700 dark:text-gray-300">
+                    {c.comment}
+                  </p>
+                </div>
               </div>
-              <p className="mt-2 text-base font-normal text-gray-700 dark:text-gray-300">
-                {c.comment}
-              </p>
             </div>
           ))
         )}
