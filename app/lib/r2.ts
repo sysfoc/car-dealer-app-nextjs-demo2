@@ -64,18 +64,13 @@ export async function uploadImageToR2(file: File): Promise<string> {
 export async function deleteImageFromR2(imageUrl: string): Promise<void> {
   try {
     let fileName = '';
-    
-    // Handle different URL formats
     if (imageUrl.includes('r2.dev')) {
-      // For pub-01dbdbbf0b4348329b24afa21cd952c3.r2.dev/filename.jpg
       const url = new URL(imageUrl);
-      fileName = url.pathname.substring(1); // Remove leading slash
+      fileName = url.pathname.substring(1);
     } else if (imageUrl.includes('r2.cloudflarestorage.com')) {
-      // For account-id.r2.cloudflarestorage.com/bucket/filename.jpg
       const parts = imageUrl.split('/');
-      fileName = parts[parts.length - 1]; // Get last part (filename)
+      fileName = parts[parts.length - 1];
     } else {
-      // Fallback: try to extract filename from any URL
       const url = new URL(imageUrl);
       fileName = url.pathname.split('/').pop() || '';
     }
@@ -85,7 +80,7 @@ export async function deleteImageFromR2(imageUrl: string): Promise<void> {
       return;
     }
     
-    console.log("Attempting to delete file:", fileName); // Debug log
+    console.log("Attempting to delete file:", fileName);
     
     await R2.send(
       new DeleteObjectCommand({
@@ -94,7 +89,7 @@ export async function deleteImageFromR2(imageUrl: string): Promise<void> {
       })
     );
     
-    console.log("Successfully deleted file:", fileName); // Debug log
+    console.log("Successfully deleted file:", fileName);
   } catch (error) {
     console.error("Error deleting image from R2:", error);
     console.error("Failed to delete file:", imageUrl);

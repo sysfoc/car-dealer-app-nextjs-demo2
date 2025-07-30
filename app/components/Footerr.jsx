@@ -235,12 +235,12 @@ const Footerr = ({ isDarkMode }) => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   &copy; {2024} {t("copyright")} by Sysfoc. All Rights Reserved.
                 </p>
-                <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                {/* <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   <span className="text-gray-400 hidden sm:inline">•</span>
                   <Link href="/sitemap" className="hover:text-blue-600 dark:hover:text-blue-400">
                     Sitemap
                   </Link>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
