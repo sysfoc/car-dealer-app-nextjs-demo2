@@ -118,7 +118,7 @@ const HeroSection = () => {
         <div className="absolute bottom-0 left-0 h-1/4 w-1/4 rounded-full bg-gradient-to-tr from-purple-100/50 to-transparent blur-3xl dark:from-purple-900/20"></div>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-10 pb-0 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 pt-10 pb-0 sm:px-6 lg:px-8">
         <div className="grid min-h-[calc(100vh-6rem)] grid-cols-1 items-start gap-12 lg:grid-cols-2">
           <div className="space-y-8 lg:pr-8">
             <div className="inline-flex items-center space-x-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-800 shadow-sm dark:bg-blue-900/30 dark:text-blue-200">
@@ -138,7 +138,7 @@ const HeroSection = () => {
                     </span>{" "}
                     Built to{" "}
                     <span className="relative">
-                      <span className="relative z-10">Sell Cars</span>
+                      <span className="relative">Sell Cars</span>
                       <div className="absolute -bottom-2 left-0 right-0 h-3 -skew-x-12 transform bg-gradient-to-r from-yellow-200 to-yellow-300 dark:from-yellow-400/30 dark:to-yellow-500/30"></div>
                     </span>
                   </h1>
@@ -151,16 +151,16 @@ const HeroSection = () => {
                 onClick={() => router.push("/car-for-sale")}
                 className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 py-3 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:px-8 sm:py-4"
               >
-                <span className="relative z-10 mr-3">Explore Our Vehicles</span>
-                <FaArrowRight className="relative z-10 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
+                <span className="relative mr-3">Explore Our Vehicles</span>
+                <FaArrowRight className="relative h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
               </button>
               
               <button
                 onClick={() => router.push("/liked-cars")}
                 className="sm:hidden group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-5 py-2.5 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800"
               >
-                <span className="relative z-10 mr-5">Your Favorite Cars</span>
-                <FaArrowRight className="relative z-10 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
+                <span className="relative mr-5">Your Favorite Cars</span>
+                <FaArrowRight className="relative h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
               </button>
             </div>
           </div>
