@@ -3,7 +3,6 @@ import dbConnect from "../../lib/mongodb"
 import Valuation from "../../models/Valuation"
 import nodemailer from "nodemailer"
 
-// GET - Fetch all valuations (for admin)
 export async function GET() {
   try {
     await dbConnect()
@@ -15,7 +14,6 @@ export async function GET() {
   }
 }
 
-// POST - Create new valuation request
 export async function POST(request) {
   try {
     await dbConnect()
@@ -36,82 +34,7 @@ export async function POST(request) {
       valuationType,
     })
 
-    // Send confirmation email to customer
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD, // Corrected env var name
-        },
-      })
-
-      // Test the connection
-      await transporter.verify()
-    
-      const customerMailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "Car Valuation Request Received",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2563eb;">Thank you for your valuation request!</h2>
-            <p>Dear ${name},</p>
-            <p>We have received your car valuation request for your <strong>${make} ${model}</strong>.</p>
-            
-            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h3 style="margin-top: 0; color: #374151;">Request Details:</h3>
-              <p><strong>Vehicle:</strong> ${make} ${model}</p>
-              <p><strong>Valuation Type:</strong> ${valuationType}</p>
-              <p><strong>Request ID:</strong> ${newValuation._id}</p>
-              <p><strong>Submitted:</strong> ${new Date().toLocaleDateString()}</p>
-            </div>
-            
-            <p>Our team will review your request and get back to you within 24-48 hours with a detailed valuation.</p>
-            
-            <p>If you have any questions, please don't hesitate to contact us.</p>
-            
-            <p>Best regards,<br>
-            The Car Valuation Team</p>
-          </div>
-        `,
-      }
-
-      const result = await transporter.sendMail(customerMailOptions)
-    
-      const adminNotificationMailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_USER, // Send to admin's email
-        subject: `New Car Valuation Request from ${name}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2563eb;">New Car Valuation Request</h2>
-            <p>A new car valuation request has been submitted:</p>
-            
-            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p><strong>Name:</strong> ${name}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              <p><strong>Vehicle:</strong> ${make} ${model}</p>
-              <p><strong>Valuation Type:</strong> ${valuationType}</p>
-              <p><strong>Request ID:</strong> ${newValuation._id}</p>
-              <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
-            </div>
-            
-            <p>Please log in to the admin panel to review and respond to this request.</p>
-            
-            <p>Best regards,<br>
-            Your System Admin</p>
-          </div>
-        `,
-      }
-      await transporter.sendMail(adminNotificationMailOptions)
-    } catch (emailError) {
-      console.error("Detailed email error (POST):", emailError)
-      console.error("Error code:", emailError.code)
-      console.error("Error message:", emailError.message)
-      // Don't fail the request if email fails
-    }
-
+    // No emails sent on POST - just save the request
     return NextResponse.json({
       success: true,
       message: "Valuation request submitted successfully",
@@ -150,19 +73,18 @@ export async function PUT(request) {
       return NextResponse.json({ error: "Valuation not found" }, { status: 404 })
     }
 
-    // Send reply email to customer
     try {
-
-      const transporter = nodemailer.createTransport({
+      const transporter = nodemailer.createTransporter({
         service: "gmail",
         auth: {
           user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD, // Corrected env var name
+          pass: process.env.EMAIL_PASSWORD,
         },
       })
 
       // Test the connection
       await transporter.verify()
+      
       const replyMailOptions = {
         from: process.env.EMAIL_USER,
         to: updatedValuation.email,
@@ -199,35 +121,8 @@ export async function PUT(request) {
         `,
       }
 
-      const result = await transporter.sendMail(replyMailOptions)
-      const adminReplyNotificationMailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_USER, // Send to admin's email
-        subject: `Reply Sent for Valuation - ${updatedValuation.make} ${updatedValuation.model}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2563eb;">Valuation Reply Sent</h2>
-            <p>A reply has been sent for the following valuation request:</p>
-            
-            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p><strong>Customer Name:</strong> ${updatedValuation.name}</p>
-              <p><strong>Customer Email:</strong> ${updatedValuation.email}</p>
-              <p><strong>Vehicle:</strong> ${updatedValuation.make} ${updatedValuation.model}</p>
-              <p><strong>Valuation Type:</strong> ${updatedValuation.valuationType}</p>
-              ${estimatedValue ? `<p><strong>Estimated Value:</strong> ${estimatedValue}</p>` : ""}
-            </div>
-            
-            <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0;">
-              <h3 style="margin-top: 0; color: #065f46;">Reply Sent:</h3>
-              <p style="white-space: pre-wrap; color: #374151;">${adminReply}</p>
-            </div>
-            
-            <p>Reply sent by: ${repliedBy || "Admin"}</p>
-            <p>Date: ${new Date().toLocaleString()}</p>
-          </div>
-        `,
-      }
-      await transporter.sendMail(adminReplyNotificationMailOptions)
+      await transporter.sendMail(replyMailOptions)
+      
     } catch (emailError) {
       console.error("Detailed reply email error (PUT):", emailError)
       console.error("Error code:", emailError.code)
