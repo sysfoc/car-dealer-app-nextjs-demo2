@@ -17,7 +17,6 @@ import {
   Send,
   RefreshCw,
   Car,
-  DollarSign,
 } from "lucide-react"
 import { MdCancel } from "react-icons/md"
 
@@ -35,10 +34,15 @@ const Modal = ({ show, onClose, children, size = "md" }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
-      <div className={`relative w-full rounded-2xl bg-white shadow-xl ${sizeClasses[size]} mx-auto`}>
-        <button onClick={onClose} className="absolute right-4 top-4 z-50 cursor-pointer text-black hover:text-gray-500">
-          <MdCancel size={32} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-2 sm:p-4">
+      <div
+        className={`relative w-full rounded-2xl bg-white shadow-xl ${sizeClasses[size]} mx-auto max-h-[95vh] overflow-hidden`}
+      >
+        <button
+          onClick={onClose}
+          className="absolute right-2 top-2 sm:right-4 sm:top-4 z-50 cursor-pointer text-black hover:text-gray-500"
+        >
+          <MdCancel size={24} className="sm:w-8 sm:h-8" />
         </button>
         {children}
       </div>
@@ -47,11 +51,11 @@ const Modal = ({ show, onClose, children, size = "md" }) => {
 }
 
 const ModalHeader = ({ children }) => (
-  <div className="sticky top-0 z-10 rounded-t-2xl border-b border-gray-200 bg-white p-6">{children}</div>
+  <div className="sticky top-0 z-10 rounded-t-2xl border-b border-gray-200 bg-white p-3 sm:p-6">{children}</div>
 )
 
 const ModalBody = ({ children, className = "" }) => (
-  <div className={`max-h-[80vh] overflow-y-auto p-6 ${className}`}>{children}</div>
+  <div className={`max-h-[70vh] sm:max-h-[80vh] overflow-y-auto p-3 sm:p-6 ${className}`}>{children}</div>
 )
 
 // Spinner Component
@@ -75,31 +79,31 @@ const DeleteConfirmModal = ({ show, onClose, onConfirm, loading }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
       <div className="relative mx-auto w-full max-w-md rounded-xl bg-white shadow-xl">
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-              <X className="h-5 w-5 text-red-600" />
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-red-100">
+              <X className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Delete Valuation</h3>
-              <p className="text-sm text-gray-500">This action cannot be undone</p>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Delete Valuation</h3>
+              <p className="text-xs sm:text-sm text-gray-500">This action cannot be undone</p>
             </div>
           </div>
-          <p className="mb-6 text-gray-600">
+          <p className="mb-6 text-sm sm:text-base text-gray-600">
             Are you sure you want to delete this valuation request? This will permanently remove it from your system.
           </p>
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
             <button
               onClick={onClose}
               disabled={loading}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+              className="w-full sm:w-auto rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               onClick={onConfirm}
               disabled={loading}
-              className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -248,7 +252,7 @@ const AdminValuationPage = () => {
 
     return (
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${config.color}`}
+        className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-1 sm:px-3 sm:py-1.5 text-xs font-semibold ${config.color}`}
       >
         <IconComponent size={12} />
         {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -352,12 +356,12 @@ const AdminValuationPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6">
         <div className="mx-auto max-w-7xl">
           <div className="flex h-64 items-center justify-center">
             <div className="text-center">
               <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-              <span className="text-lg font-medium text-slate-600">Loading valuations...</span>
+              <span className="text-base sm:text-lg font-medium text-slate-600">Loading valuations...</span>
             </div>
           </div>
         </div>
@@ -367,83 +371,84 @@ const AdminValuationPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-3 py-4 sm:px-4 sm:py-8 lg:px-8">
         {/* Header Section */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Car Valuations</h1>
-              <p className="mt-2 text-gray-600">Manage and respond to car valuation requests</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Car Valuations</h1>
+              <p className="mt-2 text-sm sm:text-base text-gray-600">Manage and respond to car valuation requests</p>
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={fetchValuations}
-                className="flex items-center gap-2 rounded-lg border border-gray-300 bg-blue-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+                className="flex items-center gap-2 rounded-lg border border-gray-300 bg-blue-700 px-3 py-2 sm:px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500"
               >
                 <RefreshCw size={16} />
-                Refresh
+                <span className="hidden sm:inline">Refresh</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:scale-[1.015] hover:shadow-md">
+        <div className="mb-6 sm:mb-8 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm transition-all hover:scale-[1.015] hover:shadow-md">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Total Requests</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.total}</p>
               </div>
-              <div className="rounded-xl bg-blue-100 p-3">
-                <Car className="h-6 w-6 text-blue-600" />
+              <div className="rounded-xl bg-blue-100 p-2 sm:p-3">
+                <Car className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:scale-[1.015] hover:shadow-md">
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm transition-all hover:scale-[1.015] hover:shadow-md">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Pending</p>
-                <p className="text-3xl font-bold text-amber-600">{stats.pending}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-amber-600">{stats.pending}</p>
               </div>
-              <div className="rounded-xl bg-amber-100 p-3">
-                <Clock className="h-6 w-6 text-amber-600" />
+              <div className="rounded-xl bg-amber-100 p-2 sm:p-3">
+                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:scale-[1.015] hover:shadow-md">
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm transition-all hover:scale-[1.015] hover:shadow-md sm:col-span-2 lg:col-span-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Responded</p>
-                <p className="text-3xl font-bold text-emerald-600">{stats.responded}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-emerald-600">{stats.responded}</p>
               </div>
-              <div className="rounded-xl bg-emerald-100 p-3">
-                <CheckCircle className="h-6 w-6 text-emerald-600" />
+              <div className="rounded-xl bg-emerald-100 p-2 sm:p-3">
+                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Search and Filter Section */}
-        <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
-            <div className="flex w-full flex-col gap-4 sm:flex-row lg:w-auto">
-              <div className="relative">
+        <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="flex flex-col gap-4">
+            {/* Search and Sort Row */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" size={20} />
                 <input
                   type="text"
                   placeholder="Search valuations..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-blue-500 sm:w-80"
+                  className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 sm:w-auto"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -461,7 +466,7 @@ const AdminValuationPage = () => {
                 <button
                   key={tab.key}
                   onClick={() => setFilter(tab.key)}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                  className={`rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
                     filter === tab.key
                       ? "border-2 border-blue-200 bg-blue-100 text-blue-700"
                       : "border-2 border-transparent bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -477,12 +482,12 @@ const AdminValuationPage = () => {
         {/* Valuations List */}
         <div className="space-y-4">
           {currentValuations.length === 0 ? (
-            <div className="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-sm">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                <Car className="h-8 w-8 text-gray-400" />
+            <div className="rounded-2xl border border-gray-200 bg-white p-8 sm:p-12 text-center shadow-sm">
+              <div className="mx-auto mb-4 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gray-100">
+                <Car className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-gray-900">No valuations found</h3>
-              <p className="text-gray-500">
+              <h3 className="mb-2 text-base sm:text-lg font-semibold text-gray-900">No valuations found</h3>
+              <p className="text-sm sm:text-base text-gray-500">
                 {searchTerm || filter !== "all"
                   ? "Try adjusting your search or filter criteria."
                   : "No valuation requests have been received yet."}
@@ -494,76 +499,81 @@ const AdminValuationPage = () => {
                 key={valuation._id}
                 className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:border-gray-300 hover:shadow-lg"
               >
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   {/* Header Row */}
-                  <div className="mb-4 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-purple-600">
-                        <User className="h-6 w-6 text-white" />
+                  <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex-shrink-0">
+                        <User className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{valuation.name}</h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <Mail size={14} />
-                          {valuation.email}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{valuation.name}</h3>
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500">
+                          <Mail size={12} className="sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                          <span className="truncate">{valuation.email}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      {getStatusBadge(valuation.status)}
-                      {getValuationTypeBadge(valuation.valuationType)}
-                      <div className="flex gap-2">
+
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                      <div className="flex flex-wrap gap-2">
+                        {getStatusBadge(valuation.status)}
+                        {getValuationTypeBadge(valuation.valuationType)}
+                      </div>
+                      <div className="flex flex-wrap gap-2">
                         <button
                           onClick={() => openViewModal(valuation)}
-                          className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                          className="flex items-center justify-center gap-1 sm:gap-2 rounded-lg border border-gray-300 bg-white px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                         >
-                          <Eye size={14} />
-                          View
+                          <Eye size={12} className="sm:w-3.5 sm:h-3.5" />
+                          <span className="hidden sm:inline">View</span>
                         </button>
                         <button
                           onClick={() => openReplyModal(valuation)}
-                          className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                          className={`flex items-center justify-center gap-1 sm:gap-2 rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium transition-colors ${
                             valuation.status === "pending"
                               ? "bg-blue-600 text-white hover:bg-blue-700"
                               : "bg-emerald-600 text-white hover:bg-emerald-700"
                           }`}
                         >
-                          <Reply size={14} />
-                          {valuation.status === "pending" ? "Reply" : "Edit Reply"}
+                          <Reply size={12} className="sm:w-3.5 sm:h-3.5" />
+                          <span className="hidden sm:inline">
+                            {valuation.status === "pending" ? "Reply" : "Edit Reply"}
+                          </span>
                         </button>
                         <button
                           onClick={() => {
                             setValuationToDelete(valuation._id)
                             setShowDeleteModal(true)
                           }}
-                          className="flex items-center gap-2 rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+                          className="flex items-center justify-center gap-1 sm:gap-2 rounded-lg border border-red-300 bg-white px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
                         >
-                          <X size={14} />
-                          Delete
+                          <X size={12} className="sm:w-3.5 sm:h-3.5" />
+                          <span className="hidden sm:inline">Delete</span>
                         </button>
                       </div>
                     </div>
                   </div>
 
                   {/* Vehicle Info */}
-                  <div className="mb-4 rounded-lg bg-gray-50 p-4">
+                  <div className="mb-4 rounded-lg bg-gray-50 p-3 sm:p-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <div>
                         <p className="text-xs font-medium text-gray-500">Vehicle</p>
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-xs sm:text-sm font-semibold text-gray-900">
                           {valuation.make} {valuation.model}
                         </p>
                       </div>
                       <div>
                         <p className="text-xs font-medium text-gray-500">Type</p>
-                        <p className="text-sm text-gray-700">{valuation.valuationType}</p>
+                        <p className="text-xs sm:text-sm text-gray-700">{valuation.valuationType}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Footer */}
                   <div className="flex flex-col justify-between gap-2 text-xs text-gray-500 sm:flex-row sm:items-center">
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
                       <span className="flex items-center gap-1">
                         <Calendar size={12} />
                         {new Date(valuation.createdAt).toLocaleDateString("en-US", {
@@ -581,7 +591,7 @@ const AdminValuationPage = () => {
                         </span>
                       )}
                     </div>
-                    <span>ID: {valuation._id.slice(-8)}</span>
+                    <span className="text-xs">ID: {valuation._id.slice(-8)}</span>
                   </div>
                 </div>
               </div>
@@ -591,8 +601,8 @@ const AdminValuationPage = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-6 py-4 shadow-sm sm:flex-row">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="mt-6 sm:mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-4 sm:px-6 shadow-sm sm:flex-row">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
               <span>
                 Showing {startIndex + 1}-{Math.min(endIndex, filteredValuations.length)} of {filteredValuations.length}{" "}
                 valuations
@@ -602,10 +612,10 @@ const AdminValuationPage = () => {
               <button
                 onClick={goToPreviousPage}
                 disabled={currentPage === 1}
-                className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <ChevronLeft size={16} />
-                Previous
+                <ChevronLeft size={14} className="sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Previous</span>
               </button>
               <div className="flex items-center gap-1">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -614,7 +624,7 @@ const AdminValuationPage = () => {
                     <button
                       key={page}
                       onClick={() => goToPage(page)}
-                      className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                      className={`rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium transition-colors ${
                         currentPage === page
                           ? "bg-blue-600 text-white"
                           : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
@@ -629,10 +639,10 @@ const AdminValuationPage = () => {
               <button
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
-                className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Next
-                <ChevronRight size={16} />
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight size={14} className="sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>
@@ -642,23 +652,26 @@ const AdminValuationPage = () => {
         <Modal show={showReplyModal} onClose={() => setShowReplyModal(false)} size="lg">
           <ModalHeader>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                <Reply className="h-5 w-5 text-blue-600" />
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-blue-100">
+                <Reply className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                   {selectedValuation?.status === "pending" ? "Reply to Valuation" : "Edit Reply"}
                 </h3>
-                <p className="text-sm text-gray-500">
-                  {selectedValuation?.name} • {selectedValuation?.email}
+                <p className="text-xs sm:text-sm text-gray-500 truncate">
+                  {selectedValuation?.name}
+                </p>
+                <p className="text-xs sm:text-sm text-gray-500 truncate">
+                  {selectedValuation?.email}
                 </p>
               </div>
             </div>
           </ModalHeader>
           <ModalBody>
-            <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <h4 className="mb-2 text-sm font-medium text-gray-700">Vehicle Details</h4>
-              <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+            <div className="mb-4 sm:mb-6 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
+              <h4 className="mb-2 text-xs sm:text-sm font-medium text-gray-700">Vehicle Details</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm text-gray-600">
                 <div>
                   <span className="font-medium">Vehicle:</span> {selectedValuation?.make} {selectedValuation?.model}
                 </div>
@@ -667,35 +680,34 @@ const AdminValuationPage = () => {
                 </div>
               </div>
             </div>
-
             <div className="mb-4">
-              <label className="mb-2 block text-sm font-medium text-gray-700">Estimated Value (Optional)</label>
+              <label className="mb-2 block text-xs sm:text-sm font-medium text-gray-700">
+                Estimated Value (Optional)
+              </label>
               <input
                 type="text"
                 value={estimatedValue}
                 onChange={(e) => setEstimatedValue(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 placeholder="e.g., $25,000 - $30,000"
               />
             </div>
-
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-gray-700">Your Reply</label>
+            <div className="mb-4 sm:mb-6">
+              <label className="mb-2 block text-xs sm:text-sm font-medium text-gray-700">Your Reply</label>
               <textarea
                 value={adminReply}
                 onChange={(e) => setAdminReply(e.target.value)}
                 rows={6}
-                className="w-full rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 placeholder="Type your reply here..."
               />
               <p className="mt-1 text-xs text-gray-500">
                 📧 The customer will be automatically notified via email when you send this reply.
               </p>
             </div>
-
             {replyMessage && (
               <div
-                className={`mb-4 rounded-lg p-3 text-sm ${
+                className={`mb-4 rounded-lg p-3 text-xs sm:text-sm ${
                   replyMessage.includes("successfully")
                     ? "border border-green-200 bg-green-50 text-green-700"
                     : "border border-red-200 bg-red-50 text-red-700"
@@ -704,18 +716,17 @@ const AdminValuationPage = () => {
                 {replyMessage}
               </div>
             )}
-
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-3">
               <button
                 onClick={() => setShowReplyModal(false)}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                className="w-full sm:w-auto rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleReply}
                 disabled={!adminReply.trim() || replying}
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {replying ? (
                   <>
@@ -737,39 +748,39 @@ const AdminValuationPage = () => {
         <Modal show={showViewModal} onClose={() => setShowViewModal(false)} size="3xl">
           <ModalHeader>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                <Eye className="h-5 w-5 text-gray-600" />
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-gray-100">
+                <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Valuation Details</h3>
-                <p className="text-sm text-gray-500">ID: {selectedValuation?._id}</p>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Valuation Details</h3>
+                <p className="text-xs sm:text-sm text-gray-500 truncate">ID: {selectedValuation?._id}</p>
               </div>
             </div>
           </ModalHeader>
-          <ModalBody className="space-y-6">
+          <ModalBody className="space-y-4 sm:space-y-6">
             {selectedValuation && (
               <>
                 {/* Customer & Vehicle Info */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                    <h4 className="mb-2 font-medium text-gray-900">Customer Information</h4>
-                    <div className="space-y-2 text-sm">
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
+                    <h4 className="mb-2 text-sm sm:text-base font-medium text-gray-900">Customer Information</h4>
+                    <div className="space-y-2 text-xs sm:text-sm">
                       <div className="flex items-center gap-2">
-                        <User size={14} className="text-gray-400" />
-                        <span className="font-medium">{selectedValuation.name}</span>
+                        <User size={12} className="sm:w-3.5 sm:h-3.5 text-gray-400 flex-shrink-0" />
+                        <span className="font-medium truncate">{selectedValuation.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Mail size={14} className="text-gray-400" />
-                        <span>{selectedValuation.email}</span>
+                        <Mail size={12} className="sm:w-3.5 sm:h-3.5 text-gray-400 flex-shrink-0" />
+                        <span className="truncate">{selectedValuation.email}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                    <h4 className="mb-2 font-medium text-gray-900">Valuation Status</h4>
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
+                    <h4 className="mb-2 text-sm sm:text-base font-medium text-gray-900">Valuation Status</h4>
                     <div className="space-y-2">
-                      <div className="flex  space-x-2">
-                      {getStatusBadge(selectedValuation.status)}
-                      {getValuationTypeBadge(selectedValuation.valuationType)}
+                      <div className="flex flex-wrap gap-2">
+                        {getStatusBadge(selectedValuation.status)}
+                        {getValuationTypeBadge(selectedValuation.valuationType)}
                       </div>
                       <div className="text-xs text-gray-500">
                         <div>Created: {new Date(selectedValuation.createdAt).toLocaleString()}</div>
@@ -782,9 +793,9 @@ const AdminValuationPage = () => {
                 </div>
 
                 {/* Vehicle Details */}
-                <div className="rounded-lg border border-gray-200 bg-white p-4">
-                  <h4 className="mb-3 font-medium text-gray-900">Vehicle Information</h4>
-                  <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
+                <div className="rounded-lg border border-gray-200 bg-white p-3 sm:p-4">
+                  <h4 className="mb-3 text-sm sm:text-base font-medium text-gray-900">Vehicle Information</h4>
+                  <div className="grid grid-cols-1 gap-4 text-xs sm:text-sm md:grid-cols-3">
                     <div>
                       <span className="font-medium text-gray-700">Make:</span>
                       <p className="text-gray-600">{selectedValuation.make}</p>
@@ -802,20 +813,24 @@ const AdminValuationPage = () => {
 
                 {/* Admin Reply */}
                 {selectedValuation.adminReply && (
-                  <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                    <div className="mb-3 flex items-center gap-2">
-                      <h4 className="font-medium text-green-800">Admin Reply</h4>
+                  <div className="rounded-lg border border-green-200 bg-green-50 p-3 sm:p-4">
+                    <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                      <h4 className="text-sm sm:text-base font-medium text-green-800">Admin Reply</h4>
                       {selectedValuation.repliedBy && (
                         <span className="text-xs text-green-600">by {selectedValuation.repliedBy}</span>
                       )}
                     </div>
                     {selectedValuation.estimatedValue && (
                       <div className="mb-2">
-                        <span className="text-sm font-medium text-green-800">Estimated Value:</span>
-                        <span className="text-sm text-green-700 ml-1">{selectedValuation.estimatedValue}</span>
+                        <span className="text-xs sm:text-sm font-medium text-green-800">Estimated Value:</span>
+                        <span className="text-xs sm:text-sm text-green-700 ml-1">
+                          {selectedValuation.estimatedValue}
+                        </span>
                       </div>
                     )}
-                    <p className="whitespace-pre-wrap text-sm text-green-700">{selectedValuation.adminReply}</p>
+                    <p className="whitespace-pre-wrap text-xs sm:text-sm text-green-700">
+                      {selectedValuation.adminReply}
+                    </p>
                   </div>
                 )}
               </>

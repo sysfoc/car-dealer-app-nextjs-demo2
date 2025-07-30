@@ -39,24 +39,24 @@ const Header = ({ isDarkMode }) => {
     <Navbar
       fluid
       rounded
-      className="border-b border-gray-300 dark:border-gray-700 dark:shadow-xl min-h-[80px]"
+      className="min-h-[80px] border-b border-gray-300 dark:border-gray-700 dark:shadow-xl"
     >
       <NavbarBrand href="/admin/dashboard">
         <div className="flex items-center gap-0">
-          <div className="flex items-center justify-center h-16 w-20 md:h-16 md:w-24 overflow-hidden">
+          <div className="flex h-16 w-20 items-center justify-center overflow-hidden md:h-16 md:w-24">
             {loading ? (
-              <div className="h-12 w-16 md:h-14 md:w-20 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-md" />
-            ) : (
+              <div className="h-12 w-16 animate-pulse rounded-md bg-gray-200 dark:bg-gray-700 md:h-14 md:w-20" />
+            ) : logo ? (
               <div className="relative h-16 w-16 md:h-20 md:w-20">
                 <Image
                   src={logo}
-                  alt="Sysfoc-cars-dealer"
+                  alt="Logo"
                   fill
                   className="object-contain"
                   priority
                 />
               </div>
-            )}
+            ) : null}
           </div>
           <div className="flex flex-col items-start justify-center">
             <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">

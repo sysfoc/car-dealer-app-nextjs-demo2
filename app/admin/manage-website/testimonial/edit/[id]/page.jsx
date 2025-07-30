@@ -126,6 +126,7 @@ const Page = () => {
             placeholder="Enter Name"
             value={testimonial.name}
             onChange={handleChange}
+            required
           />
         </div>
         <div>
@@ -136,6 +137,7 @@ const Page = () => {
             placeholder="Enter Designation"
             value={testimonial.designation}
             onChange={handleChange}
+            required
           />
         </div>
         <div>
@@ -146,19 +148,29 @@ const Page = () => {
             placeholder="Enter Content"
             value={testimonial.content}
             onChange={handleChange}
+            required
           />
         </div>
         <div>
           <Label htmlFor="image">Image:</Label>
-          <FileInput id="image" accept="image/*" onChange={handleFileChange} />
+          <FileInput 
+            id="image" 
+            accept="image/*" 
+            onChange={handleFileChange} 
+          />
           {previewImage && (
-            <Image
-              src={previewImage}
-              alt="Preview"
-              width={80}
-              height={80}
-              className="mt-3 rounded-md object-cover"
-            />
+            <div className="mt-3">
+              <Image
+                src={previewImage}
+                alt="Preview"
+                width={80}
+                height={80}
+                className="rounded-md object-cover"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Current Image (click to change)
+              </p>
+            </div>
           )}
         </div>
         <Button type="submit" className="mt-3 w-full" color="dark">

@@ -103,34 +103,34 @@ export default function Page() {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-800 mb-2">
-                  Blog Management
-                </h1>
-                <p className="text-slate-600">
-                  Manage your blog posts and content
-                </p>
-              </div>
-              <div className="flex items-center space-x-6">
-                <div className="text-right">
-                  <p className="text-sm text-slate-500">Total Posts</p>
-                  <p className="text-2xl font-bold text-indigo-600">{blogs.length}</p>
-                </div>
-                <Link
-                  href="/admin/blog/create"
-                  className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span>Add New Post</span>
-                </Link>
-              </div>
-            </div>
-          </div>
+  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6 lg:p-8">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
+      <div className="flex-1">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+          Blog Management
+        </h1>
+        <p className="text-slate-600 text-sm sm:text-base">
+          Manage your blog posts and content
+        </p>
+      </div>
+      <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+        <div className="text-center sm:text-right">
+          <p className="text-sm text-slate-500">Total Posts</p>
+          <p className="text-xl sm:text-2xl font-bold text-indigo-600">{blogs.length}</p>
         </div>
+        <Link
+          href="/admin/blog/create"
+          className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base"
+        >
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add New Post</span>
+        </Link>
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* Content Section */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">

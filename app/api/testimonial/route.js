@@ -1,10 +1,7 @@
-import path from "path";
-import fs from "fs/promises";
 import { NextResponse } from "next/server";
-import dbConnect from "../../lib/mongodb"
-import Testimonial from "../../models/Testimonial"
-
-const uploadDir = path.join(process.cwd(), "public/uploads");
+import dbConnect from "../../lib/mongodb";
+import Testimonial from "../../models/Testimonial";
+import { uploadImageToR2 } from "../../lib/r2";
 
 export async function GET() {
   await dbConnect();
@@ -29,19 +26,8 @@ export async function POST(req) {
       );
     }
 
-    // Create Uploads Directory if it doesn't exist
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    // Generate Unique File Name
-    const fileName = `${Date.now()}-${image.name}`;
-    const filePath = path.join(uploadDir, fileName);
-
-    // Convert image to buffer and save it
-    const buffer = Buffer.from(await image.arrayBuffer());
-    await fs.writeFile(filePath, buffer);
-
-    // Save Image Path in DB
-    const imageUrl = `/uploads/${fileName}`;
+    // Upload image to Cloudflare R2
+    const imageUrl = await uploadImageToR2(image);
 
     // Save Testimonial to DB
     const newTestimonial = new Testimonial({

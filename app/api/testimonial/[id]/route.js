@@ -3,8 +3,32 @@ import fs from "fs/promises";
 import { NextResponse } from "next/server";
 import dbConnect from "../../../lib/mongodb"
 import Testimonial from "../../../models/Testimonial"
+import { uploadImageToR2, deleteImageFromR2 } from "../../../lib/r2";
 
-const uploadDir = path.join(process.cwd(), "public/uploads");
+export async function GET(req, { params }) {
+  try {
+    await dbConnect();
+    const { id } = params;
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required!" }, { status: 400 });
+    }
+
+    const testimonial = await Testimonial.findById(id);
+    if (!testimonial) {
+      return NextResponse.json(
+        { error: "Testimonial not found!" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(testimonial, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching testimonial:", error);
+    return NextResponse.json({ error: "Server error!" }, { status: 500 });
+  }
+}
+
 export async function PUT(req, { params }) {
   try {
     await dbConnect();
@@ -34,29 +58,19 @@ export async function PUT(req, { params }) {
     let imageUrl = testimonial.image;
 
     if (image && image.name) {
-      const uploadDir = path.join(process.cwd(), "public/uploads");
-      await fs.mkdir(uploadDir, { recursive: true });
+      // Upload new image to R2
+      const newImageUrl = await uploadImageToR2(image);
 
-      const fileName = `${Date.now()}-${image.name}`;
-      const filePath = path.join(uploadDir, fileName);
-
-      const buffer = Buffer.from(await image.arrayBuffer());
-      await fs.writeFile(filePath, buffer);
-
-      if (testimonial.image) {
-        const oldImagePath = path.join(
-          process.cwd(),
-          "public",
-          testimonial.image,
-        );
+      // Delete old image from R2 if it exists
+      if (testimonial.image && testimonial.image.startsWith("https://")) {
         try {
-          await fs.unlink(oldImagePath);
+          await deleteImageFromR2(testimonial.image);
         } catch (err) {
-          console.warn("Old image not found or already deleted:", err);
+          console.warn("Error deleting old image from R2:", err);
         }
       }
 
-      imageUrl = `/uploads/${fileName}`;
+      imageUrl = newImageUrl;
     }
 
     testimonial.name = name || testimonial.name;
@@ -79,23 +93,9 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  await dbConnect();
-  const { id } = params;
-
-  await Testimonial.findByIdAndDelete(id);
-  return NextResponse.json(
-    { message: "Deleted Successfully!" },
-    { status: 200 },
-  );
-}
-export async function GET(req, { params }) {
   try {
     await dbConnect();
     const { id } = params;
-
-    if (!id) {
-      return NextResponse.json({ error: "ID is required!" }, { status: 400 });
-    }
 
     const testimonial = await Testimonial.findById(id);
     if (!testimonial) {
@@ -105,9 +105,25 @@ export async function GET(req, { params }) {
       );
     }
 
-    return NextResponse.json(testimonial, { status: 200 });
+    // Delete image from R2 if it exists
+    if (testimonial.image && testimonial.image.startsWith("https://")) {
+      try {
+        await deleteImageFromR2(testimonial.image);
+      } catch (err) {
+        console.warn("Error deleting image from R2:", err);
+      }
+    }
+
+    await Testimonial.findByIdAndDelete(id);
+    return NextResponse.json(
+      { message: "Deleted Successfully!" },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error("Error fetching testimonial:", error);
-    return NextResponse.json({ error: "Server error!" }, { status: 500 });
+    console.error("Error deleting testimonial:", error);
+    return NextResponse.json(
+      { error: "Failed to delete testimonial" },
+      { status: 500 },
+    );
   }
 }

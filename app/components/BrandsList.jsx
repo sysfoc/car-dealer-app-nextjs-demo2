@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -160,11 +160,7 @@ const BrandsList = () => {
               {Array.from({ length: totalSlides }).map((_, slideIndex) => (
                 <div
                   key={slideIndex}
-                  className="grid w-full flex-shrink-0 gap-3 sm:gap-4 
-                    grid-cols-2 
-                    sm:grid-cols-2 
-                    md:grid-cols-3 
-                    lg:grid-cols-6"
+                  className="grid w-full flex-shrink-0 gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
                 >
                   {brands
                     .slice(

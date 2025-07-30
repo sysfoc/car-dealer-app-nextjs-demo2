@@ -207,22 +207,24 @@ export default function ViewDealers() {
       <div className="max-w-8xl mx-auto space-y-6">
         {/* Header Section - Made Compact */}
         <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
-                <FaUsers className="text-lg text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white">Dealer Management</h1>
-                <p className="text-blue-100 text-xs">Manage dealership records</p>
-              </div>
-              <div className="ml-auto bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1">
-                <div className="text-white/80 text-xs">Total</div>
-                <div className="text-lg font-bold text-white">{dealers.length}</div>
-              </div>
-            </div>
-          </div>
+  <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-4 sm:px-6 py-4">
+    <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
+      <div className="flex items-center space-x-3 flex-1">
+        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
+          <FaUsers className="text-base sm:text-lg text-white" />
         </div>
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Dealer Management</h1>
+          <p className="text-blue-100 text-xs">Manage dealership records</p>
+        </div>
+      </div>
+      <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1 self-start sm:self-auto">
+        <div className="text-white/80 text-xs">Total</div>
+        <div className="text-base sm:text-lg font-bold text-white">{dealers.length}</div>
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* Error Display */}
         {errors.general && (

@@ -242,79 +242,79 @@ const AdminEnquiriesPage = () => {
           </div>
         </div>
 
-        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="rounded-xl bg-blue-100 p-3">
-                <Mail className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.total}
-                </p>
-                <p className="text-sm font-medium text-gray-500">
-                  Total Enquiries
-                </p>
-              </div>
-            </div>
-            <div className="h-2 w-full rounded-full bg-gray-200">
-              <div
-                className="h-2 rounded-full bg-blue-600"
-                style={{ width: "100%" }}
-              ></div>
-            </div>
-          </div>
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm transition-shadow hover:shadow-md">
+    <div className="mb-4 flex items-center justify-between">
+      <div className="rounded-xl bg-blue-100 p-2 sm:p-3">
+        <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+      </div>
+      <div className="text-right">
+        <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+          {stats.total}
+        </p>
+        <p className="text-xs sm:text-sm font-medium text-gray-500">
+          Total Enquiries
+        </p>
+      </div>
+    </div>
+    <div className="h-2 w-full rounded-full bg-gray-200">
+      <div
+        className="h-2 rounded-full bg-blue-600"
+        style={{ width: "100%" }}
+      ></div>
+    </div>
+  </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="rounded-xl bg-amber-100 p-3">
-                <Clock className="h-6 w-6 text-amber-600" />
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-amber-600">
-                  {stats.pending}
-                </p>
-                <p className="text-sm font-medium text-gray-500">Pending</p>
-              </div>
-            </div>
-            <div className="h-2 w-full rounded-full bg-gray-200">
-              <div
-                className="h-2 rounded-full bg-amber-600"
-                style={{
-                  width:
-                    stats.total > 0
-                      ? `${(stats.pending / stats.total) * 100}%`
-                      : "0%",
-                }}
-              ></div>
-            </div>
-          </div>
+  <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm transition-shadow hover:shadow-md">
+    <div className="mb-4 flex items-center justify-between">
+      <div className="rounded-xl bg-amber-100 p-2 sm:p-3">
+        <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
+      </div>
+      <div className="text-right">
+        <p className="text-2xl sm:text-3xl font-bold text-amber-600">
+          {stats.pending}
+        </p>
+        <p className="text-xs sm:text-sm font-medium text-gray-500">Pending</p>
+      </div>
+    </div>
+    <div className="h-2 w-full rounded-full bg-gray-200">
+      <div
+        className="h-2 rounded-full bg-amber-600"
+        style={{
+          width:
+            stats.total > 0
+              ? `${(stats.pending / stats.total) * 100}%`
+              : "0%",
+        }}
+      ></div>
+    </div>
+  </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="rounded-xl bg-emerald-100 p-3">
-                <CheckCircle className="h-6 w-6 text-emerald-600" />
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-emerald-600">
-                  {stats.answered}
-                </p>
-                <p className="text-sm font-medium text-gray-500">Answered</p>
-              </div>
-            </div>
-            <div className="h-2 w-full rounded-full bg-gray-200">
-              <div
-                className="h-2 rounded-full bg-emerald-600"
-                style={{
-                  width:
-                    stats.total > 0
-                      ? `${(stats.answered / stats.total) * 100}%`
-                      : "0%",
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
+  <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm transition-shadow hover:shadow-md sm:col-span-2 lg:col-span-1">
+    <div className="mb-4 flex items-center justify-between">
+      <div className="rounded-xl bg-emerald-100 p-2 sm:p-3">
+        <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
+      </div>
+      <div className="text-right">
+        <p className="text-2xl sm:text-3xl font-bold text-emerald-600">
+          {stats.answered}
+        </p>
+        <p className="text-xs sm:text-sm font-medium text-gray-500">Answered</p>
+      </div>
+    </div>
+    <div className="h-2 w-full rounded-full bg-gray-200">
+      <div
+        className="h-2 rounded-full bg-emerald-600"
+        style={{
+          width:
+            stats.total > 0
+              ? `${(stats.answered / stats.total) * 100}%`
+              : "0%",
+        }}
+      ></div>
+    </div>
+  </div>
+</div>
 
         {/* Filter Tabs */}
         <div className="mb-8 rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -378,7 +378,7 @@ const AdminEnquiriesPage = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                       {getStatusBadge(enquiry.status)}
                       <button
                         onClick={() => openDeleteModal(enquiry)}
@@ -437,7 +437,7 @@ const AdminEnquiriesPage = () => {
                           <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                             Car ID
                           </p>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm truncate font-medium text-gray-900">
                             {enquiry.carId}
                           </p>
                         </div>

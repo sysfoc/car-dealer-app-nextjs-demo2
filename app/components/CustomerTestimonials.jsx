@@ -127,7 +127,7 @@ const CustomerTestimonials = () => {
 
               {/* Customer Info */}
               <div className="flex items-center gap-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                <img
+                <Image
                   src={testimonial.avatar}
                   alt={testimonial.name}
                   className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"

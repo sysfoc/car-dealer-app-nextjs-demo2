@@ -12,20 +12,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-interface Testimonial {
-  _id: string;
-  name: string;
-  designation: string;
-  image: string;
-  testimonial: string;
-  rating?: number;
-  createdAt: string;
-}
-
 export default function Page() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchTestimonials();
@@ -40,13 +30,13 @@ export default function Page() {
       const data = await response.json();
       setTestimonials(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch testimonials");
+      setError(err.message || "Failed to fetch testimonials");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -123,34 +113,34 @@ export default function Page() {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-800 mb-2">
-                  Testimonials Management
-                </h1>
-                <p className="text-slate-600">
-                  Manage customer testimonials and reviews
-                </p>
-              </div>
-              <div className="flex items-center space-x-6">
-                <div className="text-right">
-                  <p className="text-sm text-slate-500">Total Testimonials</p>
-                  <p className="text-2xl font-bold text-indigo-600">{testimonials.length}</p>
-                </div>
-                <Link
-                  href="/admin/manage-website/testimonial/add"
-                  className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span>Add New Testimonial</span>
-                </Link>
-              </div>
-            </div>
-          </div>
+  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6 lg:p-8">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
+      <div className="flex-1">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+          Testimonials Management
+        </h1>
+        <p className="text-slate-600 text-sm sm:text-base">
+          Manage customer testimonials and reviews
+        </p>
+      </div>
+      <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+        <div className="text-center sm:text-right">
+          <p className="text-sm text-slate-500">Total Testimonials</p>
+          <p className="text-xl sm:text-2xl font-bold text-indigo-600">{testimonials.length}</p>
         </div>
+        <Link
+          href="/admin/manage-website/testimonial/add"
+          className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base"
+        >
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span className="whitespace-nowrap">Add New Testimonial</span>
+        </Link>
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* Content Section */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
@@ -243,7 +233,7 @@ export default function Page() {
                               {[...Array(5)].map((_, i) => (
                                 <svg
                                   key={i}
-                                  className={`w-4 h-4 ${i < testimonial.rating! ? 'text-yellow-400' : 'text-slate-300'}`}
+                                  className={`w-4 h-4 ${i < testimonial.rating ? 'text-yellow-400' : 'text-slate-300'}`}
                                   fill="currentColor"
                                   viewBox="0 0 20 20"
                                 >
@@ -263,7 +253,7 @@ export default function Page() {
                             </svg>
                           </div>
                           <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed pl-8 italic">
-                            {testimonial.testimonial || "No testimonial text provided"}
+                            {testimonial.content || "No testimonial text provided"}
                           </p>
                         </div>
                       </TableCell>

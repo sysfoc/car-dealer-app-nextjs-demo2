@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const userSchema = new mongoose.Schema(
   {
@@ -26,16 +26,17 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      // default: "/public/userPicture.jpg",
     },
-    likedCars: [{
-  type: mongoose.Schema.Types.ObjectId,
-  ref: 'Car' // Assuming your car model is named 'Car'
-}],
+    likedCars: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Car",
+      },
+    ],
   },
   { timestamps: true },
-);
+)
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema)
 
-export default User;
+export default User

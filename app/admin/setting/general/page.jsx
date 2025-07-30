@@ -142,26 +142,28 @@ const Page = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-800 mb-2">
-                  General Settings
-                </h1>
-                <p className="text-slate-600">
-                  Manage your website global settings and configurations
-                </p>
-              </div>
-              <Button 
-                gradientDuoTone="purpleToBlue" 
-                className="font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
-                onClick={handleSubmit}
-              >
-                Save Settings
-              </Button>
-            </div>
-          </div>
-        </div>
+  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6 lg:p-8">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+      <div className="flex-1">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+          General Settings
+        </h1>
+        <p className="text-slate-600 text-sm sm:text-base">
+          Manage your website global settings and configurations
+        </p>
+      </div>
+      <div className="flex-shrink-0">
+        <Button 
+          gradientDuoTone="purpleToBlue" 
+          className="font-semibold px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base w-full sm:w-auto"
+          onClick={handleSubmit}
+        >
+          Save Settings
+        </Button>
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* Content Section */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
@@ -807,29 +809,6 @@ const Page = () => {
                               Hex code for the dark mode text
                             </p>
                           </div>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-6 p-4 bg-slate-900 rounded-lg" style={{ backgroundColor: settings.themeColor.darkModeBg }}>
-                        <h4 className="text-lg font-semibold mb-3" style={{ color: settings.themeColor.darkModeText }}>
-                          Dark Mode Preview
-                        </h4>
-                        <p className="mb-4" style={{ color: settings.themeColor.darkModeText }}>
-                          This is a sample text showing how your content will appear in dark mode. The colors you choose will affect all text and backgrounds when users enable dark mode.
-                        </p>
-                        <div className="flex gap-3">
-                          <button className="px-4 py-2 rounded text-sm font-medium" style={{ 
-                            backgroundColor: settings.themeColor.darkModeText, 
-                            color: settings.themeColor.darkModeBg
-                          }}>
-                            Sample Button
-                          </button>
-                          <button className="px-4 py-2 rounded text-sm font-medium border" style={{ 
-                            borderColor: settings.themeColor.darkModeText, 
-                            color: settings.themeColor.darkModeText
-                          }}>
-                            Secondary Button
-                          </button>
                         </div>
                       </div>
                     </div>
