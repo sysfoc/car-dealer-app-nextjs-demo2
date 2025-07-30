@@ -92,7 +92,7 @@ const DeleteConfirmModal = ({ show, onClose, onConfirm, loading }) => {
           <p className="mb-6 text-sm sm:text-base text-gray-600">
             Are you sure you want to delete this valuation request? This will permanently remove it from your system.
           </p>
-          <div className="flex flex-col sm:flex-row justify-end gap-3">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pb-4">
             <button
               onClick={onClose}
               disabled={loading}
@@ -668,7 +668,7 @@ const AdminValuationPage = () => {
               </div>
             </div>
           </ModalHeader>
-          <ModalBody>
+          <ModalBody className="pb-6">
             <div className="mb-4 sm:mb-6 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
               <h4 className="mb-2 text-xs sm:text-sm font-medium text-gray-700">Vehicle Details</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm text-gray-600">
