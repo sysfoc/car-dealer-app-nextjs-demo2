@@ -37,10 +37,10 @@ const Header = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch("/api/settings/general");
+        const response = await fetch("/api/settings/general", {cache: "no-store"});
         const data = await response.json();
-        if (data.settings?.logo) {
-          setLogo(data.settings.logo);
+        if (data.settings?.logo2) {
+          setLogo(data.settings.logo2);
         }
         setTopSettings((prev) => ({
           hideDarkMode: false,
@@ -70,11 +70,17 @@ const Header = () => {
     toggleSidebar(); // Use context function
   };
 
+  // Removed Login from quickLinks - it will only appear in mobile sidebar and desktop right side
   const quickLinks = [
     { name: "Find Cars", href: "/car-for-sale", icon: FaCar },
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
     { name: "Vehicle Services", href: "/cars/about-us", icon: FaHandshake },
+  ];
+
+  // All links including login for mobile sidebar only
+  const mobileMenuLinks = [
+    ...quickLinks,
     { name: "Login", href: "/login", icon: FaUser },
   ];
 
@@ -146,16 +152,16 @@ const Header = () => {
               })}
             </div>
             <div className="flex items-center space-x-3">
+              {/* Login Button - Now visible on desktop in the right section */}
               <button
                 onClick={() => router.push("/login")}
                 aria-label="Login"
-                className="group relative hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 md:flex md:items-center md:space-x-2"
+                className="hidden items-center space-x-2 rounded-xl bg-gray-100 px-4 py-3 text-gray-600 transition-all duration-300 hover:scale-105 hover:bg-gray-200 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-blue-400 lg:flex"
               >
-                <FaUser className="h-4 w-4" />
-                <span>Login</span>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/0 to-white/0 transition-all duration-300 group-hover:from-white/10 group-hover:to-white/5"></div>
+                <FaUser className="h-5 w-5" />
+                <span className="text-sm font-medium">Login</span>
               </button>
-              {/* Mobile Menu Toggle (Hamburger) - Visible on smaller screens */}
+
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
                 aria-label="Open Menu"
@@ -259,7 +265,7 @@ const Header = () => {
             </button>
           </div>
           <div className="flex-1 space-y-2 p-4">
-            {quickLinks.map((link, index) => {
+            {mobileMenuLinks.map((link, index) => {
               const IconComponent = link.icon;
               return (
                 <Link

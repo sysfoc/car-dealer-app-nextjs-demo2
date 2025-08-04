@@ -22,8 +22,8 @@ const Header = ({ isDarkMode }) => {
       try {
         const response = await fetch("/api/settings/general");
         const data = await response.json();
-        if (data.settings?.logo) {
-          setLogo(data.settings.logo);
+        if (data.settings?.logo2) {
+          setLogo(data.settings.logo2);
         }
       } catch (error) {
         console.error("Failed to fetch logo:", error);
