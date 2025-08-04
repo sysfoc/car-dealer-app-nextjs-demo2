@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { FaUser } from "react-icons/fa";
 import {
   FaHeart,
   FaSearch,
@@ -74,6 +75,7 @@ const Header = () => {
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
     { name: "Vehicle Services", href: "/cars/about-us", icon: FaHandshake },
+    { name: "Login", href: "/login", icon: FaUser },
   ];
 
   const LogoSkeleton = () => (
@@ -144,6 +146,15 @@ const Header = () => {
               })}
             </div>
             <div className="flex items-center space-x-3">
+              <button
+                onClick={() => router.push("/login")}
+                aria-label="Login"
+                className="group relative hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 md:flex md:items-center md:space-x-2"
+              >
+                <FaUser className="h-4 w-4" />
+                <span>Login</span>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/0 to-white/0 transition-all duration-300 group-hover:from-white/10 group-hover:to-white/5"></div>
+              </button>
               {/* Mobile Menu Toggle (Hamburger) - Visible on smaller screens */}
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
