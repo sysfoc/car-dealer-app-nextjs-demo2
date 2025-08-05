@@ -30,8 +30,7 @@ const getGeneralSettings = async () => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}` : "http://localhost:3000"
     const res = await fetch(`${baseUrl}/api/settings/general`, {
-      cache: "no-store",
-      next: { revalidate: 0 },
+      next: { revalidate: 3600 },
     })
     if (!res.ok) {
       console.error(`Failed to fetch settings: ${res.status}`)
@@ -93,12 +92,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const locale = await getLocale()
-  const messages = await getMessages()
-  const settingsData = await getGeneralSettings()
-  const headerSettings = await fetchHeaderSettings();
-  const homepageData = await getHomepageSettings()
-  const socialData = await getSocialData()
+  const [locale, messages, settingsData, headerSettings, homepageData, socialData] = 
+    await Promise.all([
+      getLocale(),
+      getMessages(),
+      getGeneralSettings(),
+      fetchHeaderSettings(),
+      getHomepageSettings(),
+      getSocialData()
+    ]);
 
   const settings = settingsData?.settings || {
     logo: "",

@@ -217,8 +217,7 @@ const Footerr = ({
           <div className="mb-3 mt-8 border-t border-gray-200 pt-6 dark:border-gray-700 sm:mb-2">
             <div className="flex flex-col items-center justify-center space-y-2 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                &copy; {new Date().getFullYear()} {t("copyright")} by Sysfoc.
-                All Rights Reserved.
+                &copy; {new Date().getFullYear()} All Rights Reserved. {t("copyright")} by Sysfoc.
               </p>
             </div>
           </div>
