@@ -9,7 +9,7 @@ const HeroSection = async () => {
 
   let headingData = FALLBACK_HEADING
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/homepage`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/homepage`, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     })
     const result = await response.json()

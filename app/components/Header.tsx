@@ -35,9 +35,6 @@ const Header = ({ initialLogo, initialTopSettings }: HeaderProps) => {
     setDarkMode(document.documentElement.classList.contains("dark"))
   }, [])
 
-  // Removed the useEffect for fetching settings, as it's now done in HeaderWrapper
-  // The setTimeout is also no longer needed here.
-
   const toggleDarkMode = () => {
     setDarkMode(!darkMode)
     if (document.documentElement.classList.contains("dark")) {
