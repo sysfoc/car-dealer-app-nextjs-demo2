@@ -2,79 +2,40 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { User, Heart, Search, X, Calculator, Handshake, Car, Sun, Moon, Tag } from "lucide-react" // Replaced react-icons with lucide-react
+import { User, Heart, Search, X, Calculator, Handshake, Car, Sun, Moon, Tag } from "lucide-react"
 import { useTranslations } from "next-intl"
 import CarSearchSidebar from "./Car-search-sidebar"
 import { useSidebar } from "../context/SidebarContext"
 import Image from "next/image"
 
-const DEFAULT_SETTINGS = {
-  hideDarkMode: false,
-  hideFavourite: false,
-  hideLogo: false,
+// Define props interface for Header
+interface HeaderProps {
+  initialLogo: string
+  initialTopSettings: {
+    hideDarkMode: boolean
+    hideFavourite: boolean
+    hideLogo: boolean
+  }
 }
 
-const Header = () => {
+const Header = ({ initialLogo, initialTopSettings }: HeaderProps) => {
+  // Accept props
   const t = useTranslations("HomePage")
   const [darkMode, setDarkMode] = useState(false)
-  const [logo, setLogo] = useState("")
-  const [logoLoading, setLogoLoading] = useState(false) // Start as false
-  const [topSettings, setTopSettings] = useState(DEFAULT_SETTINGS)
+  const [logo, setLogo] = useState(initialLogo) // Initialize with prop
+  const [topSettings, setTopSettings] = useState(initialTopSettings) // Initialize with prop
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
 
-  // Cache for settings API
-  const [settingsCache, setSettingsCache] = useState(null)
+  // Removed settingsCache and logoLoading states as data is now passed via props
   const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar()
 
   useEffect(() => {
     setDarkMode(document.documentElement.classList.contains("dark"))
   }, [])
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      // Check cache first (10 minute cache)
-      if (settingsCache && Date.now() - settingsCache.timestamp < 600000) {
-        const cachedData = settingsCache.data
-        if (cachedData.settings?.logo2) {
-          setLogo(cachedData.settings.logo2)
-        }
-        setTopSettings((prev) => ({
-          ...DEFAULT_SETTINGS,
-          ...cachedData.settings?.top,
-        }))
-        return
-      }
-      try {
-        setLogoLoading(true)
-        const response = await fetch("/api/settings/general", {
-          next: { revalidate: 600 }, // 10 minutes cache
-        })
-        const data = await response.json()
-
-        // Cache the response
-        setSettingsCache({
-          data,
-          timestamp: Date.now(),
-        })
-        if (data.settings?.logo2) {
-          setLogo(data.settings.logo2)
-        }
-        setTopSettings((prev) => ({
-          ...DEFAULT_SETTINGS,
-          ...data.settings?.top,
-        }))
-      } catch (error) {
-        console.error("Failed to fetch settings:", error)
-        // Keep default settings on error
-      } finally {
-        setLogoLoading(false)
-      }
-    }
-    // Defer settings fetch to not block initial render
-    const timeoutId = setTimeout(fetchSettings, 100)
-    return () => clearTimeout(timeoutId)
-  }, [])
+  // Removed the useEffect for fetching settings, as it's now done in HeaderWrapper
+  // The setTimeout is also no longer needed here.
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode)
@@ -98,6 +59,7 @@ const Header = () => {
 
   const mobileMenuLinks = [...quickLinks, { name: "Login", href: "/login", icon: User }]
 
+  // Simple skeleton without heavy animations
   const LogoSkeleton = () => (
     <div className="flex items-center space-x-3">
       <div className="h-12 w-12 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
@@ -115,9 +77,8 @@ const Header = () => {
           <div className="flex h-16 items-center justify-between">
             {!topSettings.hideLogo && (
               <>
-                {logoLoading ? (
-                  <LogoSkeleton />
-                ) : logo ? (
+                {/* Logo is now directly available from props, no loading state needed here */}
+                {logo ? (
                   <Link href="/" className="flex items-center space-x-3">
                     <Image
                       src={logo || "/placeholder.svg"}
@@ -125,7 +86,7 @@ const Header = () => {
                       width={64}
                       height={64}
                       className="h-16 w-16 object-contain"
-                      onError={() => setLogo("")}
+                      onError={() => setLogo("")} // Keep onError for client-side image errors
                       priority // Ensures logo is preloaded for LCP [^2][^3]
                       sizes="64px"
                     />

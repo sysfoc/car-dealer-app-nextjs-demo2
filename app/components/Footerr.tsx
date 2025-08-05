@@ -1,63 +1,28 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import LanguageSwitching from "../components/LanguageSwitching"
 import { useTranslations } from "next-intl"
-import { iconComponentsMap, allSocialPlatforms } from "../lib/social-icons" // Using your provided social-icons.ts
+import { iconComponentsMap } from "../lib/social-icons"
 
-const Footerr = () => {
+// Define props interface for Footerr
+interface FooterrProps {
+  initialHomepageData: any // Use a more specific type if available
+  initialFooterSettings: any // Use a more specific type if available
+  initialLogo: string
+  initialFetchedSocials: any[] // Use a more specific type if available
+}
+
+const Footerr = ({ initialHomepageData, initialFooterSettings, initialLogo, initialFetchedSocials }: FooterrProps) => {
   const t = useTranslations("Footer")
-  const [footerSettings, setFooterSettings] = useState(null)
-  const [logo, setLogo] = useState("")
-  const [logoLoading, setLogoLoading] = useState(true)
-  const [homepageData, setHomepageData] = useState(null)
-  const [fetchedSocials, setFetchedSocials] = useState([])
+  const [footerSettings, setFooterSettings] = useState(initialFooterSettings) // Initialize with prop
+  const [logo, setLogo] = useState(initialLogo) // Initialize with prop
+  const [homepageData, setHomepageData] = useState(initialHomepageData) // Initialize with prop
+  const [fetchedSocials, setFetchedSocials] = useState(initialFetchedSocials) // Initialize with prop
 
-  useEffect(() => {
-    const fetchHomepageData = async () => {
-      try {
-        // Changed to use revalidate for caching
-        const res = await fetch("/api/homepage", { next: { revalidate: 3600 } }) // Cache for 1 hour
-        const data = await res.json()
-        setHomepageData(data?.footer)
-      } catch (error) {
-        console.error("Failed to fetch homepage data:", error)
-      }
-    }
-    fetchHomepageData()
-  }, [])
-
-  useEffect(() => {
-    const fetchSocialMedia = async () => {
-      try {
-        // Changed to use revalidate for caching
-        const res = await fetch("/api/socials", { next: { revalidate: 3600 } }) // Cache for 1 hour
-        const json = await res.json()
-        if (json.data) {
-          const combinedSocials = json.data.map((social) => {
-            if (social.iconType === "react-icon") {
-              const platformDetails = allSocialPlatforms.find((p) => p.name === social.iconValue)
-              return {
-                ...social,
-                color: platformDetails?.color || "from-gray-200 to-gray-300",
-                textColor: platformDetails?.textColor || "text-gray-600",
-              }
-            }
-            return {
-              ...social,
-              color: "from-gray-200 to-gray-300",
-              textColor: "text-gray-600",
-            }
-          })
-          setFetchedSocials(combinedSocials)
-        }
-      } catch (error) {
-        console.error("Failed to fetch social media data:", error)
-      }
-    }
-    fetchSocialMedia()
-  }, [])
+  // Removed all useEffects for data fetching, as data is now passed via props
+  // Removed logoLoading state as logo is directly available
 
   const tradingHours = [
     {
@@ -87,37 +52,6 @@ const Footerr = () => {
     { day: t("sunday"), hours: t("closedHours") },
   ]
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        // Changed to use revalidate for caching
-        const res = await fetch("/api/settings/general", { next: { revalidate: 3600 } }) // Cache for 1 hour
-        const data = await res.json()
-        setFooterSettings(data?.settings?.footer || {})
-      } catch (error) {
-        console.error("Failed to fetch footer settings:", error)
-      }
-    }
-    fetchSettings()
-  }, [])
-
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        setLogoLoading(true)
-        // Changed to use revalidate for caching
-        const res = await fetch("/api/settings/general", { next: { revalidate: 3600 } }) // Cache for 1 hour
-        const data = await res.json()
-        setLogo(data?.settings?.logo2)
-      } catch (error) {
-        console.error("Failed to fetch footer Logo:", error)
-      } finally {
-        setLogoLoading(false)
-      }
-    }
-    fetchLogo()
-  }, [])
-
   return (
     <div className="relative mt-5">
       <div className="absolute left-0 top-0 w-full overflow-hidden leading-none">
@@ -138,9 +72,8 @@ const Footerr = () => {
         <div className="mx-auto w-full max-w-7xl px-4">
           <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
-              {logoLoading ? (
-                <div className="h-[90px] w-[180px] animate-pulse rounded bg-gray-300 dark:bg-gray-600"></div>
-              ) : logo ? (
+              {/* Logo is now directly available from props, no loading state needed here */}
+              {logo ? (
                 <Image
                   src={logo || "/placeholder.svg"}
                   alt="Sysfoc Cars Dealer"
@@ -225,7 +158,7 @@ const Footerr = () => {
                   <h4 className="mb-3 text-sm font-medium text-black dark:text-gray-300">Follow us:</h4>
                   <div className="flex flex-wrap gap-2 space-x-3">
                     {fetchedSocials.length > 0 ? (
-                      fetchedSocials.map((platform, index) => {
+                      fetchedSocials.map((platform: { iconType: string; iconValue: string; url: string }, index) => {
                         const IconComponent =
                           platform.iconType === "react-icon" ? iconComponentsMap[platform.iconValue] : null
                         return (

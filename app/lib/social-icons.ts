@@ -1,4 +1,5 @@
 import {
+  type LucideIcon,
   Facebook,
   Youtube,
   Instagram,
@@ -252,10 +253,13 @@ export const allSocialPlatforms = [
   },
 ]
 
-export const iconComponentsMap = allSocialPlatforms.reduce((acc, platform) => {
-  acc[platform.name] = platform.icon
-  return acc
-}, {})
+export const iconComponentsMap = allSocialPlatforms.reduce(
+  (acc, platform) => {
+    acc[platform.name] = platform.icon
+    return acc
+  },
+  {} as Record<string, LucideIcon>, // Add type assertion here
+)
 
 export const availableIconOptions = allSocialPlatforms.map((platform) => ({
   name: platform.name,

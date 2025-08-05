@@ -15,7 +15,6 @@ const HeroSection = () => {
   const [isEnhanced, setIsEnhanced] = useState(false)
 
   useEffect(() => {
-    // Use progressive enhancement instead of loading state
     const fetchData = async () => {
       try {
         const response = await fetch("/api/homepage", {
