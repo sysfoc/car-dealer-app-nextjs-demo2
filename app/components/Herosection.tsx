@@ -8,7 +8,7 @@ const HeroSection = async () => {
   let headingData = FALLBACK_HEADING
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/homepage`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 3600 },
     })
     const result = await response.json()
     if (response.ok && result.searchSection?.mainHeading) {

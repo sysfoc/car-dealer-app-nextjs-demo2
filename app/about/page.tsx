@@ -10,7 +10,6 @@ interface PageData {
 
 async function getAboutContent(baseUrl: string): Promise<PageData | null> {
   const res = await fetch(`${baseUrl}/api/page-content/about`, {
-    cache: "no-store",
   })
   if (!res.ok) return null
   return res.json()
