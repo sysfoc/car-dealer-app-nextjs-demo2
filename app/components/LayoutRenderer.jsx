@@ -10,7 +10,13 @@ import Header from "../admin/Header";
 import DrawerSidebar from "../admin/DrawerSidebar";
 import WhatsAppChat from "./WhatsAppChat";
 
-export default function LayoutRenderer({ children }) {
+export default function LayoutRenderer({ 
+  children, 
+  footerSettings, 
+  footerLogo, 
+  homepageFooterData, 
+  socialData 
+}) {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/admin");
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -59,7 +65,12 @@ export default function LayoutRenderer({ children }) {
       <WhatsAppChat/>
       <ScrolltoTop />
       <Cookiebox />
-      <Footer isDarkMode={isDarkMode} />
+      <Footer
+          footerSettings={footerSettings}
+          logo={footerLogo}
+          homepageData={homepageFooterData}
+          socialData={socialData}
+        />
     </>
   );
 }

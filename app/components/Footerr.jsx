@@ -2,69 +2,37 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import LanguageSwitching from "./LanguageSwitching";
 import { useTranslations } from "next-intl";
 import { iconComponentsMap, allSocialPlatforms } from "../lib/social-icons";
 
-const Footerr = () => {
+const Footerr = ({ 
+  footerSettings = {}, 
+  logo = "", 
+  homepageData = null, 
+  socialData = [] 
+}) => {
   const t = useTranslations("Footer");
 
-  const [footerSettings, setFooterSettings] = useState(null);
-  const [logo, setLogo] = useState("");
-  const [logoLoading, setLogoLoading] = useState(true);
-  const [homepageData, setHomepageData] = useState(null);
-  const [fetchedSocials, setFetchedSocials] = useState([]);
+  // Process social data
+  const fetchedSocials = socialData.map((social) => {
+    if (social.iconType === "react-icon") {
+      const platformDetails = allSocialPlatforms.find(
+        (p) => p.name === social.iconValue,
+      );
+      return {
+        ...social,
+        color: platformDetails?.color || "from-gray-200 to-gray-300",
+        textColor: platformDetails?.textColor || "text-gray-600",
+      };
+    }
 
-  useEffect(() => {
-    const fetchHomepageData = async () => {
-      try {
-        const res = await fetch("/api/homepage",{next: { revalidate: 60 }});
-        const data = await res.json();
-        setHomepageData(data?.footer);
-      } catch (error) {
-        console.error("Failed to fetch homepage data:", error);
-      }
+    return {
+      ...social,
+      color: "from-gray-200 to-gray-300",
+      textColor: "text-gray-600",
     };
-
-    fetchHomepageData();
-  }, []);
-
-  useEffect(() => {
-    const fetchSocialMedia = async () => {
-      try {
-        const res = await fetch("/api/socials");
-        const json = await res.json();
-
-        if (json.data) {
-          const combinedSocials = json.data.map((social) => {
-            if (social.iconType === "react-icon") {
-              const platformDetails = allSocialPlatforms.find(
-                (p) => p.name === social.iconValue,
-              );
-              return {
-                ...social,
-                color: platformDetails?.color || "from-gray-200 to-gray-300",
-                textColor: platformDetails?.textColor || "text-gray-600",
-              };
-            }
-
-            return {
-              ...social,
-              color: "from-gray-200 to-gray-300",
-              textColor: "text-gray-600",
-            };
-          });
-
-          setFetchedSocials(combinedSocials);
-        }
-      } catch (error) {
-        console.error("Failed to fetch social media data:", error);
-      }
-    };
-
-    fetchSocialMedia();
-  }, []);
+  });
 
   const tradingHours = [
     { day: t("monday"), hours: homepageData?.monday || t("openingHours") },
@@ -78,37 +46,6 @@ const Footerr = () => {
     { day: t("saturday"), hours: homepageData?.saturday || t("closedHours") },
     { day: t("sunday"), hours: t("closedHours") },
   ];
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const res = await fetch("/api/settings/general", { cache: "no-store" });
-        const data = await res.json();
-        setFooterSettings(data?.settings?.footer || {});
-      } catch (error) {
-        console.error("Failed to fetch footer settings:", error);
-      }
-    };
-
-    fetchSettings();
-  }, []);
-
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        setLogoLoading(true);
-        const res = await fetch("/api/settings/general", { cache: "no-store" });
-        const data = await res.json();
-        setLogo(data?.settings?.logo2);
-      } catch (error) {
-        console.error("Failed to fetch footer Logo:", error);
-      } finally {
-        setLogoLoading(false);
-      }
-    };
-
-    fetchLogo();
-  }, []);
 
   return (
     <div className="relative mt-5">
@@ -138,9 +75,7 @@ const Footerr = () => {
           <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {/* Logo */}
             <div className="space-y-4">
-              {logoLoading ? (
-                <div className="h-[90px] w-[180px] animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-              ) : logo ? (
+              {logo && (
                 <Image
                   src={logo}
                   alt="Sysfoc Cars Dealer"
@@ -149,7 +84,7 @@ const Footerr = () => {
                   height={90}
                   className="h-auto w-auto max-w-[180px] object-contain"
                 />
-              ) : null}
+              )}
             </div>
 
             {/* Quick Links */}
