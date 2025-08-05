@@ -19,14 +19,14 @@ export default async function FooterWrapper() {
 
   try {
     // Fetch homepage data
-    const homepageRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/homepage`, {
+    const homepageRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/homepage`, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     })
     const homepageJson = await homepageRes.json()
     homepageData = homepageJson?.footer || null
 
     // Fetch general settings for logo and footer settings
-    const settingsRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/settings/general`, {
+    const settingsRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/settings/general`, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     })
     const settingsJson = await settingsRes.json()
@@ -34,7 +34,7 @@ export default async function FooterWrapper() {
     logo = settingsJson?.settings?.logo2 || ""
 
     // Fetch social media data
-    const socialsRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/socials`, {
+    const socialsRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/socials`, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     })
     const socialsJson = await socialsRes.json()

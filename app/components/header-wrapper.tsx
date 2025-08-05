@@ -10,7 +10,7 @@ export default async function HeaderWrapper() {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/settings/general`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/settings/general`, {
       next: { revalidate: 600 }, // 10 minutes cache
     })
     const data = await response.json()
