@@ -5,13 +5,10 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useEffect } from "react";
 
-const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars";
-
-const HeroSection = ({ heading = FALLBACK_HEADING }) => {
+const HeroSection = ({ heading }) => {
   const t = useTranslations("HomePage");
   const router = useRouter();
 
-  // Preload hero image on mount
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "preload";

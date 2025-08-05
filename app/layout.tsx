@@ -140,13 +140,6 @@
 //   )
 // }
 
-
-
-
-
-
-
-
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -163,7 +156,7 @@ import GoogleAnalytics from "./components/GoogleAnalytics";
 import GoogleRecaptcha from "./components/GoogleRecaptcha";
 import { CurrencyProvider } from "./context/CurrencyContext";
 import { AuthProvider } from "./context/UserContext";
-import { SidebarProvider } from './context/SidebarContext';
+import { SidebarProvider } from "./context/SidebarContext";
 import { DistanceProvider } from "./context/DistanceContext";
 import { Suspense } from "react";
 import Header from "./components/Header";
@@ -171,7 +164,7 @@ import { PreloadResources } from "./preload-resources";
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "700"]
+  weight: ["400", "700"],
 });
 
 const getGeneralSettings = async () => {
@@ -214,7 +207,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: homepageData?.seoTitle || "Auto Car Dealers",
-    description: homepageData?.seoDescription || "Make Deals Of Cars And Any Other Vehical",
+    description:
+      homepageData?.seoDescription ||
+      "Make Deals Of Cars And Any Other Vehical",
   };
 }
 
@@ -268,7 +263,9 @@ export default async function RootLayout({
       <head>
         <PreloadResources />
       </head>
-      <body className={`transition-all dark:bg-gray-800 dark:text-gray-200 ${inter.className}`}>
+      <body
+        className={`transition-all dark:bg-gray-800 dark:text-gray-200 ${inter.className}`}
+      >
         <SidebarProvider>
           <ThemeModeScript />
           <GoogleAnalytics />
@@ -276,7 +273,14 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages}>
             <AuthProvider>
               <LayoutRenderer>
-                <Header />
+                <Header
+                  logo={settings.logo2}
+                  topSettings={{
+                    hideDarkMode: settings.top?.hideDarkMode ?? false,
+                    hideFavourite: settings.top?.hideFavourite ?? false,
+                    hideLogo: settings.top?.hideLogo ?? false,
+                  }}
+                />
                 <Suspense fallback={null}>
                   <NuqsAdapter>
                     <CurrencyProvider>
