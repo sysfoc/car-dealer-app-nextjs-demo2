@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaUser } from "react-icons/fa";
@@ -20,7 +20,57 @@ import CarSearchSidebar from "./Car-search-sidebar";
 import { useSidebar } from "../context/SidebarContext";
 import Image from "next/image";
 
-const Header = ({ headerSettings }) => {
+// Memoized QuickLink component
+const QuickLink = memo(({ link }) => {
+  const IconComponent = link.icon;
+  return (
+    <Link
+      href={link.href}
+      className="group flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 dark:text-gray-300 md:hover:bg-gray-100 md:hover:text-blue-600 dark:md:hover:bg-gray-800 dark:md:hover:text-blue-400"
+    >
+      <IconComponent className="h-4 w-4 transition-colors duration-200" />
+      <span>{link.name}</span>
+    </Link>
+  );
+});
+
+QuickLink.displayName = "QuickLink";
+
+// Memoized MobileMenuLink component
+const MobileMenuLink = memo(({ link, onClose }) => {
+  const IconComponent = link?.icon;
+  return (
+    <Link
+      href={link?.href}
+      onClick={onClose}
+      className="flex items-center space-x-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-blue-400"
+    >
+      <IconComponent className="h-5 w-5" />
+      <span>{link?.name}</span>
+    </Link>
+  );
+});
+
+MobileMenuLink.displayName = "MobileMenuLink";
+
+// Memoized ActionButton component
+const ActionButton = memo(({ onClick, ariaLabel, className, children, hidden = false }) => {
+  if (hidden) return null;
+  
+  return (
+    <button
+      onClick={onClick}
+      aria-label={ariaLabel}
+      className={className}
+    >
+      {children}
+    </button>
+  );
+});
+
+ActionButton.displayName = "ActionButton";
+
+const HeaderComponent = ({ headerSettings }) => {
   const t = useTranslations("HomePage");
   const [darkMode, setDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,12 +79,12 @@ const Header = ({ headerSettings }) => {
 
   const { toggleSidebar } = useSidebar();
 
-  // Initialize dark mode from document
   useEffect(() => {
     setDarkMode(document.documentElement.classList.contains("dark"));
   }, []);
 
-  const toggleDarkMode = () => {
+  // Memoized callbacks
+  const toggleDarkMode = useCallback(() => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
     
@@ -43,29 +93,47 @@ const Header = ({ headerSettings }) => {
     } else {
       document.documentElement.classList.remove("dark");
     }
-  };
+  }, [darkMode]);
 
-  const toggleSearchSidebar = () => {
+  const toggleSearchSidebar = useCallback(() => {
     toggleSidebar();
-  };
+  }, [toggleSidebar]);
 
-  const quickLinks = [
+  const handleLogin = useCallback(() => {
+    router.push("/login");
+  }, [router]);
+
+  const handleLikedCars = useCallback(() => {
+    router.push("/liked-cars");
+  }, [router]);
+
+  const openMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(true);
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+  }, []);
+
+  const handleLogoError = useCallback(() => {
+    setLogoError(true);
+  }, []);
+
+  // Memoized static data
+  const quickLinks = useMemo(() => [
     { name: "Find Cars", href: "/car-for-sale", icon: FaCar },
     { name: "Car valuation", href: "/cars/valuation", icon: FaCalculator },
     { name: "Lease deals", href: "/cars/leasing", icon: FaTags },
     { name: "Vehicle Services", href: "/cars/about-us", icon: FaHandshake },
-  ];
+  ], []);
 
-  const mobileMenuLinks = [
+  const mobileMenuLinks = useMemo(() => [
     ...quickLinks,
     { name: "Login", href: "/login", icon: FaUser },
-  ];
+  ], [quickLinks]);
 
-  const handleLogoError = () => {
-    setLogoError(true);
-  };
-
-  const renderLogo = () => {
+  // Memoized logo rendering
+  const logo = useMemo(() => {
     if (headerSettings?.topSettings?.hideLogo) {
       return null;
     }
@@ -100,48 +168,56 @@ const Header = ({ headerSettings }) => {
         {logoContent}
       </Link>
     );
-  };
+  }, [headerSettings?.topSettings?.hideLogo, headerSettings?.logo, logoError, handleLogoError]);
+
+  // Memoized desktop navigation
+  const desktopNavigation = useMemo(() => (
+    <div className="hidden items-center space-x-6 lg:flex">
+      {quickLinks.map((link, index) => (
+        <QuickLink key={index} link={link} />
+      ))}
+    </div>
+  ), [quickLinks]);
+
+  // Memoized mobile menu content
+  const mobileMenuContent = useMemo(() => (
+    <div className="flex-1 space-y-2 p-4">
+      {mobileMenuLinks.map((link, index) => (
+        <MobileMenuLink 
+          key={index} 
+          link={link} 
+          onClose={closeMobileMenu}
+        />
+      ))}
+    </div>
+  ), [mobileMenuLinks, closeMobileMenu]);
 
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg transition-all duration-300 dark:border-gray-700 dark:bg-gray-900/95">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
           <div className="flex h-16 items-center justify-between">
-            {renderLogo()}
+            {logo}
 
             {/* Desktop Navigation */}
-            <div className="hidden items-center space-x-6 lg:flex">
-              {quickLinks.map((link, index) => {
-                const IconComponent = link.icon;
-                return (
-                  <Link
-                    key={index}
-                    href={link.href}
-                    className="group flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 dark:text-gray-300 md:hover:bg-gray-100 md:hover:text-blue-600 dark:md:hover:bg-gray-800 dark:md:hover:text-blue-400"
-                  >
-                    <IconComponent className="h-4 w-4 transition-colors duration-200" />
-                    <span>{link.name}</span>
-                  </Link>
-                );
-              })}
-            </div>
+            {desktopNavigation}
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-3">
               {/* Desktop Login Button */}
-              <button
-                onClick={() => router.push("/login")}
-                aria-label="Login"
+              <ActionButton
+                onClick={handleLogin}
+                ariaLabel="Login"
                 className="hidden items-center space-x-2 rounded-xl bg-gray-100 px-4 py-3 text-gray-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 md:hover:scale-105 md:hover:bg-gray-200 md:hover:text-blue-600 dark:md:hover:bg-gray-700 dark:md:hover:text-blue-400 lg:flex"
               >
                 <FaUser className="h-5 w-5" />
                 <span className="text-sm font-medium">Login</span>
-              </button>
+              </ActionButton>
 
               {/* Mobile Menu Button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                aria-label="Open Menu"
+              <ActionButton
+                onClick={openMobileMenu}
+                ariaLabel="Open Menu"
                 className="group relative rounded-xl bg-gray-100 p-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 md:hover:scale-105 md:hover:bg-gray-200 dark:md:hover:bg-gray-700 lg:hidden"
               >
                 <svg
@@ -158,62 +234,59 @@ const Header = ({ headerSettings }) => {
                   />
                 </svg>
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
-              </button>
+              </ActionButton>
 
               {/* Search Button */}
-              <button
+              <ActionButton
                 onClick={toggleSearchSidebar}
-                aria-label="Open Search"
+                ariaLabel="Open Search"
                 className="group relative hidden rounded-xl bg-gray-100 p-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 md:hover:scale-105 md:hover:bg-gray-200 dark:md:hover:bg-gray-700 lg:block"
               >
                 <FaSearch className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:md:group-hover:text-blue-400" />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
-              </button>
+              </ActionButton>
 
               {/* Favourites Button */}
-              {!headerSettings?.topSettings?.hideFavourite && (
-                <button
-                  onClick={() => router.push("/liked-cars")}
-                  aria-label="Liked Cars"
-                  className="group relative hidden rounded-xl bg-gray-100 p-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 md:flex md:hover:scale-105 md:hover:bg-gray-200 dark:md:hover:bg-gray-700"
-                >
-                  <FaHeart className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:md:group-hover:text-blue-400" />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
-                </button>
-              )}
+              <ActionButton
+                onClick={handleLikedCars}
+                ariaLabel="Liked Cars"
+                className="group relative hidden rounded-xl bg-gray-100 p-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 md:flex md:hover:scale-105 md:hover:bg-gray-200 dark:md:hover:bg-gray-700"
+                hidden={headerSettings?.topSettings?.hideFavourite}
+              >
+                <FaHeart className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:md:group-hover:text-blue-400" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
+              </ActionButton>
 
               {/* Dark Mode Toggle - Desktop */}
               <div className="hidden items-center space-x-3 md:flex">
-                {!headerSettings?.topSettings?.hideDarkMode && (
-                  <button
-                    onClick={toggleDarkMode}
-                    className="group relative rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 md:hover:scale-105 md:hover:bg-gray-200/80 md:hover:text-gray-900 md:hover:ring-gray-400/70 dark:md:hover:bg-gray-600/80 dark:md:hover:text-white dark:md:hover:ring-gray-500/70"
-                    aria-label="Toggle dark mode"
-                  >
-                    {darkMode ? (
-                      <FaSun className="h-5 w-5 transition-transform duration-300 md:group-hover:scale-110" />
-                    ) : (
-                      <FaMoon className="h-5 w-5 transition-transform duration-300 md:group-hover:scale-110" />
-                    )}
-                  </button>
-                )}
+                <ActionButton
+                  onClick={toggleDarkMode}
+                  className="group relative rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 md:hover:scale-105 md:hover:bg-gray-200/80 md:hover:text-gray-900 md:hover:ring-gray-400/70 dark:md:hover:bg-gray-600/80 dark:md:hover:text-white dark:md:hover:ring-gray-500/70"
+                  ariaLabel="Toggle dark mode"
+                  hidden={headerSettings?.topSettings?.hideDarkMode}
+                >
+                  {darkMode ? (
+                    <FaSun className="h-5 w-5 transition-transform duration-300 md:group-hover:scale-110" />
+                  ) : (
+                    <FaMoon className="h-5 w-5 transition-transform duration-300 md:group-hover:scale-110" />
+                  )}
+                </ActionButton>
               </div>
 
               {/* Dark Mode Toggle - Mobile */}
               <div className="flex items-center space-x-3 md:hidden">
-                {!headerSettings?.topSettings?.hideDarkMode && (
-                  <button
-                    onClick={toggleDarkMode}
-                    className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200/80 hover:text-white dark:bg-gray-700/70 dark:text-gray-300"
-                    aria-label="Toggle dark mode"
-                  >
-                    {darkMode ? (
-                      <FaSun className="h-5 w-5" />
-                    ) : (
-                      <FaMoon className="h-5 w-5" />
-                    )}
-                  </button>
-                )}
+                <ActionButton
+                  onClick={toggleDarkMode}
+                  className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200/80 hover:text-white dark:bg-gray-700/70 dark:text-gray-300"
+                  ariaLabel="Toggle dark mode"
+                  hidden={headerSettings?.topSettings?.hideDarkMode}
+                >
+                  {darkMode ? (
+                    <FaSun className="h-5 w-5" />
+                  ) : (
+                    <FaMoon className="h-5 w-5" />
+                  )}
+                </ActionButton>
               </div>
             </div>
           </div>
@@ -224,7 +297,7 @@ const Header = ({ headerSettings }) => {
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity duration-300"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
         />
       )}
 
@@ -239,35 +312,29 @@ const Header = ({ headerSettings }) => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               Quick Links
             </h2>
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-label="Close Menu"
+            <ActionButton
+              onClick={closeMobileMenu}
+              ariaLabel="Close Menu"
               className="rounded-lg p-1.5 transition-colors duration-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-gray-800"
             >
               <FaTimes className="h-4 w-4 text-gray-600 dark:text-gray-300" />
-            </button>
+            </ActionButton>
           </div>
-          <div className="flex-1 space-y-2 p-4">
-            {mobileMenuLinks.map((link, index) => {
-              const IconComponent = link?.icon;
-              return (
-                <Link
-                  key={index}
-                  href={link?.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center space-x-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-blue-400"
-                >
-                  <IconComponent className="h-5 w-5" />
-                  <span>{link?.name}</span>
-                </Link>
-              );
-            })}
-          </div>
+          {mobileMenuContent}
         </div>
       </div>
       <CarSearchSidebar />
     </>
   );
 };
+
+// Add explicit prop types for memo
+HeaderComponent.propTypes = {
+  headerSettings: null // Allow any type
+};
+
+const Header = memo(HeaderComponent);
+
+Header.displayName = "Header";
 
 export default Header;
