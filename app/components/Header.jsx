@@ -1,20 +1,10 @@
-// "use client";
+// Header.jsx
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FaUser } from "react-icons/fa";
-import {
-  FaHeart,
-  FaSearch,
-  FaTimes,
-  FaCalculator,
-  FaHandshake,
-  FaCar,
-  FaSun,
-  FaMoon,
-  FaTags,
-} from "react-icons/fa";
+import { FaUser, FaHeart, FaSearch, FaTimes, FaCalculator, FaHandshake, FaCar, FaSun, FaMoon, FaTags } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import CarSearchSidebar from "../components/Car-search-sidebar";
 import { useSidebar } from "../context/SidebarContext";
@@ -31,14 +21,10 @@ const Header = () => {
   const t = useTranslations("HomePage");
   const [darkMode, setDarkMode] = useState(false);
   const [logo, setLogo] = useState("");
-  const [logoLoading, setLogoLoading] = useState(false); // Start as false
+  const [logoLoading, setLogoLoading] = useState(false);
   const [topSettings, setTopSettings] = useState(DEFAULT_SETTINGS);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
-
-  // Cache for settings API
-  const [settingsCache, setSettingsCache] = useState(null);
-
   const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
 
   useEffect(() => {
@@ -47,64 +33,36 @@ const Header = () => {
 
   useEffect(() => {
     const fetchSettings = async () => {
-      // Check cache first (10 minute cache)
-      if (settingsCache && Date.now() - settingsCache.timestamp < 600000) {
-        const cachedData = settingsCache.data;
-        if (cachedData.settings?.logo2) {
-          setLogo(cachedData.settings.logo2);
-        }
-        setTopSettings(prev => ({
-          ...DEFAULT_SETTINGS,
-          ...cachedData.settings?.top,
-        }));
-        return;
-      }
-
       try {
         setLogoLoading(true);
         const response = await fetch("/api/settings/general", {
           next: { revalidate: 600 } // 10 minutes cache
         });
         const data = await response.json();
-        
-        // Cache the response
-        setSettingsCache({
-          data,
-          timestamp: Date.now()
-        });
-
-        if (data.settings?.logo2) {
-          setLogo(data.settings.logo2);
-        }
+        if (data.settings?.logo2) setLogo(data.settings.logo2);
         setTopSettings(prev => ({
           ...DEFAULT_SETTINGS,
           ...data.settings?.top,
         }));
       } catch (error) {
         console.error("Failed to fetch settings:", error);
-        // Keep default settings on error
       } finally {
         setLogoLoading(false);
       }
     };
 
     // Defer settings fetch to not block initial render
-    const timeoutId = setTimeout(fetchSettings, 100);
-    return () => clearTimeout(timeoutId);
+    if (typeof window !== "undefined") {
+      window.requestIdleCallback(fetchSettings);
+    }
   }, []);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    if (document.documentElement.classList.contains("dark")) {
-      document.documentElement.classList.remove("dark");
-    } else {
-      document.documentElement.classList.add("dark");
-    }
+    document.documentElement.classList.toggle("dark");
   };
 
-  const toggleSearchSidebar = () => {
-    toggleSidebar();
-  };
+  const toggleSearchSidebar = () => toggleSidebar();
 
   const quickLinks = [
     { name: "Find Cars", href: "/car-for-sale", icon: FaCar },
@@ -139,7 +97,7 @@ const Header = () => {
                 {logoLoading ? (
                   <LogoSkeleton />
                 ) : logo ? (
-                  <Link href="/" className="flex items-center space-x-3">
+                  <Link href="/" className="flex items-center space-x-3" aria-label="Home">
                     <Image
                       src={logo}
                       alt="Logo"
@@ -148,6 +106,7 @@ const Header = () => {
                       className="h-16 w-16 object-contain"
                       onError={() => setLogo("")}
                       priority
+                      fetchPriority="high"
                       sizes="64px"
                     />
                     <div className="flex flex-col">
@@ -160,7 +119,7 @@ const Header = () => {
                     </div>
                   </Link>
                 ) : (
-                  <Link href="/" className="flex items-center space-x-3">
+                  <Link href="/" className="flex items-center space-x-3" aria-label="Home">
                     <div className="flex flex-col">
                       <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
                         FrontSeat
@@ -182,6 +141,7 @@ const Header = () => {
                     key={index}
                     href={link.href}
                     className="group flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 md:hover:bg-gray-100 md:hover:text-blue-600 dark:text-gray-300 dark:md:hover:bg-gray-800 dark:md:hover:text-blue-400"
+                    prefetch={false}
                   >
                     <IconComponent className="h-4 w-4 transition-colors duration-200" />
                     <span>{link.name}</span>
@@ -210,6 +170,7 @@ const Header = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -218,7 +179,6 @@ const Header = () => {
                     d="M4 6h16M4 12h16M4 18h16"
                   />
                 </svg>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
               </button>
 
               <button
@@ -227,7 +187,6 @@ const Header = () => {
                 className="group relative hidden rounded-xl bg-gray-100 p-3 transition-all duration-300 md:hover:scale-105 md:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:md:hover:bg-gray-700 lg:block"
               >
                 <FaSearch className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:md:group-hover:text-blue-400" />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
               </button>
 
               {!topSettings.hideFavourite && (
@@ -237,7 +196,6 @@ const Header = () => {
                   className="group relative hidden rounded-xl bg-gray-100 p-3 transition-all duration-300 md:hover:scale-105 md:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:md:hover:bg-gray-700 md:flex"
                 >
                   <FaHeart className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:md:group-hover:text-blue-400" />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
                 </button>
               )}
               
@@ -277,19 +235,22 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay - optimized */}
+      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
         />
       )}
       
-      {/* Mobile Menu - reduced animation complexity */}
+      {/* Mobile Menu */}
       <div
         className={`fixed left-0 top-0 z-[60] h-full w-full max-w-xs transform overflow-y-auto bg-white shadow-2xl transition-transform duration-300 dark:bg-gray-900 ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         } scrollbar-hide lg:hidden`}
+        aria-modal="true"
+        aria-hidden={!isMobileMenuOpen}
       >
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b border-gray-200 p-3 dark:border-gray-700">
@@ -313,6 +274,7 @@ const Header = () => {
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex items-center space-x-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-blue-400"
+                  prefetch={false}
                 >
                   <IconComponent className="h-5 w-5" />
                   <span>{link.name}</span>

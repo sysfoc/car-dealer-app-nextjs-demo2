@@ -1,7 +1,8 @@
-// "use client";
+// VehicalsList.jsx
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { IoSpeedometer } from "react-icons/io5";
 import { GiGasPump } from "react-icons/gi";
@@ -14,12 +15,11 @@ import { useDistance } from "../context/DistanceContext";
 import { FaRegHeart } from "react-icons/fa6";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-// Simple loading placeholder component to replace react-loading-skeleton
 const SimpleSkeleton = ({ className = "", height = "h-4" }) => (
   <div className={`bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${height} ${className}`}></div>
 );
 
-const VehicalsList = ({ loadingState }) => {
+const VehicalsList = () => {
   const t = useTranslations("HomePage");
   const [vehicles, setVehicles] = useState([]);
   const [loading, setIsLoading] = useState(true);
@@ -32,50 +32,31 @@ const VehicalsList = ({ loadingState }) => {
   const [listingData, setListingData] = useState({
     heading: "Featured Vehicles",
     status: "active"
-  }); // Default fallback
-
-  // Cache for API responses
-  const [apiCache, setApiCache] = useState({});
+  });
 
   useEffect(() => {
     const fetchListingData = async () => {
-      const cacheKey = 'homepage-listing';
-      
-      // Check cache first
-      if (apiCache[cacheKey] && Date.now() - apiCache[cacheKey].timestamp < 300000) { // 5 min cache
-        setListingData(apiCache[cacheKey].data?.listingSection || listingData);
-        return;
-      }
-
       try {
         const response = await fetch("/api/homepage", {
           next: { revalidate: 300 }
         });
         const result = await response.json();
         if (response.ok) {
-          const newData = result?.listingSection || listingData;
-          setListingData(newData);
-          // Cache the response
-          setApiCache(prev => ({
-            ...prev,
-            [cacheKey]: {
-              data: result,
-              timestamp: Date.now()
-            }
-          }));
+          setListingData(result?.listingSection || {
+            heading: "Featured Vehicles",
+            status: "active"
+          });
         }
       } catch (error) {
         console.error("Error fetching listing data:", error);
-        // Keep fallback data
       }
     };
 
-    // Defer API call to not block initial render
-    const timeoutId = setTimeout(fetchListingData, 50);
-    return () => clearTimeout(timeoutId);
+    if (typeof window !== "undefined") {
+      window.requestIdleCallback(fetchListingData);
+    }
   }, []);
 
-  // Conversion functions with decimal precision
   const convertKmToMiles = (km) => {
     const numericKm = Number.parseFloat(km);
     return isNaN(numericKm) ? km : (numericKm * 0.621371).toFixed(1);
@@ -86,7 +67,6 @@ const VehicalsList = ({ loadingState }) => {
     return isNaN(numericMiles) ? miles : (numericMiles * 1.60934).toFixed(1);
   };
 
-  // Function to convert car values based on default unit
   const getConvertedValues = (vehicle) => {
     if (distanceLoading || !defaultUnit || !vehicle.unit) {
       return {
@@ -122,16 +102,6 @@ const VehicalsList = ({ loadingState }) => {
   };
 
   const fetchVehicles = async () => {
-    const cacheKey = 'vehicles-list';
-    
-    // Check cache first
-    if (apiCache[cacheKey] && Date.now() - apiCache[cacheKey].timestamp < 180000) { // 3 min cache
-      const cachedVehicles = apiCache[cacheKey].data;
-      setVehicles(cachedVehicles);
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const response = await fetch("/api/cars", {
         next: { revalidate: 180 }
@@ -142,16 +112,6 @@ const VehicalsList = ({ loadingState }) => {
         (car) => car.status === 1 || car.status === "1",
       );
       setVehicles(filteredCars);
-      
-      // Cache the response
-      setApiCache(prev => ({
-        ...prev,
-        [cacheKey]: {
-          data: filteredCars,
-          timestamp: Date.now()
-        }
-      }));
-      
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
@@ -190,8 +150,6 @@ const VehicalsList = ({ loadingState }) => {
           ...prev,
           likedCars: data.likedCars,
         }));
-      } else {
-        console.error("Failed to update liked cars");
       }
     } catch (error) {
       console.error("Error updating liked cars:", error);
@@ -209,9 +167,10 @@ const VehicalsList = ({ loadingState }) => {
   };
 
   useEffect(() => {
-    // Stagger API calls to avoid blocking
-    fetchVehicles();
-    setTimeout(fetchUserData, 100);
+    if (typeof window !== "undefined") {
+      window.requestIdleCallback(fetchVehicles);
+      window.requestIdleCallback(fetchUserData);
+    }
   }, []);
 
   if (error) {
@@ -244,8 +203,8 @@ const VehicalsList = ({ loadingState }) => {
           <h2 className="mb-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-4xl font-bold leading-tight text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300 md:text-5xl lg:text-6xl">
             {listingData?.heading}
           </h2>
-          <Link href={"/car-for-sale"}>
-            <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200 md:hover:scale-105">
+          <Link href={"/car-for-sale"} prefetch={false}>
+            <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
               <span>{t("viewAll")}</span>
               <MdOutlineArrowOutward className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
             </div>
@@ -420,6 +379,7 @@ const VehicalsList = ({ loadingState }) => {
                     <Link
                       href={`/car-detail/${vehicle.slug || vehicle._id}`}
                       className="group/cta block w-full"
+                      prefetch={false}
                     >
                       <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 md:hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
                         <div className="flex items-center justify-center gap-2">

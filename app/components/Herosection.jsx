@@ -1,25 +1,24 @@
+// HeroSection.jsx
 "use client";
+
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-// Static fallback content to show immediately
 const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars";
 
 const HeroSection = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
-  const [headingData, setHeadingData] = useState(FALLBACK_HEADING); // Start with fallback
+  const [headingData, setHeadingData] = useState(FALLBACK_HEADING);
   const [isEnhanced, setIsEnhanced] = useState(false);
   
   useEffect(() => {
-    // Use progressive enhancement instead of loading state
     const fetchData = async () => {
       try {
         const response = await fetch("/api/homepage", {
-          // Add cache control
           next: { revalidate: 3600 } // Cache for 1 hour
         });
         const result = await response.json();
@@ -29,13 +28,12 @@ const HeroSection = () => {
         }
       } catch (error) {
         console.error("Error fetching homepage data:", error);
-        // Keep fallback content on error
       }
     };
 
-    // Defer API call slightly to not block initial render
-    const timeoutId = setTimeout(fetchData, 100);
-    return () => clearTimeout(timeoutId);
+    if (typeof window !== "undefined") {
+      window.requestIdleCallback(fetchData);
+    }
   }, []);
 
   const splitHeadingAfterTwoWords = (text) => {
@@ -86,13 +84,11 @@ const HeroSection = () => {
     return "text-3xl sm:text-4xl lg:text-5xl";
   };
 
-  // Always render content, no loading states
   const parts = splitHeadingAfterTwoWords(headingData);
   const textSizeClass = getResponsiveTextSize(headingData);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
-      {/* Simplified background effects */}
       <div className="absolute inset-0 opacity-50">
         <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-gradient-to-bl from-blue-100 to-transparent blur-3xl dark:from-blue-900/20"></div>
         <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-gradient-to-tr from-purple-100 to-transparent blur-3xl dark:from-purple-900/20"></div>
@@ -139,9 +135,9 @@ const HeroSection = () => {
                 width={800}
                 height={600}
                 priority
+                fetchPriority="high"
                 className="h-auto w-full object-cover"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-                // Remove blurDataURL if it's causing issues
               />
             </div>
           </div>
