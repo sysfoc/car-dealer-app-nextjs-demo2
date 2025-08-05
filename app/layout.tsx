@@ -16,6 +16,8 @@ import { CurrencyProvider } from "./context/CurrencyContext"
 import { AuthProvider } from "./context/UserContext"
 import { SidebarProvider } from './context/SidebarContext'
 import { DistanceProvider } from "./context/DistanceContext"
+import Header from "./components/Header";
+import { fetchHeaderSettings } from "../app/lib/serverData";
 import { Suspense } from "react"
 
 const poppins = Poppins({
@@ -76,6 +78,7 @@ export default async function RootLayout({
   const locale = await getLocale()
   const messages = await getMessages()
   const settingsData = await getGeneralSettings()
+  const headerSettings = await fetchHeaderSettings();
 
   const settings = settingsData?.settings || {
     logo: "",
@@ -121,6 +124,7 @@ export default async function RootLayout({
         <GoogleRecaptcha />
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
+            <Header headerSettings={headerSettings} />
             <LayoutRenderer>
               <Suspense fallback={null}>
                 <NuqsAdapter>

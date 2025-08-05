@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -20,85 +20,28 @@ import CarSearchSidebar from "./Car-search-sidebar";
 import { useSidebar } from "../context/SidebarContext";
 import Image from "next/image";
 
-// Static fallback data to prevent loading states
-const DEFAULT_SETTINGS = {
-  hideDarkMode: false,
-  hideFavourite: false,
-  hideLogo: false,
-};
-
-const Header = () => {
+const Header = ({ headerSettings }) => {
   const t = useTranslations("HomePage");
   const [darkMode, setDarkMode] = useState(false);
-  const [logo, setLogo] = useState("");
-  const [logoLoading, setLogoLoading] = useState(false); // Start as false
-  const [topSettings, setTopSettings] = useState(DEFAULT_SETTINGS);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const router = useRouter();
-
-  // Cache for settings API
-  const [settingsCache, setSettingsCache] = useState(null);
 
   const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
 
+  // Initialize dark mode from document
   useEffect(() => {
     setDarkMode(document.documentElement.classList.contains("dark"));
   }, []);
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      // Check cache first (10 minute cache)
-      if (settingsCache && Date.now() - settingsCache.timestamp < 600000) {
-        const cachedData = settingsCache.data;
-        if (cachedData.settings?.logo2) {
-          setLogo(cachedData.settings.logo2);
-        }
-        setTopSettings((prev) => ({
-          ...DEFAULT_SETTINGS,
-          ...cachedData.settings?.top,
-        }));
-        return;
-      }
-
-      try {
-        setLogoLoading(true);
-        const response = await fetch("/api/settings/general", {
-          next: { revalidate: 600 }, // 10 minutes cache
-        });
-        const data = await response.json();
-
-        // Cache the response
-        setSettingsCache({
-          data,
-          timestamp: Date.now(),
-        });
-
-        if (data.settings?.logo2) {
-          setLogo(data.settings.logo2);
-        }
-        setTopSettings((prev) => ({
-          ...DEFAULT_SETTINGS,
-          ...data.settings?.top,
-        }));
-      } catch (error) {
-        console.error("Failed to fetch settings:", error);
-        // Keep default settings on error
-      } finally {
-        setLogoLoading(false);
-      }
-    };
-
-    // Defer settings fetch to not block initial render
-    const timeoutId = setTimeout(fetchSettings, 100);
-    return () => clearTimeout(timeoutId);
-  }, []);
-
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (document.documentElement.classList.contains("dark")) {
-      document.documentElement.classList.remove("dark");
-    } else {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    
+    if (newDarkMode) {
       document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
   };
 
@@ -118,62 +61,55 @@ const Header = () => {
     { name: "Login", href: "/login", icon: FaUser },
   ];
 
-  // Simple skeleton without heavy animations
-  const LogoSkeleton = () => (
-    <div className="flex items-center space-x-3">
-      <div className="h-12 w-12 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
-      <div className="flex flex-col space-y-1">
-        <div className="h-4 w-20 rounded bg-gray-200 dark:bg-gray-700"></div>
-        <div className="h-3 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+  const handleLogoError = () => {
+    setLogoError(true);
+  };
+
+  const renderLogo = () => {
+    if (headerSettings.topSettings.hideLogo) {
+      return null;
+    }
+
+    const logoContent = (
+      <div className="flex items-center space-x-3">
+        {headerSettings.logo && !logoError && (
+          <Image
+            src={headerSettings.logo}
+            alt="Logo"
+            width={64}
+            height={64}
+            className="h-16 w-16 object-contain"
+            onError={handleLogoError}
+            priority
+            sizes="64px"
+          />
+        )}
+        <div className="flex flex-col">
+          <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+            FrontSeat
+          </span>
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+            Built to Sell Cars
+          </span>
+        </div>
       </div>
-    </div>
-  );
+    );
+
+    return (
+      <Link href="/" className="flex items-center">
+        {logoContent}
+      </Link>
+    );
+  };
 
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg transition-all duration-300 dark:border-gray-700 dark:bg-gray-900/95">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
           <div className="flex h-16 items-center justify-between">
-            {!topSettings.hideLogo && (
-              <>
-                {logoLoading ? (
-                  <LogoSkeleton />
-                ) : logo ? (
-                  <Link href="/" className="flex items-center space-x-3">
-                    <Image
-                      src={logo}
-                      alt="Logo"
-                      width={64}
-                      height={64}
-                      className="h-16 w-16 object-contain"
-                      onError={() => setLogo("")}
-                      priority
-                      sizes="64px"
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-                        FrontSeat
-                      </span>
-                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                        Built to Sell Cars
-                      </span>
-                    </div>
-                  </Link>
-                ) : (
-                  <Link href="/" className="flex items-center space-x-3">
-                    <div className="flex flex-col">
-                      <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-                        FrontSeat
-                      </span>
-                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                        Built to Sell Cars
-                      </span>
-                    </div>
-                  </Link>
-                )}
-              </>
-            )}
+            {renderLogo()}
 
+            {/* Desktop Navigation */}
             <div className="hidden items-center space-x-6 lg:flex">
               {quickLinks.map((link, index) => {
                 const IconComponent = link.icon;
@@ -190,7 +126,9 @@ const Header = () => {
               })}
             </div>
 
+            {/* Action Buttons */}
             <div className="flex items-center space-x-3">
+              {/* Desktop Login Button */}
               <button
                 onClick={() => router.push("/login")}
                 aria-label="Login"
@@ -200,6 +138,7 @@ const Header = () => {
                 <span className="text-sm font-medium">Login</span>
               </button>
 
+              {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
                 aria-label="Open Menu"
@@ -221,6 +160,7 @@ const Header = () => {
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
               </button>
 
+              {/* Search Button */}
               <button
                 onClick={toggleSearchSidebar}
                 aria-label="Open Search"
@@ -230,7 +170,8 @@ const Header = () => {
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
               </button>
 
-              {!topSettings.hideFavourite && (
+              {/* Favourites Button */}
+              {!headerSettings.topSettings.hideFavourite && (
                 <button
                   onClick={() => router.push("/liked-cars")}
                   aria-label="Liked Cars"
@@ -241,8 +182,9 @@ const Header = () => {
                 </button>
               )}
 
+              {/* Dark Mode Toggle - Desktop */}
               <div className="hidden items-center space-x-3 md:flex">
-                {!topSettings.hideDarkMode && (
+                {!headerSettings.topSettings.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}
                     className="group relative rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 md:hover:scale-105 md:hover:bg-gray-200/80 md:hover:text-gray-900 md:hover:ring-gray-400/70 dark:md:hover:bg-gray-600/80 dark:md:hover:text-white dark:md:hover:ring-gray-500/70"
@@ -257,11 +199,12 @@ const Header = () => {
                 )}
               </div>
 
+              {/* Dark Mode Toggle - Mobile */}
               <div className="flex items-center space-x-3 md:hidden">
-                {!topSettings.hideDarkMode && (
+                {!headerSettings.topSettings.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}
-                    className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200/80 hover:text-white"
+                    className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200/80 hover:text-white dark:bg-gray-700/70 dark:text-gray-300"
                     aria-label="Toggle dark mode"
                   >
                     {darkMode ? (
@@ -277,7 +220,7 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay - optimized */}
+      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity duration-300"
@@ -285,7 +228,7 @@ const Header = () => {
         />
       )}
 
-      {/* Mobile Menu - reduced animation complexity */}
+      {/* Mobile Menu */}
       <div
         className={`fixed left-0 top-0 z-[60] h-full w-full max-w-xs transform overflow-y-auto bg-white shadow-2xl transition-transform duration-300 dark:bg-gray-900 ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"

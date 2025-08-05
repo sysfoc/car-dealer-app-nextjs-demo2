@@ -34,6 +34,7 @@
 // }
 
 // Remove "use client" from here - this should be a server component
+
 import Herosection from "./components/Herosection"
 import VehicalsList from "./components/VehicalsList"
 import BrandsList from "./components/BrandsList"
