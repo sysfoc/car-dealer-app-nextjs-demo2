@@ -3,43 +3,26 @@ import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 
 const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars";
 
-const HeroSection = () => {
+const HeroSection = ({ heading = FALLBACK_HEADING }) => {
   const t = useTranslations("HomePage");
   const router = useRouter();
-  const [heading, setHeading] = useState(FALLBACK_HEADING);
 
+  // Preload hero image on mount
   useEffect(() => {
-    // Preload hero image
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'image';
-    link.href = '/sysfoc1.webp';
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = "/sysfoc1.webp";
     document.head.appendChild(link);
-    
+
     return () => {
       document.head.removeChild(link);
     };
   }, []);
-
-  useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await fetch("/api/homepage", {next: { revalidate: 3600 }});
-      if (!response.ok) return;
-      const result = await response.json();
-      if (result?.searchSection?.mainHeading) {
-        setHeading(result.searchSection.mainHeading);
-      }
-    } catch {}
-  };
-
-  fetchData();
-}, []);
-
 
   const handleExploreVehicles = useCallback(() => {
     router.push("/car-for-sale");
@@ -50,16 +33,20 @@ const HeroSection = () => {
   }, [router]);
 
   const headingParts = useMemo(() => {
-    const words = heading.split(' ');
+    const words = heading.split(" ");
     return words.map((word, i) => {
       if (i >= 2 && i <= 3) {
         return (
           <span key={i} className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {word}{' '}
+            {word + " "}
           </span>
         );
       }
-      return <span key={i} className="text-gray-900 dark:text-white">{word}{' '}</span>;
+      return (
+        <span key={i} className="text-gray-900 dark:text-white">
+          {word + " "}
+        </span>
+      );
     });
   }, [heading]);
 
@@ -119,7 +106,6 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-
 
 
 
