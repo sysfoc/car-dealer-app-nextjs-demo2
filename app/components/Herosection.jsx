@@ -26,21 +26,20 @@ const HeroSection = () => {
   }, []);
 
   useEffect(() => {
-    // Defer non-critical API call
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/homepage", { priority: 'low' });
-        if (!response.ok) return;
-        const result = await response.json();
-        if (result?.searchSection?.mainHeading) {
-          setHeading(result.searchSection.mainHeading);
-        }
-      } catch {}
-    };
-    
-    const timer = setTimeout(fetchData, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/homepage", {next: { revalidate: 3600 }});
+      if (!response.ok) return;
+      const result = await response.json();
+      if (result?.searchSection?.mainHeading) {
+        setHeading(result.searchSection.mainHeading);
+      }
+    } catch {}
+  };
+
+  fetchData();
+}, []);
+
 
   const handleExploreVehicles = useCallback(() => {
     router.push("/car-for-sale");
