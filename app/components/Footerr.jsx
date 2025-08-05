@@ -534,6 +534,7 @@ const Footerr = () => {
             onError={handleLogoError}
             sizes="180px"
             priority={false}
+            fetchPriority="high"
             loading="lazy"
           />
         </div>
