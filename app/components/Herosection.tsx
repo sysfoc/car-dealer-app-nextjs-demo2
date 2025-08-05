@@ -1,11 +1,9 @@
 import Image from "next/image"
-import { useTranslations } from "next-intl"
 import HeroButtons from "./hero-buttons"
 
 const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars"
 
 const HeroSection = async () => {
-  const t = useTranslations("HomePage")
 
   let headingData = FALLBACK_HEADING
   try {
