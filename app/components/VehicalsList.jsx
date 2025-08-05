@@ -14,6 +14,7 @@ import { useCurrency } from "../context/CurrencyContext";
 import { useDistance } from "../context/DistanceContext";
 import { FaRegHeart } from "react-icons/fa6";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const SimpleSkeleton = ({ className = "", height = "h-4" }) => (
   <div className={`bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${height} ${className}`}></div>
