@@ -8,7 +8,6 @@ import CarSearchSidebar from "./Car-search-sidebar"
 import { useSidebar } from "../context/SidebarContext"
 import Image from "next/image"
 
-// Define props interface for Header
 interface HeaderProps {
   initialLogo: string
   initialTopSettings: {
@@ -23,7 +22,9 @@ const Header = ({ initialLogo, initialTopSettings }: HeaderProps) => {
   const t = useTranslations("HomePage")
   const [darkMode, setDarkMode] = useState(false)
   const [logo, setLogo] = useState(initialLogo) // Initialize with prop
-  const [topSettings, setTopSettings] = useState(initialTopSettings) // Initialize with prop
+  const [topSettings, setTopSettings] = useState(
+  initialTopSettings ?? { hideDarkMode: false, hideFavourite: false, hideLogo: false }
+)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
 
@@ -75,7 +76,7 @@ const Header = ({ initialLogo, initialTopSettings }: HeaderProps) => {
       <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg transition-all duration-300 dark:border-gray-700 dark:bg-gray-900/95">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
           <div className="flex h-16 items-center justify-between">
-            {!topSettings.hideLogo && (
+            {!topSettings?.hideLogo && (
               <>
                 {/* Logo is now directly available from props, no loading state needed here */}
                 {logo ? (
@@ -154,7 +155,7 @@ const Header = ({ initialLogo, initialTopSettings }: HeaderProps) => {
                 <Search className="h-5 w-5 text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:md:group-hover:text-blue-400" />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 md:group-hover:from-blue-500/10 md:group-hover:to-purple-500/10"></div>
               </button>
-              {!topSettings.hideFavourite && (
+              {!topSettings?.hideFavourite && (
                 <button
                   onClick={() => router.push("/liked-cars")}
                   aria-label="Liked Cars"
@@ -166,7 +167,7 @@ const Header = ({ initialLogo, initialTopSettings }: HeaderProps) => {
               )}
 
               <div className="hidden items-center space-x-3 md:flex">
-                {!topSettings.hideDarkMode && (
+                {!topSettings?.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}
                     className="group relative rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 md:hover:scale-105 md:hover:bg-gray-200/80 md:hover:text-gray-900 md:hover:ring-gray-400/70 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 dark:md:hover:bg-gray-600/80 dark:md:hover:text-white dark:md:hover:ring-gray-500/70"
@@ -182,7 +183,7 @@ const Header = ({ initialLogo, initialTopSettings }: HeaderProps) => {
               </div>
 
               <div className="flex items-center space-x-3 md:hidden">
-                {!topSettings.hideDarkMode && (
+                {!topSettings?.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}
                     className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200/80 hover:text-white"
