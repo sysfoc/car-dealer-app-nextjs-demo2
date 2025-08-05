@@ -1,42 +1,26 @@
-"use client"
 import Image from "next/image"
-import { ArrowRight } from "lucide-react" // Replaced FaArrowRight with ArrowRight
 import { useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import HeroButtons from "./hero-buttons"
 
-// Static fallback content to show immediately
 const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars"
 
-const HeroSection = () => {
+const HeroSection = async () => {
   const t = useTranslations("HomePage")
-  const router = useRouter()
-  const [headingData, setHeadingData] = useState(FALLBACK_HEADING) // Start with fallback
-  const [isEnhanced, setIsEnhanced] = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/homepage", {
-          // Add cache control
-          next: { revalidate: 3600 }, // Cache for 1 hour
-        })
-        const result = await response.json()
-        if (response.ok && result.searchSection?.mainHeading) {
-          setHeadingData(result.searchSection.mainHeading)
-          setIsEnhanced(true)
-        }
-      } catch (error) {
-        console.error("Error fetching homepage data:", error)
-        // Keep fallback content on error
-      }
+  let headingData = FALLBACK_HEADING
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/homepage`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    })
+    const result = await response.json()
+    if (response.ok && result.searchSection?.mainHeading) {
+      headingData = result.searchSection.mainHeading
     }
-    // Defer API call slightly to not block initial render
-    const timeoutId = setTimeout(fetchData, 100)
-    return () => clearTimeout(timeoutId)
-  }, [])
+  } catch (error) {
+    console.error("Error fetching homepage data on server:", error)
+  }
 
-  const splitHeadingAfterTwoWords = (text) => {
+  const splitHeadingAfterTwoWords = (text: string) => {
     if (!text) return [{ text: FALLBACK_HEADING, style: "normal" }]
 
     const words = text.split(" ")
@@ -60,7 +44,7 @@ const HeroSection = () => {
     return parts
   }
 
-  const renderStyledParts = (parts) => {
+  const renderStyledParts = (parts: { text: string; style: string }[]) => {
     return parts.map((part, index) => {
       switch (part.style) {
         case "gradient":
@@ -78,7 +62,7 @@ const HeroSection = () => {
     })
   }
 
-  const getResponsiveTextSize = (text) => {
+  const getResponsiveTextSize = (text: string) => {
     if (!text) return "text-4xl sm:text-5xl lg:text-6xl"
 
     const length = text.length
@@ -87,14 +71,12 @@ const HeroSection = () => {
     return "text-3xl sm:text-4xl lg:text-5xl"
   }
 
-  // Always render content, no loading states
   const parts = splitHeadingAfterTwoWords(headingData)
   const textSizeClass = getResponsiveTextSize(headingData)
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
-      {/* Simplified background effects */}
-      <div className="absolute inset-0 opacity-50">
+    <div className="absolute inset-0 opacity-50">
         <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-gradient-to-bl from-blue-100 to-transparent blur-3xl dark:from-blue-900/20"></div>
         <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-gradient-to-tr from-purple-100 to-transparent blur-3xl dark:from-purple-900/20"></div>
       </div>
@@ -107,30 +89,12 @@ const HeroSection = () => {
             </div>
             <div className="space-y-6">
               <h1
-                className={`font-bold leading-tight text-gray-900 dark:text-white transition-opacity duration-500 ${
-                  isEnhanced ? "opacity-100" : "opacity-90"
-                } ${textSizeClass}`}
+                className={`font-bold leading-tight text-gray-900 dark:text-white transition-opacity duration-500 opacity-100 ${textSizeClass}`}
               >
                 {renderStyledParts(parts)}
               </h1>
             </div>
-            <div className="flex flex-col gap-4 pt-4 sm:flex-row">
-              <button
-                onClick={() => router.push("/car-for-sale")}
-                className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 py-3 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:px-8 sm:py-4"
-              >
-                <span className="relative mr-3">Explore Our Vehicles</span>
-                <ArrowRight className="relative h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
-              </button>
-
-              <button
-                onClick={() => router.push("/liked-cars")}
-                className="sm:hidden group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-5 py-2.5 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800"
-              >
-                <span className="relative mr-5">Your Favorite Cars</span>
-                <ArrowRight className="relative h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1 sm:h-5 sm:w-5" />
-              </button>
-            </div>
+             <HeroButtons exploreVehiclesHref="/car-for-sale" likedCarsHref="/liked-cars" />
           </div>
           <div className="relative flex items-start lg:pl-8">
             <div className="relative w-full">
@@ -139,10 +103,9 @@ const HeroSection = () => {
                 alt="Automotive Web Solutions - Professional Dealer Websites"
                 width={800}
                 height={600}
-                priority // Ensures this LCP image is preloaded [^2][^3]
+                priority 
                 className="h-auto w-full object-cover"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-                // Removed blurDataURL if it was causing issues, Next.js handles static image blurDataURL automatically
               />
             </div>
           </div>
