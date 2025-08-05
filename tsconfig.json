@@ -50,6 +50,6 @@
     "app/admin/manage-website/testimonial/page.jsx",
     "app/components/Footerr.jsx",
     "app/components/Header.jsx"
-  ],
+, "app/lib/social-icons.js"  ],
   "exclude": ["node_modules"]
 }
