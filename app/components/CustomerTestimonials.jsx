@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { FaStar, FaQuoteLeft } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 

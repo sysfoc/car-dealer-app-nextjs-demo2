@@ -14,7 +14,6 @@ interface CookieboxProps {
   }
 }
 
-// Type guard to validate cookie consent object
 const isValidCookieConsent = (obj: any): obj is NonNullable<CookieboxProps["cookieConsent"]> => {
   return (
     obj &&

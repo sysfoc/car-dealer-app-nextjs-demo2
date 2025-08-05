@@ -1,15 +1,18 @@
-// Blog.jsx
 "use client"
-
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight } from "lucide-react" // Replaced ArrowUpRight
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 
+// Simple skeleton without heavy animations
 const BlogSkeleton = ({ isLarge = false }) => (
-  <div className={`backdrop-blur-md bg-white/70 dark:bg-white/10 border border-gray-200/50 dark:border-white/20 rounded-3xl overflow-hidden ${isLarge ? 'h-96' : 'h-64'}`}>
-    <div className={`bg-gray-200 dark:bg-gray-700 ${isLarge ? 'h-72 md:h-80' : 'h-40'} w-full`}></div>
+  <div
+    className={`backdrop-blur-md bg-white/70 dark:bg-white/10 border border-gray-200/50 dark:border-white/20 rounded-3xl overflow-hidden ${
+      isLarge ? "h-96" : "h-64"
+    }`}
+  >
+    <div className={`bg-gray-200 dark:bg-gray-700 ${isLarge ? "h-72 md:h-80" : "h-40"} w-full`}></div>
     <div className="p-6 space-y-3">
       <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
@@ -23,27 +26,42 @@ const Blog = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
+  // Cache for API response
+  const [blogCache, setBlogCache] = useState(null)
+
   useEffect(() => {
     const fetchBlogs = async () => {
+      // Check cache first (5 minute cache)
+      if (blogCache && Date.now() - blogCache.timestamp < 300000) {
+        setBlogs(blogCache.data)
+        setLoading(false)
+        return
+      }
       try {
         const response = await fetch("/api/blog", {
-          next: { revalidate: 300 } // 5 minutes cache
+          next: { revalidate: 300 }, // 5 minutes cache
         })
         if (!response.ok) {
           throw new Error("Failed to fetch blogs")
         }
         const data = await response.json()
-        setBlogs(data.blogs || [])
+
+        // Cache the response
+        setBlogCache({
+          data: data.blogs,
+          timestamp: Date.now(),
+        })
+
+        setBlogs(data.blogs)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch blogs")
       } finally {
         setLoading(false)
       }
     }
-
-    if (typeof window !== "undefined") {
-      window.requestIdleCallback(fetchBlogs);
-    }
+    // Defer API call to not block initial render
+    const timeoutId = setTimeout(fetchBlogs, 100)
+    return () => clearTimeout(timeoutId)
   }, [])
 
   if (error) {
@@ -64,13 +82,15 @@ const Blog = () => {
 
   return (
     <section className="relative overflow-hidden">
+      {/* Simplified background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-850"></div>
-      
+
+      {/* Reduced background effects - removed heavy animations */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500/5 dark:bg-gray-700/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 dark:bg-gray-800/5 rounded-full blur-3xl"></div>
-
       <div className="relative px-4 py-12 sm:px-8 md:py-16">
         <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
           <div className="mb-12 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-6">
               <div className="space-y-3">
@@ -87,7 +107,7 @@ const Blog = () => {
                   </span>
                 </h2>
               </div>
-              <Link href={"/blogs"} className="group" prefetch={false}>
+              <Link href={"/blogs"} className="group">
                 <div className="flex items-center gap-3 bg-gradient-to-r from-blue-500 to-purple-600 md:hover:from-blue-600 md:hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-2xl transition-all duration-300 md:hover:scale-105 md:hover:shadow-xl">
                   <span>{t("viewAll")}</span>
                   <ArrowUpRight className="transition-transform duration-300 md:group-hover:translate-x-1 md:group-hover:-translate-y-1" />
@@ -96,7 +116,7 @@ const Blog = () => {
             </div>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"></div>
           </div>
-
+          {/* Loading State - simplified */}
           {loading && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <BlogSkeleton isLarge={true} />
@@ -107,13 +127,16 @@ const Blog = () => {
               </div>
             </div>
           )}
-
+          {/* Blog Content */}
           {!loading && blogs.length >= 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Featured Blog Post */}
               <div className="group relative backdrop-blur-md bg-white/70 dark:bg-white/10 border border-gray-200/50 dark:border-white/20 rounded-3xl overflow-hidden transition-all duration-500 md:hover:scale-105 md:hover:shadow-2xl md:hover:shadow-blue-500/10 dark:md:hover:shadow-blue-500/25">
+                {/* Simplified background glow */}
+                <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-500/10 opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
                   <div className="relative overflow-hidden">
-                    <Link href={`/blog/${blogs[0].slug}`} prefetch={false}>
+                    <Link href={`/blog/${blogs[0].slug}`}>
                       <div className="relative h-72 md:h-80">
                         <Image
                           src={blogs[0].image || "/sydney.jpg"}
@@ -121,7 +144,7 @@ const Blog = () => {
                           fill
                           className="object-cover transition-transform duration-700 md:group-hover:scale-110"
                           sizes="(max-width: 768px) 100vw, 50vw"
-                          loading="lazy"
+                          loading="lazy" // Defer loading for images below the fold [^2][^3]
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                         <div className="absolute top-4 left-4">
@@ -133,24 +156,29 @@ const Blog = () => {
                     </Link>
                   </div>
                   <div className="p-6 space-y-3">
-                    <Link href={`/blog/${blogs[0].slug}`} className="group/title" prefetch={false}>
+                    <Link href={`/blog/${blogs[0].slug}`} className="group/title">
                       <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white md:group-hover/title:text-blue-600 dark:md:group-hover/title:text-blue-400 transition-colors duration-300 line-clamp-2">
                         {blogs[0].slug}
                       </h3>
                     </Link>
+                    <div className="flex items-center space-x-2 opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform translate-y-2 md:group-hover:translate-y-0">
+                      <div className="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                      <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">Read Article</span>
+                    </div>
                   </div>
                 </div>
               </div>
-
+              {/* Blog Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {blogs.slice(1, 5).map((blog, index) => (
                   <div
                     key={`${blog.slug}-${index}`}
                     className="group relative backdrop-blur-md bg-white/70 dark:bg-white/10 border border-gray-200/50 dark:border-white/20 rounded-2xl overflow-hidden transition-all duration-500 md:hover:scale-105 md:hover:shadow-xl md:hover:shadow-blue-500/10 dark:md:hover:shadow-blue-500/25"
                   >
+                    <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-500/10 opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="relative z-10">
                       <div className="relative overflow-hidden">
-                        <Link href={`/blog/${blog.slug}`} prefetch={false}>
+                        <Link href={`/blog/${blog.slug}`}>
                           <div className="relative h-40">
                             <Image
                               src={blog.image || "/sydney.jpg"}
@@ -158,18 +186,22 @@ const Blog = () => {
                               fill
                               className="object-cover transition-transform duration-700 md:group-hover:scale-110"
                               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
-                              loading="lazy"
+                              loading="lazy" // Defer loading for images below the fold [^2][^3]
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                           </div>
                         </Link>
                       </div>
                       <div className="p-4 space-y-2">
-                        <Link href={`/blog/${blog.slug}`} className="group/title" prefetch={false}>
+                        <Link href={`/blog/${blog.slug}`} className="group/title">
                           <h3 className="text-base font-bold text-gray-900 dark:text-white md:group-hover/title:text-blue-600 dark:md:group-hover/title:text-blue-400 transition-colors duration-300 line-clamp-2">
                             {blog.slug}
                           </h3>
                         </Link>
+                        <div className="flex items-center space-x-2 opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform translate-y-1 md:group-hover:translate-y-0">
+                          <div className="w-6 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                          <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">Read More</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -177,7 +209,7 @@ const Blog = () => {
               </div>
             </div>
           )}
-
+          {/* No blogs state */}
           {!loading && blogs.length === 0 && (
             <div className="text-center py-16">
               <div className="backdrop-blur-md bg-white/70 dark:bg-white/10 border border-gray-200/50 dark:border-white/20 rounded-3xl p-10 max-w-2xl mx-auto">

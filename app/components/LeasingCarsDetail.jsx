@@ -18,12 +18,11 @@ import { GrSort } from "react-icons/gr";
 import { FiGrid, FiList } from "react-icons/fi";
 import {
   FaLocationCrosshairs,
-  FaCalendarCheck,
   FaHeart,
   FaRegHeart,
 } from "react-icons/fa6";
 import { IoSpeedometer } from "react-icons/io5";
-import { GiGasPump, GiCarDoor, GiCarSeat } from "react-icons/gi";
+import { GiGasPump, GiCarSeat } from "react-icons/gi";
 import { TbManualGearbox } from "react-icons/tb";
 import { IoIosColorPalette } from "react-icons/io";
 import { useTranslations } from "next-intl";
@@ -44,7 +43,6 @@ const CardetailCard = () => {
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
   const [userLikedCars, setUserLikedCars] = useState([]);
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
   const { distance: defaultUnit, loading: distanceLoading } = useDistance();
   const [recaptchaSiteKey, setRecaptchaSiteKey] = useState(null);
   const [recaptchaStatus, setRecaptchaStatus] = useState("inactive");
@@ -64,20 +62,6 @@ const CardetailCard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
 
-  const fetchUserData = async () => {
-    try {
-      const response = await fetch("/api/users/me");
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-        setUserLikedCars(
-          Array.isArray(data.user?.likedCars) ? data.user.likedCars : [],
-        );
-      }
-    } catch (error) {
-      return;
-    }
-  };
 
   useEffect(() => {
     const fetchRecaptchaSettings = async () => {
@@ -218,14 +202,10 @@ const CardetailCard = () => {
     }
   };
 
-  // 2. ADD THESE PAGINATION CALCULATIONS (after your existing useMemo declarations)
-
-  // Get all filters at once
   const filters = useMemo(() => {
     return Object.fromEntries(searchParams.entries());
   }, [searchParams]);
 
-  // Parse array parameters from query string
   const parseArrayParam = (param) => {
     if (!param) return [];
     return Array.isArray(param) ? param : [param];
