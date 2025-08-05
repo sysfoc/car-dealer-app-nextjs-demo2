@@ -94,7 +94,7 @@ export default function Header({ logo: initialLogo, topSettings }) {
             )}
 
             <div className="hidden items-center space-x-6 lg:flex">
-              {quickLinks.map((link, index) => {
+              {quickLinks?.map((link, index) => {
                 const Icon = link.icon;
                 return (
                   <Link
@@ -179,7 +179,7 @@ export default function Header({ logo: initialLogo, topSettings }) {
             </button>
           </div>
           <div className="flex-1 space-y-2 p-4">
-            {mobileMenuLinks.map((link, index) => {
+            {mobileMenuLinks?.map((link, index) => {
               const Icon = link.icon;
               return (
                 <Link

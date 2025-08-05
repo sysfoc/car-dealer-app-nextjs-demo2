@@ -31,7 +31,7 @@ const HeroSection = ({ heading }) => {
 
   const headingParts = useMemo(() => {
     const words = heading?.split(" ");
-    return words.map((word, i) => {
+    return words?.map((word, i) => {
       if (i >= 2 && i <= 3) {
         return (
           <span key={i} className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
