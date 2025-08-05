@@ -27,7 +27,7 @@ const Header = ({ headerSettings }) => {
   const [logoError, setLogoError] = useState(false);
   const router = useRouter();
 
-  const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
+  const { toggleSidebar } = useSidebar();
 
   // Initialize dark mode from document
   useEffect(() => {
@@ -66,7 +66,7 @@ const Header = ({ headerSettings }) => {
   };
 
   const renderLogo = () => {
-    if (headerSettings.topSettings.hideLogo) {
+    if (headerSettings?.topSettings?.hideLogo) {
       return null;
     }
 
@@ -171,7 +171,7 @@ const Header = ({ headerSettings }) => {
               </button>
 
               {/* Favourites Button */}
-              {!headerSettings.topSettings.hideFavourite && (
+              {!headerSettings?.topSettings?.hideFavourite && (
                 <button
                   onClick={() => router.push("/liked-cars")}
                   aria-label="Liked Cars"
@@ -184,7 +184,7 @@ const Header = ({ headerSettings }) => {
 
               {/* Dark Mode Toggle - Desktop */}
               <div className="hidden items-center space-x-3 md:flex">
-                {!headerSettings.topSettings.hideDarkMode && (
+                {!headerSettings?.topSettings?.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}
                     className="group relative rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 md:hover:scale-105 md:hover:bg-gray-200/80 md:hover:text-gray-900 md:hover:ring-gray-400/70 dark:md:hover:bg-gray-600/80 dark:md:hover:text-white dark:md:hover:ring-gray-500/70"
@@ -201,7 +201,7 @@ const Header = ({ headerSettings }) => {
 
               {/* Dark Mode Toggle - Mobile */}
               <div className="flex items-center space-x-3 md:hidden">
-                {!headerSettings.topSettings.hideDarkMode && (
+                {!headerSettings?.topSettings?.hideDarkMode && (
                   <button
                     onClick={toggleDarkMode}
                     className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200/80 hover:text-white dark:bg-gray-700/70 dark:text-gray-300"
