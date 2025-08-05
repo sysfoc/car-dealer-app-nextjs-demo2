@@ -300,7 +300,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
                 <label
                   htmlFor="email"

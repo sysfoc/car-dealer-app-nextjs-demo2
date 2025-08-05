@@ -258,7 +258,7 @@ const VehicalsList = ({ loadingState }) => {
                             </div>
                           </div>
                         )}
-                        {vehicle.tag && vehicle.tag !== "default" && (
+                        {!vehicle.sold && vehicle.tag && vehicle.tag !== "default" && (
                           <div className="rounded-full bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
                             <div className="flex items-center gap-1.5">
                               <div className="h-2 w-2 rounded-full bg-white"></div>
@@ -267,6 +267,7 @@ const VehicalsList = ({ loadingState }) => {
                           </div>
                         )}
                       </div>
+
                       <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                         <button
                           onClick={(e) => {
