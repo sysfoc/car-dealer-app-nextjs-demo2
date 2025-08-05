@@ -1,9 +1,3 @@
-
-
-
-
-
-
 "use client";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
@@ -141,34 +135,34 @@ const Header = () => {
   }, []);
 
   const LogoComponent = useMemo(() => {
-    if (topSettings.hideLogo) return null;
+  if (topSettings.hideLogo) return null;
 
-    return (
-      <Link href="/" className="flex items-center min-h-[48px]">
-        {logo && !logoError ? (
-          <Image
-            src={logo}
-            alt="Logo"
-            width={64}
-            height={48}
-            className="object-contain"
-            onError={handleLogoError}
-            priority
-            fetchPriority="high"
-          />
-        ) : (
-          <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-              FrontSeat
-            </span>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-              Built to Sell Cars
-            </span>
-          </div>
-        )}
-      </Link>
-    );
-  }, [topSettings.hideLogo, logo, logoError]);
+  return (
+    <Link href="/" className="flex items-center min-h-[48px] space-x-2">
+      {logo && !logoError && (
+        <Image
+          src={logo}
+          alt="Logo"
+          width={48}
+          height={48}
+          className="object-contain"
+          onError={handleLogoError}
+          priority
+          fetchPriority="high"
+        />
+      )}
+      <div className="flex flex-col">
+        <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+          FrontSeat
+        </span>
+        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+          Built to Sell Cars
+        </span>
+      </div>
+    </Link>
+  );
+}, [topSettings.hideLogo, logo, logoError]);
+
 
   const DesktopNavigation = useMemo(() => (
     <div className="hidden items-center space-x-6 lg:flex">
