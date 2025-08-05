@@ -30,7 +30,7 @@ const HeroSection = ({ heading }) => {
   }, [router]);
 
   const headingParts = useMemo(() => {
-    const words = heading.split(" ");
+    const words = heading?.split(" ");
     return words.map((word, i) => {
       if (i >= 2 && i <= 3) {
         return (
