@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,13 +8,16 @@ import { GiGasPump } from "react-icons/gi";
 import { TbManualGearbox } from "react-icons/tb";
 import { FaHeart } from "react-icons/fa";
 import { BiTachometer } from "react-icons/bi";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "../context/CurrencyContext";
 import { useDistance } from "../context/DistanceContext";
 import { FaRegHeart } from "react-icons/fa6";
 import { ChevronDown, ChevronUp } from "lucide-react";
+
+// Simple loading placeholder component to replace react-loading-skeleton
+const SimpleSkeleton = ({ className = "", height = "h-4" }) => (
+  <div className={`bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${height} ${className}`}></div>
+);
 
 const VehicalsList = ({ loadingState }) => {
   const t = useTranslations("HomePage");
@@ -25,23 +28,51 @@ const VehicalsList = ({ loadingState }) => {
   const { distance: defaultUnit, loading: distanceLoading } = useDistance();
   const [userLikedCars, setUserLikedCars] = useState([]);
   const [user, setUser] = useState(null);
-  const [visibleVehiclesCount, setVisibleVehiclesCount] = useState(3); // State to manage visible vehicles
-  const [listingData, setListingData] = useState(null);
+  const [visibleVehiclesCount, setVisibleVehiclesCount] = useState(3);
+  const [listingData, setListingData] = useState({
+    heading: "Featured Vehicles",
+    status: "active"
+  }); // Default fallback
+
+  // Cache for API responses
+  const [apiCache, setApiCache] = useState({});
 
   useEffect(() => {
     const fetchListingData = async () => {
+      const cacheKey = 'homepage-listing';
+      
+      // Check cache first
+      if (apiCache[cacheKey] && Date.now() - apiCache[cacheKey].timestamp < 300000) { // 5 min cache
+        setListingData(apiCache[cacheKey].data?.listingSection || listingData);
+        return;
+      }
+
       try {
-        const response = await fetch("/api/homepage");
+        const response = await fetch("/api/homepage", {
+          next: { revalidate: 300 }
+        });
         const result = await response.json();
         if (response.ok) {
-          setListingData(result?.listingSection);
+          const newData = result?.listingSection || listingData;
+          setListingData(newData);
+          // Cache the response
+          setApiCache(prev => ({
+            ...prev,
+            [cacheKey]: {
+              data: result,
+              timestamp: Date.now()
+            }
+          }));
         }
       } catch (error) {
         console.error("Error fetching listing data:", error);
+        // Keep fallback data
       }
     };
 
-    fetchListingData();
+    // Defer API call to not block initial render
+    const timeoutId = setTimeout(fetchListingData, 50);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   // Conversion functions with decimal precision
@@ -49,10 +80,12 @@ const VehicalsList = ({ loadingState }) => {
     const numericKm = Number.parseFloat(km);
     return isNaN(numericKm) ? km : (numericKm * 0.621371).toFixed(1);
   };
+  
   const convertMilesToKm = (miles) => {
     const numericMiles = Number.parseFloat(miles);
     return isNaN(numericMiles) ? miles : (numericMiles * 1.60934).toFixed(1);
   };
+
   // Function to convert car values based on default unit
   const getConvertedValues = (vehicle) => {
     if (distanceLoading || !defaultUnit || !vehicle.unit) {
@@ -62,7 +95,7 @@ const VehicalsList = ({ loadingState }) => {
         unit: vehicle.unit || defaultUnit,
       };
     }
-    // If car unit matches default unit, no conversion needed
+
     if (vehicle.unit === defaultUnit) {
       return {
         kms: vehicle.kms,
@@ -70,39 +103,62 @@ const VehicalsList = ({ loadingState }) => {
         unit: vehicle.unit,
       };
     }
-    // Convert based on units
+
     let convertedKms = vehicle.kms;
     let convertedMileage = vehicle.mileage;
     if (vehicle.unit === "km" && defaultUnit === "miles") {
-      // Convert from km to miles
       convertedKms = convertKmToMiles(vehicle.kms);
       convertedMileage = convertKmToMiles(vehicle.mileage);
     } else if (vehicle.unit === "miles" && defaultUnit === "km") {
-      // Convert from miles to km
       convertedKms = convertMilesToKm(vehicle.kms);
       convertedMileage = convertMilesToKm(vehicle.mileage);
     }
+    
     return {
       kms: convertedKms,
       mileage: convertedMileage,
       unit: defaultUnit,
     };
   };
+
   const fetchVehicles = async () => {
+    const cacheKey = 'vehicles-list';
+    
+    // Check cache first
+    if (apiCache[cacheKey] && Date.now() - apiCache[cacheKey].timestamp < 180000) { // 3 min cache
+      const cachedVehicles = apiCache[cacheKey].data;
+      setVehicles(cachedVehicles);
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch("/api/cars");
+      const response = await fetch("/api/cars", {
+        next: { revalidate: 180 }
+      });
       if (!response.ok) throw new Error("Failed to fetch vehicles");
       const data = await response.json();
       const filteredCars = data.cars.filter(
         (car) => car.status === 1 || car.status === "1",
       );
       setVehicles(filteredCars);
+      
+      // Cache the response
+      setApiCache(prev => ({
+        ...prev,
+        [cacheKey]: {
+          data: filteredCars,
+          timestamp: Date.now()
+        }
+      }));
+      
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
     }
   };
+
   const fetchUserData = async () => {
     try {
       const response = await fetch("/api/users/me");
@@ -117,6 +173,7 @@ const VehicalsList = ({ loadingState }) => {
       return;
     }
   };
+
   const handleLikeToggle = async (carId) => {
     try {
       const response = await fetch("/api/users/liked-cars", {
@@ -143,7 +200,7 @@ const VehicalsList = ({ loadingState }) => {
 
   const handleToggleVisibility = () => {
     if (visibleVehiclesCount >= vehicles.length) {
-      setVisibleVehiclesCount(3); // Show less
+      setVisibleVehiclesCount(3);
     } else {
       setVisibleVehiclesCount((prevCount) =>
         Math.min(prevCount + 3, vehicles.length),
@@ -152,8 +209,9 @@ const VehicalsList = ({ loadingState }) => {
   };
 
   useEffect(() => {
+    // Stagger API calls to avoid blocking
     fetchVehicles();
-    fetchUserData();
+    setTimeout(fetchUserData, 100);
   }, []);
 
   if (error) {
@@ -172,11 +230,11 @@ const VehicalsList = ({ loadingState }) => {
   }
 
   if (listingData && listingData?.status === 'inactive') {
-  return null;
-}
+    return null;
+  }
 
   return (
-    <section className=" my-7 rounded-xl bg-slate-50 py-7 dark:bg-slate-900 sm:mx-8 md:my-10 md:py-10">
+    <section className="my-7 rounded-xl bg-slate-50 py-7 dark:bg-slate-900 sm:mx-8 md:my-10 md:py-10">
       <div className="mb-16">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
@@ -187,16 +245,17 @@ const VehicalsList = ({ loadingState }) => {
             {listingData?.heading}
           </h2>
           <Link href={"/car-for-sale"}>
-            <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
+            <div className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200 md:hover:scale-105">
               <span>{t("viewAll")}</span>
               <MdOutlineArrowOutward className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
             </div>
           </Link>
         </div>
       </div>
+      
       <div className="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 sm:px-8 md:grid-cols-3 lg:gap-8">
         {loading
-          ? Array(3) // Show 3 skeleton cards initially
+          ? Array(3)
               .fill()
               .map((_, index) => (
                 <div
@@ -204,24 +263,24 @@ const VehicalsList = ({ loadingState }) => {
                   key={index}
                 >
                   <div className="relative">
-                    <Skeleton className="h-64 w-full" />
+                    <SimpleSkeleton className="w-full" height="h-64" />
                   </div>
                   <div className="space-y-4 p-6">
                     <div className="space-y-3">
-                      <Skeleton height={28} />
-                      <Skeleton height={16} width="70%" />
+                      <SimpleSkeleton height="h-7" />
+                      <SimpleSkeleton height="h-4" className="w-3/4" />
                     </div>
                     <div className="space-y-3">
                       {[...Array(3)].map((_, i) => (
                         <div key={i} className="flex items-center gap-3">
-                          <Skeleton circle width={32} height={32} />
-                          <Skeleton height={16} width="60%" />
+                          <SimpleSkeleton className="w-8 h-8 rounded-xl" />
+                          <SimpleSkeleton height="h-4" className="w-20" />
                         </div>
                       ))}
                     </div>
                     <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
-                      <Skeleton height={32} width="50%" />
-                      <Skeleton height={40} className="mt-3" />
+                      <SimpleSkeleton height="h-8" className="w-24" />
+                      <SimpleSkeleton height="h-10" className="mt-3" />
                     </div>
                   </div>
                 </div>
@@ -230,7 +289,7 @@ const VehicalsList = ({ loadingState }) => {
               const convertedValues = getConvertedValues(vehicle);
               return (
                 <div
-                  className="group transform overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl transition-all duration-500 hover:-translate-y-1 hover:border-slate-300 hover:shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
+                  className="group transform overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl transition-all duration-500 md:hover:-translate-y-1 hover:border-slate-300 hover:shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
                   key={vehicle._id}
                 >
                   <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-900">
@@ -239,9 +298,11 @@ const VehicalsList = ({ loadingState }) => {
                         src={vehicle.imageUrls?.[0]}
                         fill
                         alt={`${vehicle.make} ${vehicle.model}`}
-                        className="object-cover transition-all duration-700 group-hover:scale-110"
+                        className="object-cover transition-all duration-700 md:group-hover:scale-110"
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                        loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 md:group-hover:opacity-100"></div>
                       <div className="absolute left-4 top-4 flex flex-wrap gap-1.5">
                         {vehicle.sold ? (
                           <div className="rounded-full bg-red-500 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
@@ -268,7 +329,7 @@ const VehicalsList = ({ loadingState }) => {
                         )}
                       </div>
 
-                      <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                      <div className="absolute right-4 top-4 flex translate-x-4 transform gap-2 opacity-0 transition-all duration-300 md:group-hover:translate-x-0 md:group-hover:opacity-100 sm:opacity-100 sm:translate-x-0">
                         <button
                           onClick={(e) => {
                             e.preventDefault();
@@ -279,7 +340,7 @@ const VehicalsList = ({ loadingState }) => {
                               ? "Unlike Car"
                               : "Like Car"
                           }
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-xl"
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-lg backdrop-blur-md transition-all duration-200 md:hover:scale-110 hover:bg-white hover:shadow-xl"
                         >
                           {userLikedCars &&
                           Array.isArray(userLikedCars) &&
@@ -290,6 +351,7 @@ const VehicalsList = ({ loadingState }) => {
                           )}
                         </button>
                       </div>
+                      
                       <div className="absolute bottom-4 right-4 rounded-2xl bg-white/95 px-4 py-2 shadow-lg backdrop-blur-md dark:bg-slate-800/95">
                         <div className="text-right">
                           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -307,15 +369,17 @@ const VehicalsList = ({ loadingState }) => {
                       </div>
                     </div>
                   </div>
+                  
                   <div className="p-6">
                     <div className="mb-4">
-                      <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+                      <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors duration-300 md:group-hover:text-blue-600 dark:text-white dark:md:group-hover:text-blue-400">
                         {vehicle.make} {vehicle.model}
                       </h3>
                       <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                         {vehicle?.description?.slice(0, 80)}...
                       </p>
                     </div>
+                    
                     <div className="mb-6 space-y-3">
                       <div className="flex items-center gap-3 text-sm">
                         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30">
@@ -352,15 +416,15 @@ const VehicalsList = ({ loadingState }) => {
                         </span>
                       </div>
                     </div>
-                    {/* CTA Button */}
+                    
                     <Link
                       href={`/car-detail/${vehicle.slug || vehicle._id}`}
                       className="group/cta block w-full"
                     >
-                      <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
+                      <div className="transform rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-center font-semibold text-white shadow-lg transition-all duration-300 md:hover:scale-[1.02] hover:from-slate-800 hover:to-slate-600 hover:shadow-xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200">
                         <div className="flex items-center justify-center gap-2">
                           <span>View Details</span>
-                          <MdOutlineArrowOutward className="h-4 w-4 transition-transform duration-300 group-hover/cta:-translate-y-1 group-hover/cta:translate-x-1" />
+                          <MdOutlineArrowOutward className="h-4 w-4 transition-transform duration-300 md:group-hover/cta:-translate-y-1 md:group-hover/cta:translate-x-1" />
                         </div>
                       </div>
                     </Link>
@@ -369,11 +433,12 @@ const VehicalsList = ({ loadingState }) => {
               );
             })}
       </div>
+      
       {!loading && vehicles.length > 3 && (
         <div className="mt-10 text-center">
           <button
             onClick={handleToggleVisibility}
-            className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200"
+            className="group inline-flex transform items-center gap-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 md:hover:scale-105 hover:from-slate-800 hover:to-slate-600 hover:shadow-2xl dark:from-slate-100 dark:to-slate-300 dark:text-slate-900 dark:hover:from-white dark:hover:to-slate-200"
           >
             <span>
               {visibleVehiclesCount >= vehicles.length
@@ -381,14 +446,14 @@ const VehicalsList = ({ loadingState }) => {
                 : "Show more"}
             </span>
             {visibleVehiclesCount >= vehicles.length ? (
-              <ChevronUp className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-1" />
+              <ChevronUp className="h-5 w-5 transition-transform duration-300 md:group-hover:-translate-y-1" />
             ) : (
-              <ChevronDown className="h-5 w-5 transition-transform duration-300 group-hover:translate-y-1" />
+              <ChevronDown className="h-5 w-5 transition-transform duration-300 md:group-hover:translate-y-1" />
             )}
           </button>
         </div>
       )}
-      {/* Empty State */}
+      
       {vehicles.length === 0 && !loading && (
         <div className="py-20 text-center">
           <div className="mx-auto mb-8 flex h-32 w-32 items-center justify-center rounded-full bg-slate-50 shadow-inner dark:bg-slate-800">
@@ -418,4 +483,5 @@ const VehicalsList = ({ loadingState }) => {
     </section>
   );
 };
+
 export default VehicalsList;

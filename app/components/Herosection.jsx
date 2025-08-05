@@ -1,40 +1,45 @@
 "use client";
 import Image from "next/image";
-import { FaArrowRight, FaPlay, FaCheck } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-// Precomputed blur placeholder (small base64 version of your image)
-const BLUR_DATA_URL = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YyZjJmMiIvPjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM4ODgiPkxvYWRpbmc8L3RleHQ+PC9zdmc+";
+// Static fallback content to show immediately
+const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars";
 
 const HeroSection = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
-  const [headingData, setHeadingData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [headingData, setHeadingData] = useState(FALLBACK_HEADING); // Start with fallback
+  const [isEnhanced, setIsEnhanced] = useState(false);
   
   useEffect(() => {
+    // Use progressive enhancement instead of loading state
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/homepage");
+        const response = await fetch("/api/homepage", {
+          // Add cache control
+          next: { revalidate: 3600 } // Cache for 1 hour
+        });
         const result = await response.json();
-        if (response.ok) {
-          setHeadingData(result.searchSection?.mainHeading);
+        if (response.ok && result.searchSection?.mainHeading) {
+          setHeadingData(result.searchSection.mainHeading);
+          setIsEnhanced(true);
         }
       } catch (error) {
         console.error("Error fetching homepage data:", error);
-      } finally {
-        setLoading(false);
+        // Keep fallback content on error
       }
     };
 
-    fetchData();
+    // Defer API call slightly to not block initial render
+    const timeoutId = setTimeout(fetchData, 100);
+    return () => clearTimeout(timeoutId);
   }, []);
 
-  // Simple function: first two normal, next two gradient, rest normal
   const splitHeadingAfterTwoWords = (text) => {
-    if (!text) return null;
+    if (!text) return [{ text: FALLBACK_HEADING, style: 'normal' }];
     
     const words = text.split(' ');
     if (words.length <= 2) {
@@ -57,7 +62,6 @@ const HeroSection = () => {
     return parts;
   };
 
-  // Render styled text parts
   const renderStyledParts = (parts) => {
     return parts.map((part, index) => {
       switch (part.style) {
@@ -67,14 +71,12 @@ const HeroSection = () => {
               {part.text}
             </span>
           );
-
         default:
           return <span key={index}>{part.text}</span>;
       }
     });
   };
 
-  // Get responsive text size based on content length
   const getResponsiveTextSize = (text) => {
     if (!text) return "text-4xl sm:text-5xl lg:text-6xl";
     
@@ -84,38 +86,16 @@ const HeroSection = () => {
     return "text-3xl sm:text-4xl lg:text-5xl";
   };
 
-  // Process the heading data
-  const processHeading = () => {
-    if (!headingData) return null;
-
-    const parts = splitHeadingAfterTwoWords(
-      typeof headingData === 'string' ? headingData : String(headingData)
-    );
-    
-    const textSizeClass = getResponsiveTextSize(
-      typeof headingData === 'string' ? headingData : String(headingData)
-    );
-
-    return (
-      <h1 className={`font-bold leading-tight text-gray-900 dark:text-white ${textSizeClass}`}>
-        {renderStyledParts(parts)}
-      </h1>
-    );
-  };
-
-  // Loading skeleton for heading
-  const HeadingSkeleton = () => (
-    <div className="space-y-3">
-      <div className="h-12 sm:h-16 lg:h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-      <div className="h-12 sm:h-16 lg:h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse w-3/4"></div>
-    </div>
-  );
+  // Always render content, no loading states
+  const parts = splitHeadingAfterTwoWords(headingData);
+  const textSizeClass = getResponsiveTextSize(headingData);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
-      <div className="absolute inset-0">
-        <div className="absolute right-0 top-0 h-1/3 w-1/3 rounded-full bg-gradient-to-bl from-blue-100/50 to-transparent blur-3xl dark:from-blue-900/20"></div>
-        <div className="absolute bottom-0 left-0 h-1/4 w-1/4 rounded-full bg-gradient-to-tr from-purple-100/50 to-transparent blur-3xl dark:from-purple-900/20"></div>
+      {/* Simplified background effects */}
+      <div className="absolute inset-0 opacity-50">
+        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-gradient-to-bl from-blue-100 to-transparent blur-3xl dark:from-blue-900/20"></div>
+        <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-gradient-to-tr from-purple-100 to-transparent blur-3xl dark:from-purple-900/20"></div>
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 pt-10 pb-0 sm:px-6 lg:px-8">
@@ -127,23 +107,9 @@ const HeroSection = () => {
             </div>
 
             <div className="space-y-6">
-              {loading ? (
-                <HeadingSkeleton />
-              ) : (
-                processHeading() || (
-                  <h1 className="text-4xl font-bold leading-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
-                    Website for{" "}
-                    <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-                      Automotive Dealers
-                    </span>{" "}
-                    Built to{" "}
-                    <span className="relative">
-                      <span className="relative">Sell Cars</span>
-                      <div className="absolute -bottom-2 left-0 right-0 h-3 -skew-x-12 transform bg-gradient-to-r from-yellow-200 to-yellow-300 dark:from-yellow-400/30 dark:to-yellow-500/30"></div>
-                    </span>
-                  </h1>
-                )
-              )}
+              <h1 className={`font-bold leading-tight text-gray-900 dark:text-white transition-opacity duration-500 ${isEnhanced ? 'opacity-100' : 'opacity-90'} ${textSizeClass}`}>
+                {renderStyledParts(parts)}
+              </h1>
             </div>
 
             <div className="flex flex-col gap-4 pt-4 sm:flex-row">
@@ -173,16 +139,14 @@ const HeroSection = () => {
                 width={800}
                 height={600}
                 priority
-                placeholder="blur"
-                blurDataURL={BLUR_DATA_URL}
                 className="h-auto w-full object-cover"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                // Remove blurDataURL if it's causing issues
               />
             </div>
           </div>
         </div>
       </div>
-
     </section>
   );
 };
