@@ -16,8 +16,6 @@ import { CurrencyProvider } from "./context/CurrencyContext"
 import { AuthProvider } from "./context/UserContext"
 import { SidebarProvider } from './context/SidebarContext'
 import { DistanceProvider } from "./context/DistanceContext"
-import Header from "./components/Header";
-import { fetchHeaderSettings } from "../app/lib/serverData";
 import { Suspense } from "react"
 
 const poppins = Poppins({
@@ -30,7 +28,8 @@ const getGeneralSettings = async () => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}` : "http://localhost:3000"
     const res = await fetch(`${baseUrl}/api/settings/general`, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
+      next: { revalidate: 0 },
     })
     if (!res.ok) {
       console.error(`Failed to fetch settings: ${res.status}`)
@@ -47,7 +46,7 @@ const getHomepageSettings = async () => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}` : "http://localhost:3000"
     const res = await fetch(`${baseUrl}/api/homepage`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 0 },
     })
     if (!res.ok) {
       console.error(`Failed to fetch homepage settings: ${res.status}`)
@@ -57,24 +56,6 @@ const getHomepageSettings = async () => {
   } catch (error) {
     console.error("Error fetching homepage settings:", error)
     return null
-  }
-}
-
-const getSocialData = async () => {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}` : "http://localhost:3000"
-    const res = await fetch(`${baseUrl}/api/socials`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    })
-    if (!res.ok) {
-      console.error(`Failed to fetch social data: ${res.status}`)
-      return []
-    }
-    const data = await res.json()
-    return data?.data || []
-  } catch (error) {
-    console.error("Error fetching social data:", error)
-    return []
   }
 }
 
@@ -92,15 +73,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [locale, messages, settingsData, headerSettings, homepageData, socialData] = 
-    await Promise.all([
-      getLocale(),
-      getMessages(),
-      getGeneralSettings(),
-      fetchHeaderSettings(),
-      getHomepageSettings(),
-      getSocialData()
-    ]);
+  const locale = await getLocale()
+  const messages = await getMessages()
+  const settingsData = await getGeneralSettings()
 
   const settings = settingsData?.settings || {
     logo: "",
@@ -146,13 +121,7 @@ export default async function RootLayout({
         <GoogleRecaptcha />
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
-            <Header headerSettings={headerSettings} />
-            <LayoutRenderer 
-              footerSettings={settings.footer}
-              footerLogo={settings.logo2}
-              homepageFooterData={homepageData?.footer}
-              socialData={socialData}
-            >
+            <LayoutRenderer>
               <Suspense fallback={null}>
                 <NuqsAdapter>
                   <CurrencyProvider>
