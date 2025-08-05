@@ -3,40 +3,12 @@ import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
 
-// Static fallback content to show immediately
 const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars";
 
-const HeroSection = () => {
+const HeroSection = ({ headingData = FALLBACK_HEADING }) => {
   const t = useTranslations("HomePage");
   const router = useRouter();
-  const [headingData, setHeadingData] = useState(FALLBACK_HEADING); // Start with fallback
-  const [isEnhanced, setIsEnhanced] = useState(false);
-  
-  useEffect(() => {
-    // Use progressive enhancement instead of loading state
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/homepage", {
-          // Add cache control
-          next: { revalidate: 3600 } // Cache for 1 hour
-        });
-        const result = await response.json();
-        if (response.ok && result.searchSection?.mainHeading) {
-          setHeadingData(result.searchSection.mainHeading);
-          setIsEnhanced(true);
-        }
-      } catch (error) {
-        console.error("Error fetching homepage data:", error);
-        // Keep fallback content on error
-      }
-    };
-
-    // Defer API call slightly to not block initial render
-    const timeoutId = setTimeout(fetchData, 100);
-    return () => clearTimeout(timeoutId);
-  }, []);
 
   const splitHeadingAfterTwoWords = (text) => {
     if (!text) return [{ text: FALLBACK_HEADING, style: 'normal' }];
@@ -86,7 +58,7 @@ const HeroSection = () => {
     return "text-3xl sm:text-4xl lg:text-5xl";
   };
 
-  // Always render content, no loading states
+  // Process data immediately - no loading states needed
   const parts = splitHeadingAfterTwoWords(headingData);
   const textSizeClass = getResponsiveTextSize(headingData);
 
@@ -107,7 +79,7 @@ const HeroSection = () => {
             </div>
 
             <div className="space-y-6">
-              <h1 className={`font-bold leading-tight text-gray-900 dark:text-white transition-opacity duration-500 ${isEnhanced ? 'opacity-100' : 'opacity-90'} ${textSizeClass}`}>
+              <h1 className={`font-bold leading-tight text-gray-900 dark:text-white ${textSizeClass}`}>
                 {renderStyledParts(parts)}
               </h1>
             </div>
@@ -134,14 +106,13 @@ const HeroSection = () => {
           <div className="relative flex items-start lg:pl-8">
             <div className="relative w-full">
               <Image
-                src="/sysfoc1.webp"
+                src="/sysfoc1_on.webp"
                 alt="Automotive Web Solutions - Professional Dealer Websites"
                 width={800}
                 height={600}
                 priority
                 className="h-auto w-full object-cover"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-                // Remove blurDataURL if it's causing issues
               />
             </div>
           </div>

@@ -1,9 +1,3 @@
-// lib/social-icons.js
-// This file centralizes all available predefined social media icons and their properties.
-// It exports a list of platforms, a map for dynamic component lookup,
-// and a list of icon names for dropdowns.
-
-// Font Awesome 5 icons (react-icons/fa)
 import { 
   FaFacebookSquare,
   FaYoutube,
