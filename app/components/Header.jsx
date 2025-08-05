@@ -72,9 +72,9 @@ const Header = ({ headerSettings }) => {
 
     const logoContent = (
       <div className="flex items-center space-x-3">
-        {headerSettings.logo && !logoError && (
+        {headerSettings?.logo && !logoError && (
           <Image
-            src={headerSettings.logo}
+            src={headerSettings?.logo}
             alt="Logo"
             width={64}
             height={64}
@@ -249,16 +249,16 @@ const Header = ({ headerSettings }) => {
           </div>
           <div className="flex-1 space-y-2 p-4">
             {mobileMenuLinks.map((link, index) => {
-              const IconComponent = link.icon;
+              const IconComponent = link?.icon;
               return (
                 <Link
                   key={index}
-                  href={link.href}
+                  href={link?.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex items-center space-x-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-blue-400"
                 >
                   <IconComponent className="h-5 w-5" />
-                  <span>{link.name}</span>
+                  <span>{link?.name}</span>
                 </Link>
               );
             })}
