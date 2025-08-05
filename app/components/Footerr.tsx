@@ -19,7 +19,7 @@ const Footerr = ({ initialHomepageData, initialFooterSettings, initialLogo, init
   const [footerSettings, setFooterSettings] = useState(initialFooterSettings) // Initialize with prop
   const [logo, setLogo] = useState(initialLogo) // Initialize with prop
   const [homepageData, setHomepageData] = useState(initialHomepageData) // Initialize with prop
-  const [fetchedSocials, setFetchedSocials] = useState(initialFetchedSocials) // Initialize with prop
+  const [fetchedSocials, setFetchedSocials] = useState(initialFetchedSocials ?? []) // Initialize with prop
 
   // Removed all useEffects for data fetching, as data is now passed via props
   // Removed logoLoading state as logo is directly available
@@ -157,7 +157,7 @@ const Footerr = ({ initialHomepageData, initialFooterSettings, initialLogo, init
                 <div className="pt-2">
                   <h4 className="mb-3 text-sm font-medium text-black dark:text-gray-300">Follow us:</h4>
                   <div className="flex flex-wrap gap-2 space-x-3">
-                    {fetchedSocials.length > 0 ? (
+                    {fetchedSocials?.length > 0 ? (
                       fetchedSocials.map((platform: { iconType: string; iconValue: string; url: string }, index) => {
                         const IconComponent =
                           platform.iconType === "react-icon" ? iconComponentsMap[platform.iconValue] : null
