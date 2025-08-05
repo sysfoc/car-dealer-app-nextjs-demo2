@@ -1,18 +1,15 @@
 "use client"
+
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react" // Replaced ArrowUpRight
+import { ArrowUpRight } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 
 // Simple skeleton without heavy animations
 const BlogSkeleton = ({ isLarge = false }) => (
-  <div
-    className={`backdrop-blur-md bg-white/70 dark:bg-white/10 border border-gray-200/50 dark:border-white/20 rounded-3xl overflow-hidden ${
-      isLarge ? "h-96" : "h-64"
-    }`}
-  >
-    <div className={`bg-gray-200 dark:bg-gray-700 ${isLarge ? "h-72 md:h-80" : "h-40"} w-full`}></div>
+  <div className={`backdrop-blur-md bg-white/70 dark:bg-white/10 border border-gray-200/50 dark:border-white/20 rounded-3xl overflow-hidden ${isLarge ? 'h-96' : 'h-64'}`}>
+    <div className={`bg-gray-200 dark:bg-gray-700 ${isLarge ? 'h-72 md:h-80' : 'h-40'} w-full`}></div>
     <div className="p-6 space-y-3">
       <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
@@ -37,21 +34,22 @@ const Blog = () => {
         setLoading(false)
         return
       }
+
       try {
         const response = await fetch("/api/blog", {
-          next: { revalidate: 300 }, // 5 minutes cache
+          next: { revalidate: 300 } // 5 minutes cache
         })
         if (!response.ok) {
           throw new Error("Failed to fetch blogs")
         }
         const data = await response.json()
-
+        
         // Cache the response
         setBlogCache({
           data: data.blogs,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         })
-
+        
         setBlogs(data.blogs)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch blogs")
@@ -59,6 +57,7 @@ const Blog = () => {
         setLoading(false)
       }
     }
+
     // Defer API call to not block initial render
     const timeoutId = setTimeout(fetchBlogs, 100)
     return () => clearTimeout(timeoutId)
@@ -84,10 +83,11 @@ const Blog = () => {
     <section className="relative overflow-hidden">
       {/* Simplified background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-850"></div>
-
+      
       {/* Reduced background effects - removed heavy animations */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500/5 dark:bg-gray-700/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 dark:bg-gray-800/5 rounded-full blur-3xl"></div>
+
       <div className="relative px-4 py-12 sm:px-8 md:py-16">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
@@ -116,6 +116,7 @@ const Blog = () => {
             </div>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"></div>
           </div>
+
           {/* Loading State - simplified */}
           {loading && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -127,6 +128,7 @@ const Blog = () => {
               </div>
             </div>
           )}
+
           {/* Blog Content */}
           {!loading && blogs.length >= 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -144,7 +146,7 @@ const Blog = () => {
                           fill
                           className="object-cover transition-transform duration-700 md:group-hover:scale-110"
                           sizes="(max-width: 768px) 100vw, 50vw"
-                          loading="lazy" // Defer loading for images below the fold [^2][^3]
+                          loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                         <div className="absolute top-4 left-4">
@@ -168,6 +170,7 @@ const Blog = () => {
                   </div>
                 </div>
               </div>
+
               {/* Blog Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {blogs.slice(1, 5).map((blog, index) => (
@@ -186,7 +189,7 @@ const Blog = () => {
                               fill
                               className="object-cover transition-transform duration-700 md:group-hover:scale-110"
                               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
-                              loading="lazy" // Defer loading for images below the fold [^2][^3]
+                              loading="lazy"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                           </div>
@@ -209,6 +212,7 @@ const Blog = () => {
               </div>
             </div>
           )}
+
           {/* No blogs state */}
           {!loading && blogs.length === 0 && (
             <div className="text-center py-16">
