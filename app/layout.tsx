@@ -1,6 +1,6 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import { ThemeModeScript } from "flowbite-react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -19,11 +19,11 @@ import { DistanceProvider } from "./context/DistanceContext";
 import { Suspense } from "react";
 import { PreloadResources } from "./preload-resources";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
+// const inter = Inter({
+//   subsets: ["latin"],
+//   weight: ["400", "700"],
+//   display: "swap",
+// });
 
 const getGeneralSettings = async () => {
   try {
@@ -120,13 +120,12 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning className="dark">
       <head>
         <PreloadResources />
-         <ThemeModeScript />
+        <ThemeModeScript />
       </head>
-      <body
-        className={`bg-white dark:bg-gray-800 min-h-screen text-gray-900 dark:text-gray-200 ${inter.className}`}
-      >
+      <body 
+      // className={`bg-white dark:bg-gray-800 min-h-screen text-gray-900 dark:text-gray-200 ${inter.className}`}
+      className="min-h-screen bg-white font-sans text-gray-900 dark:bg-gray-800 dark:text-gray-200">
         <SidebarProvider>
-         
           <GoogleAnalytics />
           <GoogleRecaptcha />
           <NextIntlClientProvider messages={messages}>
@@ -149,13 +148,6 @@ export default async function RootLayout({
     </html>
   );
 }
-
-
-
-
-
-
-
 
 // import type React from "react";
 // import type { Metadata } from "next";
