@@ -317,7 +317,7 @@ const Footerr = () => {
 
     if (logo && !logoError) {
       return (
-        <div style={{ height: '90px', width: '180px', position: 'relative' }}>
+        <div style={{ height: '200px', width: '200px', position: 'relative' }}>
           <Image
             src={logo}
             alt="Footer Logo"
@@ -325,8 +325,7 @@ const Footerr = () => {
             className="object-contain"
             onError={handleLogoError}
             sizes="180px"
-            priority={false}
-            loading="lazy"
+            priority
           />
         </div>
       );
