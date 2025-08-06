@@ -299,7 +299,7 @@ const HeroSection = () => {
     () => (
       <button
         onClick={handleExploreVehicles}
-        className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 py-3 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:px-8 sm:py-4"
+        className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:px-8 py-3 sm:py-4 h-12 sm:h-14"
         aria-label="Explore our vehicle inventory"
       >
         <span className="relative mr-3">Explore Our Vehicles</span>
@@ -313,7 +313,7 @@ const HeroSection = () => {
     () => (
       <button
         onClick={handleLikedCars}
-        className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-5 py-2.5 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800 sm:hidden"
+        className="group relative inline-flex items-center py-3 sm:py-4 h-12 sm:h-14 justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-5 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800 sm:hidden"
         aria-label="View your favorite cars"
       >
         <span className="relative mr-5">Your Favorite Cars</span>
@@ -366,7 +366,7 @@ const HeroSection = () => {
               )}
             </div>
 
-            <div className="flex flex-col gap-4 pt-4 sm:flex-row">
+           <div className="flex flex-col gap-4 pt-4 min-h-[120px] sm:min-h-[60px] sm:flex-row">
               {ExploreButton}
               {LikedCarsButton}
             </div>
