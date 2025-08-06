@@ -22,6 +22,7 @@ import { PreloadResources } from "./preload-resources";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "700"],
+  display: "swap",
 });
 
 const getGeneralSettings = async () => {
@@ -121,7 +122,7 @@ export default async function RootLayout({
         <PreloadResources />
       </head>
       <body
-        className={`transition-all dark:bg-gray-800 dark:text-gray-200 ${inter.className}`}
+        className={`dark:bg-gray-800 dark:text-gray-200 ${inter.className}`}
       >
         <SidebarProvider>
           <ThemeModeScript />
