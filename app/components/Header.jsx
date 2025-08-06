@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
@@ -20,61 +19,54 @@ import CarSearchSidebar from "./Car-search-sidebar";
 import { useSidebar } from "../context/SidebarContext";
 import Image from "next/image";
 
+const CACHE_DURATION = 60 * 60 * 1000;
+const CACHE_KEY = 'header_settings';
+
+const CacheManager = {
+  get: (key) => {
+    try {
+      if (typeof window === 'undefined') return null;
+      
+      const cached = localStorage.getItem(key);
+      if (!cached) return null;
+      
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+      
+      if (now - timestamp > CACHE_DURATION) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.warn('Cache retrieval failed:', error);
+      return null;
+    }
+  },
+
+  set: (key, data) => {
+    try {
+      if (typeof window === 'undefined') return;
+      
+      const cacheData = {
+        data,
+        timestamp: Date.now()
+      };
+      
+      localStorage.setItem(key, JSON.stringify(cacheData));
+    } catch (error) {
+      console.warn('Cache storage failed:', error);
+    }
+  }
+};
+
 // Static fallback data to prevent loading states
 const DEFAULT_SETTINGS = {
   hideDarkMode: false,
   hideFavourite: false,
   hideLogo: false,
 };
-
-class SettingsCache {
-  constructor() {
-    this.cache = null;
-    this.timestamp = 0;
-    this.duration = 600000; // 10 minutes
-    this.pending = null; 
-  }
-
-  isValid() {
-    return this.cache && Date.now() - this.timestamp < this.duration;
-  }
-
-  get() {
-    return this.cache;
-  }
-
-  set(data) {
-    this.cache = data;
-    this.timestamp = Date.now();
-    this.pending = null;
-  }
-
-  async fetch() {
-    if (this.isValid()) {
-      return this.cache;
-    }
-
-    if (this.pending) {
-      return this.pending;
-    }
-
-    this.pending = this._fetchSettings();
-    const result = await this.pending;
-    this.set(result);
-    return result;
-  }
-
-  async _fetchSettings() {
-    const response = await fetch("/api/settings/general", {
-      next: { revalidate: 600 },
-    });
-    
-    if (!response.ok) throw new Error('Settings fetch failed');
-    return response.json();
-  }
-}
-
-const globalSettingsCache = new SettingsCache();
 
 const Header = () => {
   const t = useTranslations("HomePage");
@@ -84,10 +76,11 @@ const Header = () => {
   const [topSettings, setTopSettings] = useState(DEFAULT_SETTINGS);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const mountedRef = useRef(true);
 
-  const { isSidebarOpen, toggleSidebar } = useSidebar();
+  const { toggleSidebar } = useSidebar();
 
   const quickLinks = useMemo(() => [
     { name: "Find Cars", href: "/car-for-sale", icon: FaCar },
@@ -101,7 +94,6 @@ const Header = () => {
     { name: "Login", href: "/login", icon: FaUser },
   ], [quickLinks]);
 
-  // Initialize dark mode synchronously to prevent flash
   useEffect(() => {
     // Check localStorage first for faster initialization
     const savedTheme = localStorage.getItem('theme');
@@ -118,14 +110,41 @@ const Header = () => {
     }
   }, []);
 
-  // Optimized settings fetch with better error handling
+  // Enhanced settings fetch with cache integration
   const fetchSettings = useCallback(async () => {
     if (!mountedRef.current) return;
 
     try {
-      const data = await globalSettingsCache.fetch();
+      setIsLoading(true);
+      
+      // Check cache first
+      const cachedData = CacheManager.get(CACHE_KEY);
+      if (cachedData) {
+        setLogo(cachedData?.settings?.logo2 || "");
+        setTopSettings({
+          ...DEFAULT_SETTINGS,
+          ...cachedData?.settings?.top,
+        });
+        setIsSettingsLoaded(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // If no cache, make API request
+      const response = await fetch("/api/settings/general", {
+        next: { revalidate: 600 },
+      });
+
+      if (!response.ok) {
+        throw new Error('Settings fetch failed');
+      }
+
+      const data = await response.json();
 
       if (!mountedRef.current) return;
+
+      // Cache the response
+      CacheManager.set(CACHE_KEY, data);
 
       const updates = {
         logo: data?.settings?.logo2 || "",
@@ -141,8 +160,28 @@ const Header = () => {
       
     } catch (error) {
       console.error("Failed to fetch settings:", error);
+      
+      // Try to use stale cache as fallback
+      const staleCache = localStorage.getItem(CACHE_KEY);
+      if (staleCache) {
+        try {
+          const { data } = JSON.parse(staleCache);
+          if (data?.settings) {
+            setLogo(data.settings.logo2 || "");
+            setTopSettings({
+              ...DEFAULT_SETTINGS,
+              ...data.settings.top,
+            });
+          }
+        } catch (parseError) {
+          console.warn('Failed to parse stale cache data:', parseError);
+        }
+      }
+      
       // Silently fall back to defaults
       setIsSettingsLoaded(true);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -281,13 +320,13 @@ const Header = () => {
     </div>
   ), [quickLinks]);
 
-  // Memoized action buttons
+  // Memoized action buttons with loading states
   const ActionButtons = useMemo(() => (
     <div className="flex items-center space-x-3">
       <button
         onClick={handleLogin}
         aria-label="Login"
-        className="hidden items-center space-x-2 rounded-xl bg-gray-100 px-4 py-3 text-gray-600 hover:bg-gray-200 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-blue-400 lg:flex"
+        className={`hidden items-center space-x-2 rounded-xl bg-gray-100 px-4 py-3 text-gray-600 hover:bg-gray-200 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-blue-400 lg:flex ${isLoading ? 'opacity-75' : 'opacity-100'}`}
       >
         <FaUser className="h-5 w-5" />
         <span className="text-sm font-medium">Login</span>
@@ -325,7 +364,7 @@ const Header = () => {
         <button
           onClick={handleLikedCars}
           aria-label="Liked Cars"
-          className="hidden rounded-xl bg-gray-100 p-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700 md:flex"
+          className={`hidden rounded-xl bg-gray-100 p-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:hover:bg-gray-700 md:flex ${isLoading ? 'opacity-75' : 'opacity-100'}`}
         >
           <FaHeart className="h-5 w-5 text-gray-600 dark:text-gray-300" />
         </button>
@@ -335,7 +374,7 @@ const Header = () => {
         {!topSettings.hideDarkMode && (
           <button
             onClick={toggleDarkMode}
-            className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm hover:bg-gray-200/80 hover:text-gray-900 hover:ring-gray-400/70 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 dark:hover:bg-gray-600/80 dark:hover:text-white dark:hover:ring-gray-500/70"
+            className={`rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm hover:bg-gray-200/80 hover:text-gray-900 hover:ring-gray-400/70 dark:bg-gray-700/70 dark:text-gray-300 dark:ring-gray-600/50 dark:hover:bg-gray-600/80 dark:hover:text-white dark:hover:ring-gray-500/70 ${isLoading ? 'opacity-75' : 'opacity-100'}`}
             aria-label="Toggle dark mode"
           >
             {darkMode ? (
@@ -351,7 +390,7 @@ const Header = () => {
         {!topSettings.hideDarkMode && (
           <button
             onClick={toggleDarkMode}
-            className="rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm hover:bg-gray-200/80 hover:text-white"
+            className={`rounded-xl bg-gray-100/70 p-3 text-gray-700 ring-1 ring-gray-300/50 backdrop-blur-sm hover:bg-gray-200/80 hover:text-white ${isLoading ? 'opacity-75' : 'opacity-100'}`}
             aria-label="Toggle dark mode"
           >
             {darkMode ? (
@@ -363,7 +402,7 @@ const Header = () => {
         )}
       </div>
     </div>
-  ), [handleLogin, handleMobileMenuToggle, toggleSearchSidebar, handleLikedCars, topSettings.hideFavourite, topSettings.hideDarkMode, toggleDarkMode, darkMode]);
+  ), [handleLogin, handleMobileMenuToggle, toggleSearchSidebar, handleLikedCars, topSettings.hideFavourite, topSettings.hideDarkMode, toggleDarkMode, darkMode, isLoading]);
 
   return (
     <>
