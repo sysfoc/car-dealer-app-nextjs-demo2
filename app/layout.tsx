@@ -122,7 +122,7 @@ export default async function RootLayout({
         <PreloadResources />
       </head>
       <body
-        className={`dark:bg-gray-800 dark:text-gray-200 ${inter.className}`}
+        className={`dark:bg-gray-800 min-h-screen dark:text-gray-200 ${inter.className}`}
       >
         <SidebarProvider>
           <ThemeModeScript />
