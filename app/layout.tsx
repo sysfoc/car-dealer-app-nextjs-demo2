@@ -169,16 +169,16 @@ const inter = Inter({
 
 const getGeneralSettings = async () => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/settings/general`, {
-      cache: "no-store",
+    const baseUrl = "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/settings/general`, {
       next: { revalidate: 0 },
     });
-    if (!res.ok) {
-      console.error(`Failed to fetch settings: ${res.status}`);
+    if (!response.ok) {
+      console.error(`Failed to fetch settings: ${response.status}`);
       return null;
     }
-    return await res.json();
+    const res = await response.json();
+    return res;
   } catch (error) {
     console.error("Error fetching general settings:", error);
     return null;
@@ -222,7 +222,7 @@ export default async function RootLayout({
   const messages = await getMessages();
   const settingsData = await getGeneralSettings();
 
-  const settings = settingsData?.settings || {
+  const settings1 = settingsData?.settings || {
     logo: "",
     favicon: "",
     top: {
@@ -274,18 +274,12 @@ export default async function RootLayout({
             <AuthProvider>
               <LayoutRenderer>
                 <Header
-                  logo={settings.logo2}
-                  topSettings={{
-                    hideDarkMode: settings.top?.hideDarkMode ?? false,
-                    hideFavourite: settings.top?.hideFavourite ?? false,
-                    hideLogo: settings.top?.hideLogo ?? false,
-                  }}
                 />
                 <Suspense fallback={null}>
                   <NuqsAdapter>
                     <CurrencyProvider>
                       <DistanceProvider>{children}</DistanceProvider>
-                      <Cookiebox cookieConsent={settings.cookieConsent} />
+                      <Cookiebox cookieConsent={settings1.cookieConsent} />
                     </CurrencyProvider>
                   </NuqsAdapter>
                 </Suspense>
