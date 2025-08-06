@@ -1,6 +1,5 @@
 import type React from "react";
 import type { Metadata } from "next";
-// import { Inter } from "next/font/google";
 import { ThemeModeScript } from "flowbite-react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -18,12 +17,6 @@ import { SidebarProvider } from "./context/SidebarContext";
 import { DistanceProvider } from "./context/DistanceContext";
 import { Suspense } from "react";
 import { PreloadResources } from "./preload-resources";
-
-// const inter = Inter({
-//   subsets: ["latin"],
-//   weight: ["400", "700"],
-//   display: "swap",
-// });
 
 const getGeneralSettings = async () => {
   try {
@@ -117,14 +110,13 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang={locale} suppressHydrationWarning className="dark">
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <PreloadResources />
         <ThemeModeScript />
       </head>
       <body 
-      // className={`bg-white dark:bg-gray-800 min-h-screen text-gray-900 dark:text-gray-200 ${inter.className}`}
-      className="min-h-screen bg-white font-sans text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+       className="min-h-screen bg-white font-sans text-gray-900 dark:bg-gray-800 dark:text-gray-200">
         <SidebarProvider>
           <GoogleAnalytics />
           <GoogleRecaptcha />
