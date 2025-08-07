@@ -353,7 +353,8 @@ const HeroSection = () => {
                 className={`font-bold leading-tight text-gray-900 transition-opacity duration-300 dark:text-white ${textSizeClass} ${isLoading ? "opacity-75" : "opacity-100"}`}
                 style={{ minHeight: "120px" }}
               >
-                {renderedParts}
+                {/* {renderedParts} */}
+                Website for Automotive Dealers Built to Sell Vehicles
               </h1>
 
               {error && (
