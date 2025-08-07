@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { ArrowUpRight, Car, Handshake, Wrench, Calculator } from "lucide-react";
 
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_DURATION = 5 * 60 * 1000; // 1 hour in milliseconds
 const CACHE_KEY = 'homepage_data';
 
 // Cache utilities

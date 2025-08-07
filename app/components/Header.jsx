@@ -19,7 +19,7 @@ import CarSearchSidebar from "./Car-search-sidebar";
 import { useSidebar } from "../context/SidebarContext";
 import Image from "next/image";
 
-const CACHE_DURATION = 60 * 60 * 1000;
+const CACHE_DURATION = 5 * 60 * 1000;
 const CACHE_KEY = 'header_settings';
 
 const CacheManager = {

@@ -13,7 +13,7 @@ import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "../context/UserContext";
 
 // Cache configuration for logo only
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_DURATION = 5 * 60 * 1000; // 1 hour in milliseconds
 const CACHE_KEY = 'header_settings';
 
 // Professional cache utilities

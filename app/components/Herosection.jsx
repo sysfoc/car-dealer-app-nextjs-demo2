@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 
 const FALLBACK_HEADING = "Website for Automotive Dealers Built to Sell Cars";
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_DURATION = 5 * 60 * 1000; // 1 hour in milliseconds
 const CACHE_KEY = "homepage_data";
 
 // Cache utilities
