@@ -113,23 +113,6 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
   <head>
-    {/* Ensure theme is applied before React hydration */}
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-          (function() {
-            try {
-              const theme = localStorage.getItem('theme');
-              if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-              } else {
-                document.documentElement.classList.remove('dark');
-              }
-            } catch(e) {}
-          })();
-        `,
-      }}
-    />
     <PreloadResources />
     <ThemeModeScript />
   </head>
