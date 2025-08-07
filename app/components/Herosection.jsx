@@ -397,9 +397,8 @@ const HeroSection = () => {
                   </div>
                 )}
 
-                {/* Optimized image with professional rendering */}
                 <Image
-                  src="/sysfoc1.png"
+                  src="/sysfoc1.webp"
                   alt="Automotive Web Solutions - Professional Dealer Websites"
                   fill
                   priority
