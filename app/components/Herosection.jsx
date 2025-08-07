@@ -356,25 +356,6 @@ const HeroSection = () => {
               </h1>
             </div>
 
-            {/* 
-            <div className="space-y-6">
-              <h1
-                className={`font-bold leading-tight text-gray-900 transition-opacity duration-300 dark:text-white ${textSizeClass} ${isLoading ? "opacity-75" : "opacity-100"}`}
-                style={{ minHeight: "120px" }}
-              >
-                {renderedParts}
-              </h1>
-              </div> */}
-            {/* 
-              {error && (
-                <p
-                  className="text-sm text-red-600 dark:text-red-400"
-                  role="alert"
-                >
-                  Notice: Using cached content due to connectivity issues
-                </p>
-              )} */}
-
             <div className="flex min-h-[120px] flex-col gap-4 pt-4 sm:min-h-[60px] sm:flex-row">
               {ExploreButton}
               {LikedCarsButton}

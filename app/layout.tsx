@@ -112,10 +112,27 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head>
-        <PreloadResources />
-        <ThemeModeScript />
-      </head>
+  <head>
+    {/* Ensure theme is applied before React hydration */}
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            try {
+              const theme = localStorage.getItem('theme');
+              if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+              } else {
+                document.documentElement.classList.remove('dark');
+              }
+            } catch(e) {}
+          })();
+        `,
+      }}
+    />
+    <PreloadResources />
+    <ThemeModeScript />
+  </head>
       <body className="dark:bg-gray-800 min-h-screen dark:text-gray-200 font-sans">
         <SidebarProvider>
           <GoogleAnalytics />
