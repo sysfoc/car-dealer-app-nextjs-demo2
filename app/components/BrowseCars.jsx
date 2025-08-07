@@ -184,35 +184,6 @@ const BrowseCars = () => {
             </button>
           </div>
         )}
-
-        {filteredItems.length > 0 && (
-          <div className="mt-10 border-t border-gray-300 pt-6 dark:border-gray-700">
-            <div className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
-              <div className="rounded-lg border border-blue-400 bg-blue-100 p-4 shadow-md dark:border-blue-600 dark:bg-blue-900/30">
-                <div className="text-xl font-bold text-blue-800 dark:text-blue-200">
-                  {filteredItems.reduce((sum, item) => sum + item.count, 0)}
-                </div>
-                <div className="text-xs font-semibold text-blue-700 dark:text-blue-300">Total Cars</div>
-              </div>
-              <div className="rounded-lg border border-purple-400 bg-purple-100 p-4 shadow-md dark:border-purple-600 dark:bg-purple-900/30">
-                <div className="text-xl font-bold text-purple-800 dark:text-purple-200">{filteredItems.length}</div>
-                <div className="text-xs font-semibold text-purple-700 dark:text-purple-300">Categories</div>
-              </div>
-              <div className="rounded-lg border border-green-400 bg-green-100 p-4 shadow-md dark:border-green-600 dark:bg-green-900/30">
-                <div className="text-xl font-bold text-green-800 dark:text-green-200">
-                  {filteredItems.filter((item) => item.popular).length}
-                </div>
-                <div className="text-xs font-semibold text-green-700 dark:text-green-300">Popular</div>
-              </div>
-              <div className="rounded-lg border border-orange-400 bg-orange-100 p-4 shadow-md dark:border-orange-600 dark:bg-orange-900/30">
-                <div className="text-xl font-bold text-orange-800 dark:text-orange-200">
-                  {Math.max(...filteredItems.map((item) => item.count))}
-                </div>
-                <div className="text-xs font-semibold text-orange-700 dark:text-orange-300">Most Stock</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   )
