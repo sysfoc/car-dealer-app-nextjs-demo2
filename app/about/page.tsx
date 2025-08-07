@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import type { Metadata, ResolvingMetadata } from "next";
-import { useTranslations } from "next-intl";
 
 interface PageData {
   name: string;
@@ -35,7 +34,6 @@ export async function generateMetadata(
 }
 
 const AboutPage = async () => {
-  const t = useTranslations("Footer");
   const headersList = await headers();
   const host = headersList.get("host");
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
@@ -56,7 +54,8 @@ const AboutPage = async () => {
         />
         <div className="mt-8 border-t pt-4">
           <p className="text-center text-sm text-gray-500 dark:text-white">
-            &copy; {new Date().getFullYear()} {t("copyright")} by Sysfoc. All Rights Reserved.
+            &copy; {new Date().getFullYear()} AutomotiveWebSolutions by Sysfoc. All Rights
+            Reserved.
           </p>
         </div>
       </div>
