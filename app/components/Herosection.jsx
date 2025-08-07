@@ -299,7 +299,7 @@ const HeroSection = () => {
     () => (
       <button
         onClick={handleExploreVehicles}
-        className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:px-8 py-3 sm:py-4 h-12 sm:h-14"
+        className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 px-6 py-3 text-base text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 sm:h-14 sm:px-8 sm:py-4"
         aria-label="Explore our vehicle inventory"
       >
         <span className="relative mr-3">Explore Our Vehicles</span>
@@ -313,7 +313,7 @@ const HeroSection = () => {
     () => (
       <button
         onClick={handleLikedCars}
-        className="group relative inline-flex items-center py-3 sm:py-4 h-12 sm:h-14 justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-5 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800 sm:hidden"
+        className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-5 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800 sm:hidden sm:h-14 sm:py-4"
         aria-label="View your favorite cars"
       >
         <span className="relative mr-5">Your Favorite Cars</span>
@@ -348,15 +348,24 @@ const HeroSection = () => {
               <span>Revolutionary Automotive Solutions</span>
             </div>
 
+            <div className="space-y-5">
+              <h1
+                className={`line-clamp-4 min-h-[8.5rem] font-bold leading-tight text-gray-900 transition-opacity duration-300 dark:text-white ${textSizeClass} ${isLoading ? "opacity-75" : "opacity-100"}`}
+              >
+                {renderedParts}
+              </h1>
+            </div>
+
+            {/* 
             <div className="space-y-6">
               <h1
                 className={`font-bold leading-tight text-gray-900 transition-opacity duration-300 dark:text-white ${textSizeClass} ${isLoading ? "opacity-75" : "opacity-100"}`}
                 style={{ minHeight: "120px" }}
               >
-                {/* {renderedParts} */}
-                Website for Automotive Dealers Built to Sell Vehicles
+                {renderedParts}
               </h1>
-
+              </div> */}
+            {/* 
               {error && (
                 <p
                   className="text-sm text-red-600 dark:text-red-400"
@@ -364,10 +373,9 @@ const HeroSection = () => {
                 >
                   Notice: Using cached content due to connectivity issues
                 </p>
-              )}
-            </div>
+              )} */}
 
-           <div className="flex flex-col gap-4 pt-4 min-h-[120px] sm:min-h-[60px] sm:flex-row">
+            <div className="flex min-h-[120px] flex-col gap-4 pt-4 sm:min-h-[60px] sm:flex-row">
               {ExploreButton}
               {LikedCarsButton}
             </div>
@@ -419,9 +427,7 @@ const HeroSection = () => {
 
                 {/* Professional overlay gradient for better text contrast if needed */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent" />
-
               </div>
-
             </div>
           </div>
         </div>

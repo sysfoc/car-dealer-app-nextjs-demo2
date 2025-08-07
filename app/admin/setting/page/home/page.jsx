@@ -311,6 +311,7 @@ const Page = () => {
                         id="search-main-heading"
                         ref={refs.searchMainHeading}
                         rows={2}
+                        maxLength={180}
                         placeholder="Main heading text"
                         className="rounded-lg border-slate-200 focus:border-indigo-500 focus:ring-indigo-500"
                       />{" "}
