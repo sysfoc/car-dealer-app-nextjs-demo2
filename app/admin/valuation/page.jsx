@@ -649,7 +649,7 @@ const AdminValuationPage = () => {
         )}
 
         {/* Reply Modal */}
-        <Modal show={showReplyModal} onClose={() => setShowReplyModal(false)} size="lg">
+        <Modal show={showReplyModal} className="no-scrollbar" onClose={() => setShowReplyModal(false)} size="lg">
           <ModalHeader>
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-blue-100">
@@ -668,7 +668,7 @@ const AdminValuationPage = () => {
               </div>
             </div>
           </ModalHeader>
-          <ModalBody className="pb-6">
+          <ModalBody className="pb-5">
             <div className="mb-4 sm:mb-6 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
               <h4 className="mb-2 text-xs sm:text-sm font-medium text-gray-700">Vehicle Details</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm text-gray-600">
@@ -716,7 +716,7 @@ const AdminValuationPage = () => {
                 {replyMessage}
               </div>
             )}
-            <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 pb-10">
               <button
                 onClick={() => setShowReplyModal(false)}
                 className="w-full sm:w-auto rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
