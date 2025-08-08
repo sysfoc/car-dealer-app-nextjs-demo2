@@ -1,6 +1,6 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   FaEdit,
   FaTrash,
@@ -15,74 +15,111 @@ import {
   FaUsers,
   FaEye,
   FaExclamationTriangle,
-} from "react-icons/fa"
+} from "react-icons/fa";
 
 export default function ViewDealers() {
-  const [dealers, setDealers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [editingDealer, setEditingDealer] = useState(null)
-  const [editFormData, setEditFormData] = useState({})
-  const [errors, setErrors] = useState({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [deleteConfirm, setDeleteConfirm] = useState(null)
-  const router = useRouter()
-  const [userRole, setUserRole] = useState("")
+  const [dealers, setDealers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editingDealer, setEditingDealer] = useState(null);
+  const [editFormData, setEditFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const router = useRouter();
+  const [userRole, setUserRole] = useState("");
 
   // Fetch user role for access control
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const res = await fetch("/api/users/me")
-        const data = await res.json()
+        const res = await fetch("/api/users/me");
+        const data = await res.json();
         if (data.user.role !== "superadmin") {
-          router.replace("/admin/dashboard")
+          router.replace("/admin/dashboard");
         } else {
-          setUserRole(data.user.role)
+          setUserRole(data.user.role);
         }
       } catch (error) {
-        console.error("Failed to fetch user role:", error)
-        router.replace("/login")
+        console.error("Failed to fetch user role:", error);
+        router.replace("/login");
       }
-    }
-    fetchUserRole()
-  }, [router])
+    };
+    fetchUserRole();
+  }, [router]);
 
   // Fetch dealers
   useEffect(() => {
     if (userRole) {
-      fetchDealers()
+      fetchDealers();
     }
-  }, [userRole])
+  }, [userRole]);
 
   const fetchDealers = async () => {
     try {
-      const response = await fetch("/api/dealor")
-      const data = await response.json()
-      setDealers(data)
+      const response = await fetch("/api/dealor");
+      const data = await response.json();
+      setDealers(data);
     } catch (error) {
-      console.error("Error fetching dealers:", error)
+      console.error("Error fetching dealers:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  // Validate Google Maps URL
+  const convertEmbedToRegularUrl = (embedUrl) => {
+    if (!embedUrl) return null;
+
+    try {
+      // If it's already a regular maps URL, return as-is
+      if (
+        embedUrl.includes("/maps/place/") ||
+        embedUrl.includes("/maps/dir/") ||
+        embedUrl.includes("/maps/@")
+      ) {
+        return embedUrl;
+      }
+
+      // If it's an embed URL, convert it
+      if (embedUrl.includes("/maps/embed")) {
+        // Extract the pb parameter which contains the location data
+        const pbMatch = embedUrl.match(/pb=([^&]+)/);
+        if (pbMatch) {
+          // Create a regular Google Maps URL with the same location data
+          return `https://www.google.com/maps?pb=${pbMatch[1]}`;
+        }
+
+        // Fallback: try to extract coordinates if pb parameter fails
+        const coordMatch = embedUrl.match(/!2d(-?\d+\.?\d*)!3d(-?\d+\.?\d*)/);
+        if (coordMatch) {
+          const lng = coordMatch[1];
+          const lat = coordMatch[2];
+          return `https://www.google.com/maps/@${lat},${lng},15z`;
+        }
+      }
+
+      return embedUrl; // Return original if no conversion possible
+    } catch (error) {
+      console.error("Error converting embed URL:", error);
+      return embedUrl;
+    }
+  };
+
   const isValidGoogleMapsUrl = (url) => {
-    if (!url || url.trim() === "") return true // Optional field
-
+    if (!url || url.trim() === "") return true;
     const googleMapsPatterns = [
       /^https:\/\/maps\.google\.com\//,
       /^https:\/\/www\.google\.com\/maps\//,
       /^https:\/\/goo\.gl\/maps\//,
       /^https:\/\/maps\.app\.goo\.gl\//,
       /^https:\/\/google\.com\/maps\//,
-    ]
+      /^https:\/\/www\.google\.com\/maps\/embed/,
+    ];
 
-    return googleMapsPatterns.some((pattern) => pattern.test(url.trim()))
-  }
+    return googleMapsPatterns.some((pattern) => pattern.test(url.trim()));
+  };
 
   const handleEdit = (dealer) => {
-    setEditingDealer(dealer)
+    setEditingDealer(dealer);
     setEditFormData({
       name: dealer.name,
       address: dealer.address,
@@ -90,65 +127,65 @@ export default function ViewDealers() {
       licence: dealer.licence,
       abn: dealer.abn,
       map: dealer.map || "",
-    })
-    setErrors({})
-  }
+    });
+    setErrors({});
+  };
 
   const handleCancelEdit = () => {
-    setEditingDealer(null)
-    setEditFormData({})
-    setErrors({})
-  }
+    setEditingDealer(null);
+    setEditFormData({});
+    setErrors({});
+  };
 
   const handleEditChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setEditFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
 
     // Clear map error when user starts typing
     if (name === "map" && errors.map) {
       setErrors((prev) => ({
         ...prev,
         map: "",
-      }))
+      }));
     }
-  }
+  };
 
   const validateEditForm = () => {
-    const newErrors = {}
+    const newErrors = {};
 
     if (!editFormData.name?.trim()) {
-      newErrors.name = "Dealer name is required"
+      newErrors.name = "Dealer name is required";
     }
     if (!editFormData.address?.trim()) {
-      newErrors.address = "Address is required"
+      newErrors.address = "Address is required";
     }
     if (!editFormData.contact?.trim()) {
-      newErrors.contact = "Contact number is required"
+      newErrors.contact = "Contact number is required";
     }
     if (!editFormData.licence?.trim()) {
-      newErrors.licence = "Licence number is required"
+      newErrors.licence = "Licence number is required";
     }
     if (!editFormData.abn?.trim()) {
-      newErrors.abn = "ABN is required"
+      newErrors.abn = "ABN is required";
     }
 
     // Validate Google Maps URL
     if (editFormData.map && editFormData.map.trim() !== "") {
       if (!isValidGoogleMapsUrl(editFormData.map)) {
-        newErrors.map = "Please enter a valid Google Maps URL"
+        newErrors.map = "Please enter a valid Google Maps URL";
       }
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSaveEdit = async () => {
-    if (!validateEditForm() || isSubmitting) return
-    setIsSubmitting(true)
+    if (!validateEditForm() || isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const response = await fetch(`/api/dealor/${editingDealer._id}`, {
         method: "PUT",
@@ -156,46 +193,48 @@ export default function ViewDealers() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(editFormData),
-      })
+      });
       if (response.ok) {
-        await fetchDealers()
-        setEditingDealer(null)
-        setEditFormData({})
-        setErrors({})
+        await fetchDealers();
+        setEditingDealer(null);
+        setEditFormData({});
+        setErrors({});
       } else {
-        const data = await response.json()
-        setErrors({ general: data.error || "Failed to update dealer" })
+        const data = await response.json();
+        setErrors({ general: data.error || "Failed to update dealer" });
       }
     } catch (error) {
-      setErrors({ general: "Failed to connect to server" })
+      setErrors({ general: "Failed to connect to server" });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleDelete = async (dealerId) => {
     try {
       const response = await fetch(`/api/dealor/${dealerId}`, {
         method: "DELETE",
-      })
+      });
       if (response.ok) {
-        await fetchDealers()
-        setDeleteConfirm(null)
+        await fetchDealers();
+        setDeleteConfirm(null);
       } else {
-        console.error("Failed to delete dealer")
+        console.error("Failed to delete dealer");
       }
     } catch (error) {
-      console.error("Error deleting dealer:", error)
+      console.error("Error deleting dealer:", error);
     }
-  }
+  };
 
   if (!userRole || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            <span className="ml-3 text-slate-600 font-medium">Loading Dealers...</span>
+        <div className="mx-auto max-w-7xl">
+          <div className="flex h-64 items-center justify-center">
+            <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+            <span className="ml-3 font-medium text-slate-600">
+              Loading Dealers...
+            </span>
           </div>
         </div>
       </div>
@@ -206,87 +245,107 @@ export default function ViewDealers() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-8">
       <div className="max-w-8xl mx-auto space-y-6">
         {/* Header Section - Made Compact */}
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 overflow-hidden">
-  <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-4 sm:px-6 py-4">
-    <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
-      <div className="flex items-center space-x-3 flex-1">
-        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
-          <FaUsers className="text-base sm:text-lg text-white" />
+        <div className="overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-lg">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-4 py-4 sm:px-6">
+            <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-x-3 sm:space-y-0">
+              <div className="flex flex-1 items-center space-x-3">
+                <div className="rounded-lg bg-white/20 p-2 backdrop-blur-sm">
+                  <FaUsers className="text-base text-white sm:text-lg" />
+                </div>
+                <div className="flex-1">
+                  <h1 className="text-xl font-bold text-white sm:text-2xl">
+                    Dealer Management
+                  </h1>
+                  <p className="text-xs text-blue-100">
+                    Manage dealership records
+                  </p>
+                </div>
+              </div>
+              <div className="self-start rounded-lg bg-white/10 px-3 py-1 backdrop-blur-sm sm:self-auto">
+                <div className="text-xs text-white/80">Total</div>
+                <div className="text-base font-bold text-white sm:text-lg">
+                  {dealers.length}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl font-bold text-white">Dealer Management</h1>
-          <p className="text-blue-100 text-xs">Manage dealership records</p>
-        </div>
-      </div>
-      <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1 self-start sm:self-auto">
-        <div className="text-white/80 text-xs">Total</div>
-        <div className="text-base sm:text-lg font-bold text-white">{dealers.length}</div>
-      </div>
-    </div>
-  </div>
-</div>
 
         {/* Error Display */}
         {errors.general && (
-          <div className="bg-red-50 border-l-4 border-red-500 rounded-xl p-6 shadow-lg">
+          <div className="rounded-xl border-l-4 border-red-500 bg-red-50 p-6 shadow-lg">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">!</span>
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500">
+                  <span className="text-xs font-bold text-white">!</span>
                 </div>
               </div>
               <div className="ml-4">
-                <div className="text-red-800 font-semibold">Error Occurred</div>
-                <div className="text-red-700 mt-1">{errors.general}</div>
+                <div className="font-semibold text-red-800">Error Occurred</div>
+                <div className="mt-1 text-red-700">{errors.general}</div>
               </div>
             </div>
           </div>
         )}
 
         {/* Main Content */}
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-lg">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+                <tr className="border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100">
                   <th className="px-6 py-4 text-left">
                     <div className="flex items-center space-x-2">
-                      <FaUserTag className="text-slate-400 text-sm" />
-                      <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Dealer Name</span>
+                      <FaUserTag className="text-sm text-slate-400" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                        Dealer Name
+                      </span>
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left">
                     <div className="flex items-center space-x-2">
-                      <FaMapMarkerAlt className="text-slate-400 text-sm" />
-                      <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Address</span>
+                      <FaMapMarkerAlt className="text-sm text-slate-400" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                        Address
+                      </span>
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left">
                     <div className="flex items-center space-x-2">
-                      <FaPhone className="text-slate-400 text-sm" />
-                      <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Contact</span>
+                      <FaPhone className="text-sm text-slate-400" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                        Contact
+                      </span>
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left">
                     <div className="flex items-center space-x-2">
-                      <FaFileAlt className="text-slate-400 text-sm" />
-                      <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Licence</span>
+                      <FaFileAlt className="text-sm text-slate-400" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                        Licence
+                      </span>
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left">
                     <div className="flex items-center space-x-2">
-                      <FaBuilding className="text-slate-400 text-sm" />
-                      <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">ABN</span>
+                      <FaBuilding className="text-sm text-slate-400" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                        ABN
+                      </span>
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left">
                     <div className="flex items-center space-x-2">
-                      <FaMap className="text-slate-400 text-sm" />
-                      <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Map</span>
+                      <FaMap className="text-sm text-slate-400" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                        Map
+                      </span>
                     </div>
                   </th>
                   <th className="px-6 py-4 text-center">
-                    <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Actions
+                    </span>
                   </th>
                 </tr>
               </thead>
@@ -294,66 +353,76 @@ export default function ViewDealers() {
                 {dealers.map((dealer, index) => (
                   <tr
                     key={dealer._id}
-                    className={`hover:bg-slate-50/50 transition-colors duration-200 ${index % 2 === 0 ? "bg-white" : "bg-slate-25"}`}
+                    className={`transition-colors duration-200 hover:bg-slate-50/50 ${index % 2 === 0 ? "bg-white" : "bg-slate-25"}`}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
                           {dealer.name.charAt(0).toUpperCase()}
                         </div>
-                        <div className="font-semibold text-slate-900 text-sm">{dealer.name}</div>
+                        <div className="text-sm font-semibold text-slate-900">
+                          {dealer.name}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-slate-700 text-sm leading-relaxed max-w-xs">{dealer.address}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="bg-slate-100 rounded-md px-2 py-1 inline-block">
-                        <div className="text-slate-700 font-medium text-sm">{dealer.contact}</div>
+                      <div className="max-w-xs text-sm leading-relaxed text-slate-700">
+                        {dealer.address}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="bg-blue-50 text-blue-700 rounded-md px-2 py-1 inline-block">
-                        <div className="font-medium text-sm">{dealer.licence}</div>
+                      <div className="inline-block rounded-md bg-slate-100 px-2 py-1">
+                        <div className="text-sm font-medium text-slate-700">
+                          {dealer.contact}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="bg-indigo-50 text-indigo-700 rounded-md px-2 py-1 inline-block">
-                        <div className="font-medium text-sm">{dealer.abn}</div>
+                      <div className="inline-block rounded-md bg-blue-50 px-2 py-1 text-blue-700">
+                        <div className="text-sm font-medium">
+                          {dealer.licence}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="inline-block rounded-md bg-indigo-50 px-2 py-1 text-indigo-700">
+                        <div className="text-sm font-medium">{dealer.abn}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       {dealer.map && isValidGoogleMapsUrl(dealer.map) ? (
                         <a
-                          href={dealer.map}
+                          href={convertEmbedToRegularUrl(dealer.map)} // Use the converted URL
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center space-x-1 bg-green-50 hover:bg-green-100 text-green-700 hover:text-green-800 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200"
+                          className="inline-flex items-center space-x-1 rounded-md bg-green-50 px-3 py-1 text-sm font-medium text-green-700 transition-colors duration-200 hover:bg-green-100 hover:text-green-800"
                         >
                           <FaEye className="text-xs" />
                           <span>View Map</span>
                         </a>
                       ) : dealer.map ? (
-                        <div className="inline-flex items-center space-x-1 bg-red-50 text-red-700 px-3 py-1 rounded-md text-sm font-medium">
+                        <div className="inline-flex items-center space-x-1 rounded-md bg-red-50 px-3 py-1 text-sm font-medium text-red-700">
                           <FaExclamationTriangle className="text-xs" />
                           <span>Invalid URL</span>
                         </div>
                       ) : (
-                        <div className="text-slate-400 text-sm italic">No map</div>
+                        <div className="text-sm italic text-slate-400">
+                          No map
+                        </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex justify-center space-x-2">
                         <button
                           onClick={() => handleEdit(dealer)}
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center space-x-1 shadow-md hover:shadow-lg transition-all duration-200"
+                          className="flex items-center space-x-1 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-200 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg"
                         >
                           <FaEdit className="text-xs" />
                           <span>Edit</span>
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(dealer._id)}
-                          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center space-x-1 shadow-md hover:shadow-lg transition-all duration-200"
+                          className="flex items-center space-x-1 rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-200 hover:from-red-600 hover:to-red-700 hover:shadow-lg"
                         >
                           <FaTrash className="text-xs" />
                           <span>Delete</span>
@@ -366,13 +435,17 @@ export default function ViewDealers() {
             </table>
           </div>
           {dealers.length === 0 && !loading && (
-            <div className="text-center py-16">
-              <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="py-16 text-center">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100">
                 <FaUsers className="text-3xl text-slate-400" />
               </div>
               <div className="space-y-1">
-                <div className="text-lg font-semibold text-slate-600">No dealers found</div>
-                <div className="text-slate-500 text-sm">There are currently no dealers in the system.</div>
+                <div className="text-lg font-semibold text-slate-600">
+                  No dealers found
+                </div>
+                <div className="text-sm text-slate-500">
+                  There are currently no dealers in the system.
+                </div>
               </div>
             </div>
           )}
@@ -381,22 +454,26 @@ export default function ViewDealers() {
 
       {/* Professional Edit Modal */}
       {editingDealer && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                    <FaEdit className="text-white text-lg" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <FaEdit className="text-lg text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">Edit Dealer</h3>
-                    <p className="text-blue-100 text-sm">Update dealer information</p>
+                    <h3 className="text-xl font-bold text-white">
+                      Edit Dealer
+                    </h3>
+                    <p className="text-sm text-blue-100">
+                      Update dealer information
+                    </p>
                   </div>
                 </div>
                 <button
                   onClick={handleCancelEdit}
-                  className="text-white/80 hover:text-white transition-colors duration-200"
+                  className="text-white/80 transition-colors duration-200 hover:text-white"
                 >
                   <FaTimes className="text-xl" />
                 </button>
@@ -404,11 +481,11 @@ export default function ViewDealers() {
             </div>
 
             <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {/* Dealer Name */}
                 <div className="space-y-1">
                   <label className="block text-sm font-semibold text-slate-700">
-                    <FaUserTag className="inline mr-2 text-slate-400" />
+                    <FaUserTag className="mr-2 inline text-slate-400" />
                     Dealer Name
                   </label>
                   <input
@@ -416,16 +493,20 @@ export default function ViewDealers() {
                     name="name"
                     value={editFormData.name}
                     onChange={handleEditChange}
-                    className={`w-full border-2 ${errors.name ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                    className={`w-full border-2 ${errors.name ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="Enter dealer name"
                   />
-                  {errors.name && <div className="text-red-500 text-xs font-medium">{errors.name}</div>}
+                  {errors.name && (
+                    <div className="text-xs font-medium text-red-500">
+                      {errors.name}
+                    </div>
+                  )}
                 </div>
 
                 {/* Contact */}
                 <div className="space-y-1">
                   <label className="block text-sm font-semibold text-slate-700">
-                    <FaPhone className="inline mr-2 text-slate-400" />
+                    <FaPhone className="mr-2 inline text-slate-400" />
                     Contact Number
                   </label>
                   <input
@@ -433,16 +514,20 @@ export default function ViewDealers() {
                     name="contact"
                     value={editFormData.contact}
                     onChange={handleEditChange}
-                    className={`w-full border-2 ${errors.contact ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                    className={`w-full border-2 ${errors.contact ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="Enter contact number"
                   />
-                  {errors.contact && <div className="text-red-500 text-xs font-medium">{errors.contact}</div>}
+                  {errors.contact && (
+                    <div className="text-xs font-medium text-red-500">
+                      {errors.contact}
+                    </div>
+                  )}
                 </div>
 
                 {/* Address */}
                 <div className="space-y-1 md:col-span-2">
                   <label className="block text-sm font-semibold text-slate-700">
-                    <FaMapMarkerAlt className="inline mr-2 text-slate-400" />
+                    <FaMapMarkerAlt className="mr-2 inline text-slate-400" />
                     Address
                   </label>
                   <textarea
@@ -450,16 +535,20 @@ export default function ViewDealers() {
                     value={editFormData.address}
                     onChange={handleEditChange}
                     rows="2"
-                    className={`w-full border-2 ${errors.address ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none`}
+                    className={`w-full border-2 ${errors.address ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} resize-none rounded-xl px-3 py-2 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="Enter complete address"
                   />
-                  {errors.address && <div className="text-red-500 text-xs font-medium">{errors.address}</div>}
+                  {errors.address && (
+                    <div className="text-xs font-medium text-red-500">
+                      {errors.address}
+                    </div>
+                  )}
                 </div>
 
                 {/* Licence */}
                 <div className="space-y-1">
                   <label className="block text-sm font-semibold text-slate-700">
-                    <FaFileAlt className="inline mr-2 text-slate-400" />
+                    <FaFileAlt className="mr-2 inline text-slate-400" />
                     Licence Number
                   </label>
                   <input
@@ -467,16 +556,20 @@ export default function ViewDealers() {
                     name="licence"
                     value={editFormData.licence}
                     onChange={handleEditChange}
-                    className={`w-full border-2 ${errors.licence ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                    className={`w-full border-2 ${errors.licence ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="Enter licence number"
                   />
-                  {errors.licence && <div className="text-red-500 text-xs font-medium">{errors.licence}</div>}
+                  {errors.licence && (
+                    <div className="text-xs font-medium text-red-500">
+                      {errors.licence}
+                    </div>
+                  )}
                 </div>
 
                 {/* ABN */}
                 <div className="space-y-1">
                   <label className="block text-sm font-semibold text-slate-700">
-                    <FaBuilding className="inline mr-2 text-slate-400" />
+                    <FaBuilding className="mr-2 inline text-slate-400" />
                     ABN
                   </label>
                   <input
@@ -484,16 +577,20 @@ export default function ViewDealers() {
                     name="abn"
                     value={editFormData.abn}
                     onChange={handleEditChange}
-                    className={`w-full border-2 ${errors.abn ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                    className={`w-full border-2 ${errors.abn ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="Enter ABN"
                   />
-                  {errors.abn && <div className="text-red-500 text-xs font-medium">{errors.abn}</div>}
+                  {errors.abn && (
+                    <div className="text-xs font-medium text-red-500">
+                      {errors.abn}
+                    </div>
+                  )}
                 </div>
 
                 {/* Map Link */}
                 <div className="space-y-1 md:col-span-2">
                   <label className="block text-sm font-semibold text-slate-700">
-                    <FaMap className="inline mr-2 text-slate-400" />
+                    <FaMap className="mr-2 inline text-slate-400" />
                     Google Maps URL (Optional)
                   </label>
                   <input
@@ -501,24 +598,28 @@ export default function ViewDealers() {
                     name="map"
                     value={editFormData.map}
                     onChange={handleEditChange}
-                    className={`w-full border-2 ${errors.map ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                    className={`w-full border-2 ${errors.map ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} rounded-xl px-3 py-2 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="https://maps.google.com/..."
                   />
-                  {errors.map && <div className="text-red-500 text-xs font-medium">{errors.map}</div>}
+                  {errors.map && (
+                    <div className="text-xs font-medium text-red-500">
+                      {errors.map}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-4 mt-6 pt-4 border-t border-slate-200">
+              <div className="mt-6 flex justify-end space-x-4 border-t border-slate-200 pt-4">
                 <button
                   onClick={handleCancelEdit}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-medium transition-colors duration-200"
+                  className="rounded-xl bg-slate-100 px-4 py-2 font-medium text-slate-700 transition-colors duration-200 hover:bg-slate-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveEdit}
                   disabled={isSubmitting}
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="flex items-center space-x-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-600 hover:to-blue-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <FaSave className="text-sm" />
                   <span>{isSubmitting ? "Saving..." : "Save Changes"}</span>
@@ -531,34 +632,38 @@ export default function ViewDealers() {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
             <div className="bg-gradient-to-r from-red-500 to-red-600 px-8 py-6">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                  <FaTrash className="text-white text-lg" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                  <FaTrash className="text-lg text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">Confirm Deletion</h3>
-                  <p className="text-red-100 text-sm">This action is irreversible</p>
+                  <h3 className="text-xl font-bold text-white">
+                    Confirm Deletion
+                  </h3>
+                  <p className="text-sm text-red-100">
+                    This action is irreversible
+                  </p>
                 </div>
               </div>
             </div>
             <div className="p-8">
-              <p className="text-slate-600 text-base leading-relaxed mb-8">
-                Are you sure you want to permanently delete this dealer? All associated data will be lost and this
-                action cannot be undone.
+              <p className="mb-8 text-base leading-relaxed text-slate-600">
+                Are you sure you want to permanently delete this dealer? All
+                associated data will be lost and this action cannot be undone.
               </p>
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-medium transition-colors duration-200"
+                  className="rounded-xl bg-slate-100 px-6 py-3 font-medium text-slate-700 transition-colors duration-200 hover:bg-slate-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(deleteConfirm)}
-                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-6 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:from-red-600 hover:to-red-700 hover:shadow-xl"
                 >
                   Delete Permanently
                 </button>
@@ -568,5 +673,5 @@ export default function ViewDealers() {
         </div>
       )}
     </div>
-  )
+  );
 }

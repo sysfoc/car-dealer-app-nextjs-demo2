@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Header from "./Header";
-import SearchCallToAction from "./SearchCallToAction"
+import SearchCallToAction from "./SearchCallToAction";
 
 const MainLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -9,21 +9,20 @@ const MainLayout = ({ children }) => {
   const handleOpenSearch = () => {
     setIsSidebarOpen(true);
   };
-    const handleCloseSearch = () => {
+  const handleCloseSearch = () => {
     setIsSidebarOpen(false);
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-     <Header 
+      <Header
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
         onSidebarClose={handleCloseSearch}
       />
-      
-      <main className="pt-16"> 
+      <main className="pt-16">
         {children}
-        
+
         <SearchCallToAction onSearchClick={handleOpenSearch} />
       </main>
     </div>

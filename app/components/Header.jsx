@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Banner from "./Banner"
 import { FaUser } from "react-icons/fa";
 import {
   FaHeart,
@@ -407,6 +408,7 @@ const Header = () => {
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg dark:border-gray-700 dark:bg-gray-900/95">
+       <Banner/>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
           <div className="flex h-16 items-center justify-between">
             {LogoComponent}

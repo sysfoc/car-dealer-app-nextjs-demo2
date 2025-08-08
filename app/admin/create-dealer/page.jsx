@@ -46,72 +46,119 @@ export default function CreateDealer() {
     }))
   }
 
-  const validateForm = () => {
-    const newErrors = {}
-    if (!formData.name.trim()) {
-      newErrors.name = "Dealer name is required"
-    }
-    if (!formData.address.trim()) {
-      newErrors.address = "Address is required"
-    }
-    if (!formData.contact.trim()) {
-      newErrors.contact = "Contact number is required"
-    }
-    if (!formData.licence.trim()) {
-      newErrors.licence = "Licence number is required"
-    }
-    if (!formData.abn.trim()) {
-      newErrors.abn = "ABN is required"
-    }
-    // Map is optional, no validation needed if empty
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+const isValidGoogleMapsInput = (input) => {
+  if (!input || input.trim() === "") return true
+
+  const trimmedInput = input.trim()
+  
+  if (trimmedInput.includes('<iframe') && trimmedInput.includes('google.com/maps/embed')) {
+    return true
   }
+  
+  const googleMapsPatterns = [
+    /^https:\/\/maps\.google\.com\//,
+    /^https:\/\/www\.google\.com\/maps\//,
+    /^https:\/\/goo\.gl\/maps\//,
+    /^https:\/\/maps\.app\.goo\.gl\//,
+    /^https:\/\/google\.com\/maps\//,
+    /^https:\/\/www\.google\.com\/maps\/embed/
+  ]
+
+  return googleMapsPatterns.some((pattern) => pattern.test(trimmedInput))
+}
+
+const processMapInput = (input) => {
+  if (!input || input.trim() === "") return ""
+  
+  const trimmedInput = input.trim()
+  
+  if (trimmedInput.includes('<iframe') && trimmedInput.includes('google.com/maps/embed')) {
+    const srcMatch = trimmedInput.match(/src="([^"]*)"/)
+    return srcMatch ? srcMatch[1] : ""
+  }
+  
+  return trimmedInput
+}
+
+  const validateForm = () => {
+  const newErrors = {}
+  if (!formData.name.trim()) {
+    newErrors.name = "Dealer name is required"
+  }
+  if (!formData.address.trim()) {
+    newErrors.address = "Address is required"
+  }
+  if (!formData.contact.trim()) {
+    newErrors.contact = "Contact number is required"
+  }
+  if (!formData.licence.trim()) {
+    newErrors.licence = "Licence number is required"
+  }
+  if (!formData.abn.trim()) {
+    newErrors.abn = "ABN is required"
+  }
+
+  // Updated map validation
+  if (formData.map && formData.map.trim() !== "") {
+    if (!isValidGoogleMapsInput(formData.map)) {
+      newErrors.map = "Please enter a valid Google Maps URL or embed code"
+    }
+  }
+
+  setErrors(newErrors)
+  return Object.keys(newErrors).length === 0
+}
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!validateForm() || isSubmitting) return
+  e.preventDefault()
+  if (!validateForm() || isSubmitting) return
 
-    setIsSubmitting(true)
-    setErrors({}) // Clear previous errors
+  setIsSubmitting(true)
+  setErrors({}) // Clear previous errors
 
-    try {
-      const response = await fetch("/api/dealor", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        const serverErrors = {}
-        const errorMessage = data.error ? data.error.toLowerCase() : "An unknown error occurred."
-
-        if (errorMessage.includes("name")) serverErrors.name = data.error
-        else if (errorMessage.includes("address")) serverErrors.address = data.error
-        else if (errorMessage.includes("contact")) serverErrors.contact = data.error
-        else if (errorMessage.includes("licence")) serverErrors.licence = data.error
-        else if (errorMessage.includes("abn")) serverErrors.abn = data.error
-        else if (errorMessage.includes("map")) serverErrors.map = data.error
-        else serverErrors.general = data.error || "Failed to create dealer."
-
-        setErrors(serverErrors)
-        return
-      }
-
-      setIsSuccess(true)
-      setFormData({ name: "", address: "", contact: "", licence: "", abn: "", map: "" })
-      setTimeout(() => setIsSuccess(false), 3000)
-    } catch (error) {
-      setErrors({ general: "Failed to connect to server. Please try again." })
-    } finally {
-      setIsSubmitting(false)
+  try {
+    // Process the map input to extract URL if it's an iframe
+    const processedFormData = {
+      ...formData,
+      map: processMapInput(formData.map)
     }
+
+    const response = await fetch("/api/dealor", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(processedFormData),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      const serverErrors = {}
+      const errorMessage = data.error ? data.error.toLowerCase() : "An unknown error occurred."
+
+      if (errorMessage.includes("name")) serverErrors.name = data.error
+      else if (errorMessage.includes("address")) serverErrors.address = data.error
+      else if (errorMessage.includes("contact")) serverErrors.contact = data.error
+      else if (errorMessage.includes("licence")) serverErrors.licence = data.error
+      else if (errorMessage.includes("abn")) serverErrors.abn = data.error
+      else if (errorMessage.includes("map")) serverErrors.map = data.error
+      else serverErrors.general = data.error || "Failed to create dealer."
+
+      setErrors(serverErrors)
+      return
+    }
+
+    setIsSuccess(true)
+    setFormData({ name: "", address: "", contact: "", licence: "", abn: "", map: "" })
+    setTimeout(() => setIsSuccess(false), 3000)
+  } catch (error) {
+    setErrors({ general: "Failed to connect to server. Please try again." })
+  } finally {
+    setIsSubmitting(false)
   }
+}
 
     if (!userRole) {
     return (
@@ -264,26 +311,29 @@ export default function CreateDealer() {
               </div>
 
               {/* Map Field (Optional) */}
-              <div className="form-group">
-                <label htmlFor="map" className="block text-sm font-medium text-gray-700 mb-1">
-                  Map URL (Optional)
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaMap className="text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    id="map"
-                    name="map"
-                    value={formData.map}
-                    onChange={handleChange}
-                    className={`w-full border ${errors.map ? "border-red-500" : "border-gray-300"} rounded-md pl-10 pr-3 py-3 focus:outline-none focus:ring-1 focus:ring-blue-500`}
-                    placeholder="https://maps.google.com/..."
-                  />
-                </div>
-                {errors.map && <div className="text-red-500 text-sm mt-1">{errors.map}</div>}
-              </div>
+<div className="form-group">
+  <label htmlFor="map" className="block text-sm font-medium text-gray-700 mb-1">
+    Map (Optional)
+  </label>
+  <div className="relative">
+    <div className="absolute top-3 left-0 pl-3 flex items-start pointer-events-none">
+      <FaMap className="text-gray-400" />
+    </div>
+    <textarea
+      id="map"
+      name="map"
+      rows="3"
+      value={formData.map}
+      onChange={handleChange}
+      className={`w-full border ${errors.map ? "border-red-500" : "border-gray-300"} rounded-md pl-10 pr-3 py-3 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none`}
+      placeholder="Enter Google Maps URL or paste iframe embed code..."
+    />
+  </div>
+  {errors.map && <div className="text-red-500 text-sm mt-1">{errors.map}</div>}
+  <div className="text-xs text-gray-500 mt-1">
+    You can paste either a Google Maps URL or the full iframe embed code
+  </div>
+</div>
             </div>
 
             {/* Submit Button */}
