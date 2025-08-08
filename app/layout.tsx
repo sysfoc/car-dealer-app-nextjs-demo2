@@ -21,7 +21,7 @@ import { PreloadResources } from "./preload-resources";
 
 const getGeneralSettings = async () => {
   try {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}` : "http://localhost:3000"
     const response = await fetch(`${baseUrl}/api/settings/general`, {
       next: { revalidate: 0 },
     });
@@ -39,9 +39,9 @@ const getGeneralSettings = async () => {
 
 const getHomepageSettings = async () => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}` : "http://localhost:3000"
     const res = await fetch(`${baseUrl}/api/homepage`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 600 },
     });
     if (!res.ok) {
       console.error(`Failed to fetch homepage settings: ${res.status}`);
