@@ -61,25 +61,21 @@ export default function BrandsPage() {
     // Reset to first page when search term or filters change
     setCurrentPage(1)
   }, [searchTerm]) // Removed selectedCategory as it's no longer used
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex items-center justify-center">
-        <div className="flex items-center space-x-4 rounded-2xl border border-slate-200 bg-white px-8 py-6 shadow-2xl dark:border-gray-700 dark:bg-gray-800">
-          <Spinner aria-label="Loading brands" size="lg" className="text-blue-600" />
-          <div>
-            <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">Loading brands...</span>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Please wait while we fetch the automotive brands.
-            </p>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <span className="ml-3 text-slate-600 font-medium">Loading brands...</span>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-950 mt-32">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -right-32 -top-40 h-96 w-96 animate-pulse rounded-full bg-blue-200/15 to-purple-200/15 blur-3xl dark:bg-blue-900/10 dark:to-purple-900/10"></div>
         <div className="absolute -bottom-32 -left-40 h-80 w-80 animate-pulse rounded-full bg-orange-200/15 to-red-200/15 blur-3xl delay-1000 dark:bg-orange-900/10 dark:to-red-900/10"></div>

@@ -43,7 +43,7 @@ const TermsPage = async () => {
   const contentData = await getTermsContent(baseUrl);
 
   return (
-    <div className="mt-10 min-h-screen bg-gray-50 py-10 dark:bg-gray-800 md:mt-12">
+    <div className="mt-28 min-h-screen bg-gray-50 py-10 dark:bg-gray-800 md:mt-32">
       <div className="mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-md dark:bg-gray-700">
         <h1 className="mb-6 text-center text-3xl font-bold text-gray-800 dark:text-white">
           {contentData?.name || "Terms and Conditions"}

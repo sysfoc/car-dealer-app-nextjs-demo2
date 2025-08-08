@@ -150,7 +150,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="relative min-h-screen w-full overflow-hidden">
+      <section className="relative min-h-screen w-full overflow-hidden mt-20">
         {/* Background with overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"

@@ -115,7 +115,7 @@ const LikedCarsPage = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 mt-20 dark:to-slate-800">
         <div className="container mx-auto px-4 py-20">
           <div className="flex items-center justify-center">
             <div className="flex flex-col items-center space-y-4">
@@ -132,7 +132,7 @@ const LikedCarsPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="min-h-screen mt-20 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         <div className="container mx-auto mt-16 px-4 py-8">
           <div className="mx-auto max-w-md text-center">
             <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 shadow-lg dark:from-blue-900/30 dark:to-blue-800/30">
@@ -174,7 +174,7 @@ const LikedCarsPage = () => {
 
   if (error) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 mt-20">
       <div className="container mx-auto px-4 py-20">
         <div className="rounded-lg border border-slate-200 bg-white px-8 py-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700">
@@ -201,15 +201,15 @@ const LikedCarsPage = () => {
 }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 mt-28">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-12">
           <div className="flex items-center justify-between">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-red-50 px-4 py-2 text-sm font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400">
+              {/* <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-red-50 px-4 py-2 text-sm font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400">
                 <MdFavorite className="h-4 w-4" />
                 <span>Favorites Collection</span>
-              </div>
+              </div> */}
 
               <h1 className="mb-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-4xl font-bold leading-tight text-transparent dark:from-white dark:via-slate-100 dark:to-slate-300 md:text-5xl">
                 My Liked Cars
