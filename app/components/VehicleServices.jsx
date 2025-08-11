@@ -170,9 +170,9 @@ export default function SellMyCar() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-900 mt-20">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 mt-20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10"></div>
 
@@ -187,7 +187,7 @@ export default function SellMyCar() {
               </div>
 
               <div className="space-y-6">
-                <h1 className="text-5xl font-bold leading-tight text-white lg:text-6xl">
+                <h1 className="sm:text-5xl text-3xl font-bold leading-tight text-white lg:text-6xl">
                   We Sell Cars
                   <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                     {" "}

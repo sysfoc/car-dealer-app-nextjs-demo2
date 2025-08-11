@@ -96,7 +96,7 @@ export default function LoginPage() {
   const currentCredentials = demoCredentials[activeCredential];
 
   return (
-    <div className="mt-14 flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 md:mt-16">
+    <div className="mt-24 flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 md:mt-32">
       <div className="relative hidden flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-12 text-white dark:from-blue-700 dark:via-indigo-700 dark:to-purple-800 lg:flex lg:w-1/2">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-br from-white via-transparent to-transparent"></div>
