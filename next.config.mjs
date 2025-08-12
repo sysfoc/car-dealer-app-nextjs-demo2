@@ -31,9 +31,6 @@ const nextConfig = {
       },
     ],
   },
- experimental: {
-    serverExternalPackages: ["sharp"],
-  },
 }
 
 export default withNextIntl(nextConfig)
