@@ -30,12 +30,6 @@
     "followHeading": "Follow Us On Social Media",
     "followDescription": "All The Latest News For You"
   },
-  "BlogsPage": {
-    "title": "Our Blog",
-    "description": "Discover insights, tutorials, and stories from our team",
-    "metaTitle": "Blog - Auto Car Dealers",
-    "metaDescription": "Read our latest blog posts about cars, automotive industry news, and helpful tips."
-  },
   "Filters": {
     "keyword": "Search by Keyword",
     "condition": "Condition",
