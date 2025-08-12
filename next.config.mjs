@@ -30,10 +30,9 @@ const nextConfig = {
         hostname: "localhost",
       },
     ],
-    unoptimized: true,
   },
  experimental: {
-    serverComponentsExternalPackages: ["sharp"],
+    serverExternalPackages: ["sharp"],
   },
 }
 
