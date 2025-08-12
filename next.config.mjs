@@ -33,7 +33,7 @@ const nextConfig = {
     unoptimized: true,
   },
  experimental: {
-    serverExternalPackages: ["sharp"],
+    serverComponentsExternalPackages: ["sharp"],
   },
 }
 
