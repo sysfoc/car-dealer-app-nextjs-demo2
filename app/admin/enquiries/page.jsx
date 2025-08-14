@@ -257,12 +257,6 @@ const AdminEnquiriesPage = () => {
         </p>
       </div>
     </div>
-    <div className="h-2 w-full rounded-full bg-gray-200">
-      <div
-        className="h-2 rounded-full bg-blue-600"
-        style={{ width: "100%" }}
-      ></div>
-    </div>
   </div>
 
   <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm transition-shadow hover:shadow-md">
@@ -278,15 +272,6 @@ const AdminEnquiriesPage = () => {
       </div>
     </div>
     <div className="h-2 w-full rounded-full bg-gray-200">
-      <div
-        className="h-2 rounded-full bg-amber-600"
-        style={{
-          width:
-            stats.total > 0
-              ? `${(stats.pending / stats.total) * 100}%`
-              : "0%",
-        }}
-      ></div>
     </div>
   </div>
 
@@ -303,15 +288,6 @@ const AdminEnquiriesPage = () => {
       </div>
     </div>
     <div className="h-2 w-full rounded-full bg-gray-200">
-      <div
-        className="h-2 rounded-full bg-emerald-600"
-        style={{
-          width:
-            stats.total > 0
-              ? `${(stats.answered / stats.total) * 100}%`
-              : "0%",
-        }}
-      ></div>
     </div>
   </div>
 </div>

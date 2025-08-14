@@ -335,12 +335,12 @@ export default function Home() {
    ) : dealer ? (
      dealer.map ? (
        <iframe
-         src={dealer.map}
-         width="600"
-         height="450"
-         style={{ border: 0, width: "100%" }}
-         loading="lazy"
-       ></iframe>
+  src={dealer.map}
+  width="600"
+  height="450"
+  className="iframe-style-4"
+  loading="lazy"
+></iframe>
      ) : (
        <p>Map is not available</p>
      )

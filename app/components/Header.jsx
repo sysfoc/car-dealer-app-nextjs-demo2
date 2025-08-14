@@ -246,8 +246,8 @@ const Header = () => {
 
   // Optimized skeleton without animations to prevent CLS
   const LogoSkeleton = useMemo(() => (
-    <div className="flex items-center space-x-3" style={{ height: '48px', width: '200px' }}>
-      <div className="h-12 w-12 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+  <div className="flex items-center space-x-3 div-style-11">
+  <div className="h-12 w-12 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
       <div className="flex flex-col space-y-1">
         <div className="h-4 w-20 rounded bg-gray-200 dark:bg-gray-700"></div>
         <div className="h-3 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
@@ -276,20 +276,21 @@ const Header = () => {
 
     return (
       <Link href="/" className="flex items-center space-x-3">
-        <div style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}>
-          {logo && !logoError ? (
+       <div className="div-style-14">
+   {logo && !logoError ? (
             <>
-              <div style={{ width: '64px', height: '64px', position: 'relative' }}>
-                <Image
-                  src={logo}
-                  alt="Logo"
-                  fill
-                  className="object-contain"
-                  onError={handleLogoError}
-                  priority
-                  sizes="64px"
-                />
-              </div>
+             <div className="div-style-13">
+  <Image
+    src={logo}
+    alt="Logo"
+    fill
+    className="object-contain"
+    onError={handleLogoError}
+    priority
+    sizes="64px"
+  />
+</div>
+
               {logoContent}
             </>
           ) : (
@@ -418,22 +419,18 @@ const Header = () => {
 
       {/* Mobile Menu Overlay - Use transform for better performance */}
       {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm"
-          onClick={closeMobileMenu}
-          style={{ transform: 'translate3d(0, 0, 0)' }}
-        />
-      )}
+  <div
+    className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform-gpu"
+    onClick={closeMobileMenu}
+  />
+)}
 
-      {/* Mobile Menu - Optimized animations */}
-      <div
-        className={`fixed left-0 top-0 z-[60] h-full w-full max-w-xs transform overflow-y-auto bg-white shadow-2xl dark:bg-gray-900 scrollbar-hide lg:hidden`}
-        style={{ 
-          transform: isMobileMenuOpen ? 'translate3d(0, 0, 0)' : 'translate3d(-100%, 0, 0)',
-          transition: 'transform 0.2s ease-out',
-          willChange: 'transform'
-        }}
-      >
+  <div
+  className={`fixed left-0 top-0 z-[60] h-full w-full max-w-xs transform overflow-y-auto bg-white shadow-2xl dark:bg-gray-900 scrollbar-hide lg:hidden transition-transform duration-300 ${
+    isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+  }`}
+>
+
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b border-gray-200 p-3 dark:border-gray-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">

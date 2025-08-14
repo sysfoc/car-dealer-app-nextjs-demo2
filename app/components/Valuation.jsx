@@ -152,12 +152,8 @@ export default function Home() {
     <>
       <section className="relative min-h-screen w-full overflow-hidden mt-20">
         {/* Background with overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('/sydney.jpg')",
-          }}
-        />
+       <div className="div-style-7 div-style-21" />
+
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-800/85 to-blue-900/90" />
 
         {/* Hero Content */}

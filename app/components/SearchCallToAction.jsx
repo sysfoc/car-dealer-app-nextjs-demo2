@@ -29,16 +29,6 @@ const SearchCallToAction = () => {
 
   return (
     <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, #3b82f6 2px, transparent 2px),
-                           radial-gradient(circle at 75% 75%, #8b5cf6 2px, transparent 2px)`,
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-      </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">

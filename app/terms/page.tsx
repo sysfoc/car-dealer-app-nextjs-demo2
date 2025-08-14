@@ -49,7 +49,7 @@ const TermsPage = async () => {
           {contentData?.name || "Terms and Conditions"}
         </h1>
         <div
-          className="text-gray-600 dark:text-white"
+          className="prose dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{
             __html: contentData?.content || "<p>Loading...</p>",
           }}

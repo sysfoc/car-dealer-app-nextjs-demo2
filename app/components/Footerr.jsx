@@ -305,10 +305,8 @@ const Footerr = () => {
 
   // Optimized skeleton without animations to prevent CLS
   const LogoSkeleton = useMemo(() => (
-    <div 
-      className="rounded bg-gray-300 dark:bg-gray-600" 
-      style={{ height: '90px', width: '180px' }}
-    />
+    <div className="rounded bg-gray-300 dark:bg-gray-600 div-style-15" />
+
   ), []);
 
   // Professional logo component with fixed dimensions and error handling
@@ -317,24 +315,25 @@ const Footerr = () => {
 
     if (logo && !logoError) {
       return (
-        <div style={{ height: '200px', width: '200px', position: 'relative' }}>
-          <Image
-            src={logo}
-            alt="Footer Logo"
-            fill
-            className="object-contain"
-            onError={handleLogoError}
-            sizes="180px"
-            priority
-          />
-        </div>
+        <div className="div-style-17">
+  <Image
+    src={logo}
+    alt="Footer Logo"
+    fill
+    className="object-contain"
+    onError={handleLogoError}
+    sizes="180px"
+    priority
+  />
+</div>
+
       );
     }
 
     // Fallback text logo when no image available
     return (
-      <div className="flex flex-col space-y-1" style={{ height: '90px', width: '180px' }}>
-        <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+   <div className="flex flex-col space-y-1 div-style-16">
+ <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
           FrontSeat
         </span>
         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -499,26 +498,22 @@ const Footerr = () => {
     <div className="relative mt-5">
       {/* Optimized SVG Wave */}
       <div className="absolute left-0 top-0 w-full overflow-hidden leading-none">
-        <svg
-          className="relative block h-12 w-full md:h-16"
-          data-name="Layer 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          style={{ transform: 'translate3d(0, 0, 0)' }}
-        >
-          <path
-            d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39c-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
-            className="fill-gray-50 dark:fill-gray-800"
-          />
-        </svg>
+       <svg
+  className="relative block h-12 w-full md:h-16 transform-gpu"
+  data-name="Layer 1"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1200 120"
+  preserveAspectRatio="none"
+>
+  <path
+    d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39c-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
+    className="fill-gray-50 dark:fill-gray-800"
+  />
+</svg>
       </div>
 
       {/* Footer Content with fixed layout to prevent CLS */}
-      <footer 
-        className="relative rounded-t-3xl bg-gray-200 pb-3 pt-8 shadow-inner dark:bg-gray-800"
-        style={{ minHeight: '400px' }}
-      >
+     <footer className="relative rounded-t-3xl bg-gray-200 pb-3 pt-8 shadow-inner dark:bg-gray-800 footer-style-1">
         <div className="mx-auto w-full max-w-7xl px-4">
           <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {/* Logo Column */}

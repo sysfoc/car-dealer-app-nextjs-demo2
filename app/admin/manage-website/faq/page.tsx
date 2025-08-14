@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 interface FAQ {
   _id: string;
   title: string;
-  description: string;
+  content: string;
   order: number;
   createdAt: string;
 }
@@ -184,7 +184,7 @@ export default function Page() {
                     FAQ Details
                   </TableHeadCell>
                   <TableHeadCell className="text-slate-700 font-semibold py-4 px-6">
-                    Description
+                    content
                   </TableHeadCell>
                   <TableHeadCell className="text-slate-700 font-semibold py-4 px-6">
                     Created Date
@@ -226,10 +226,14 @@ export default function Page() {
                       </TableCell>
                       
                       <TableCell className="py-4 px-6 max-w-xs">
-                        <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed">
-                          {faq.description || "No description provided"}
-                        </p>
-                      </TableCell>
+  <div
+    className="text-slate-600 text-sm line-clamp-3 leading-relaxed"
+    dangerouslySetInnerHTML={{
+      __html: faq.content || "No content provided",
+    }}
+  />
+</TableCell>
+
                       
                       <TableCell className="py-4 px-6">
                         <div className="flex items-center space-x-2">

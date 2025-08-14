@@ -234,8 +234,8 @@ const SidebarFilters = () => {
     label: string;
   }) => (
     <button
-      className={`relative h-8 w-8 rounded-full border-2 ${selected ? "border-white ring-2 ring-violet-600" : "border-gray-300 dark:border-gray-600"} transition-all duration-200`}
-      style={{ backgroundColor: color }}
+      className={`${color} relative h-8 w-8 rounded-full border-2 ${selected ? "border-white ring-2 ring-violet-600" : "border-gray-300 dark:border-gray-600"} transition-all duration-200`}
+     
       onClick={onClick}
       title={label}
       aria-label={`Select ${label} color`}
@@ -279,16 +279,15 @@ const SidebarFilters = () => {
     </button>
   );
 
-  // Color mapping
-  const colorMap = {
-    black: "#000000",
-    blue: "#3b82f6",
-    gray: "#6b7280",
-    white: "#ffffff",
-    silver: "#c0c0c0",
-    red: "#ef4444",
-    green: "#22c55e",
-  };
+ const colorMap = {
+  black: "bg-black",
+  blue: "bg-blue-500",
+  gray: "bg-gray-500", 
+  white: "bg-white",
+  silver: "bg-gray-300",
+  red: "bg-red-500",
+  green: "bg-green-500",
+};
 
   const sections = [
     {
@@ -1069,8 +1068,7 @@ const SidebarFilters = () => {
           </h3>
         </div>
         <div className="flex flex-wrap gap-3">
-          {Object.entries(colorMap).map(([id, hex]) => {
-            const label = id.charAt(0).toUpperCase() + id.slice(1);
+{Object.entries(colorMap).map(([id, bgClass]) => {            const label = id.charAt(0).toUpperCase() + id.slice(1);
             const isSelected =
               Array.isArray(localFilters.color) &&
               localFilters.color.includes(id);
@@ -1078,8 +1076,7 @@ const SidebarFilters = () => {
             return (
               <button
                 key={id}
-                className={`relative h-8 w-8 rounded-full border-2 ${isSelected ? "border-white ring-2 ring-violet-600" : "border-gray-300 dark:border-gray-600"} transition-all duration-200`}
-                style={{ backgroundColor: hex }}
+                className={`${bgClass} relative h-8 w-8 rounded-full border-2 ${isSelected ? "border-white ring-2 ring-violet-600" : "border-gray-300 dark:border-gray-600"} transition-all duration-200`}
                 onClick={() => handleCheckboxChange("color", id)}
                 title={label}
                 aria-label={`Select ${label} color`}
@@ -1215,37 +1212,3 @@ const SidebarFilters = () => {
 };
 
 export default SidebarFilters;
-
-
-
-// {
-    //   label: "Lease",
-    //   content: "lease",
-    //   symbol: <FaHandshake />,
-    //   render: !isLeasingPage && (
-    //     <div className="space-y-4">
-    //       <div className="flex items-center">
-    //         <input
-    //           type="checkbox"
-    //           id="lease-filter"
-    //           checked={localFilters.lease === "true"}
-    //           onChange={(e) =>
-    //             handleInputChange(
-    //               "lease",
-    //               e.target.checked ? "true" : "false",
-    //               "lease-filter",
-    //             )
-    //           }
-    //           className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
-    //         />
-    //         <label
-    //           htmlFor="lease-filter"
-    //           className="ml-3 text-sm text-gray-700 dark:text-gray-300"
-    //         >
-    //           Show Lease Cars Only
-    //         </label>
-    //       </div>
-    //     </div>
-    //   ),
-    // },
-
