@@ -10,6 +10,11 @@ const Banner = () => {
 
   const websiteOptions = [
     {
+      value: "auto",
+      label: "Automotive Solutions",
+      url: "https://automotivewebsolutions.com",
+    },
+    {
       value: "cruise",
       label: "Cruise Control",
       url: "https://demo3.automotivewebsolutions.com",
