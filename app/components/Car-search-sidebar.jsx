@@ -54,19 +54,6 @@ const CarSearchSidebar = () => {
   const router = useRouter();
   const idPrefix = useId();
 
-  // Remove body overflow effect since it's now handled in context
-  // useEffect(() => {
-  //   if (isSidebarOpen) {
-  //     document.body.style.overflow = "hidden"
-  //   } else {
-  //     document.body.style.overflow = "auto"
-  //   }
-  //   return () => {
-  //     document.body.style.overflow = "auto"
-  //   }
-  // }, [isSidebarOpen])
-
-  // Fetch JSON data on component mount
   useEffect(() => {
     const fetchJsonData = async () => {
       try {

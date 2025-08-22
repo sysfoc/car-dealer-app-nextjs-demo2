@@ -189,11 +189,11 @@ const SidebarFilters = () => {
     });
   };
 
-   const handleLeaseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLeaseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       handleInputChange("lease", "true", "lease-filter");
     } else {
-      setLocalFilters(prev => {
+      setLocalFilters((prev) => {
         const { lease, ...rest } = prev;
         return rest;
       });
@@ -235,7 +235,6 @@ const SidebarFilters = () => {
   }) => (
     <button
       className={`${color} relative h-8 w-8 rounded-full border-2 ${selected ? "border-white ring-2 ring-violet-600" : "border-gray-300 dark:border-gray-600"} transition-all duration-200`}
-     
       onClick={onClick}
       title={label}
       aria-label={`Select ${label} color`}
@@ -279,15 +278,15 @@ const SidebarFilters = () => {
     </button>
   );
 
- const colorMap = {
-  black: "bg-black",
-  blue: "bg-blue-500",
-  gray: "bg-gray-500", 
-  white: "bg-white",
-  silver: "bg-gray-300",
-  red: "bg-red-500",
-  green: "bg-green-500",
-};
+  const colorMap = {
+    black: "bg-black",
+    blue: "bg-blue-500",
+    gray: "bg-gray-500",
+    white: "bg-white",
+    silver: "bg-gray-300",
+    red: "bg-red-500",
+    green: "bg-green-500",
+  };
 
   const sections = [
     {
@@ -1002,19 +1001,19 @@ const SidebarFilters = () => {
     },
   ];
   const isLightColor = (colorId: any) => ["white", "silver"].includes(colorId);
-  const visibleSections = sections.filter(section => 
-    section.content !== 'lease'
+  const visibleSections = sections.filter(
+    (section) => section.content !== "lease",
   );
   useEffect(() => {
-    document.documentElement.classList.add("no-scrollbar")
+    document.documentElement.classList.add("no-scrollbar");
     return () => {
-      document.documentElement.classList.remove("no-scrollbar")
-    }
-  }, [])
+      document.documentElement.classList.remove("no-scrollbar");
+    };
+  }, []);
   return (
     // <div className="scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-transparent max-h-screen overflow-y-auto rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
-     <div className="max-h-screen overflow-y-auto no-scrollbar rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
-     <h2 className="mb-6 border-b border-gray-200 pb-4 text-2xl font-bold text-gray-800 dark:border-gray-800 dark:text-white">
+    <div className="no-scrollbar max-h-screen overflow-y-auto rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
+      <h2 className="mb-6 border-b border-gray-200 pb-4 text-2xl font-bold text-gray-800 dark:border-gray-800 dark:text-white">
         Filter Vehicles
       </h2>
 
@@ -1068,7 +1067,8 @@ const SidebarFilters = () => {
           </h3>
         </div>
         <div className="flex flex-wrap gap-3">
-{Object.entries(colorMap).map(([id, bgClass]) => {            const label = id.charAt(0).toUpperCase() + id.slice(1);
+          {Object.entries(colorMap).map(([id, bgClass]) => {
+            const label = id.charAt(0).toUpperCase() + id.slice(1);
             const isSelected =
               Array.isArray(localFilters.color) &&
               localFilters.color.includes(id);
@@ -1152,7 +1152,7 @@ const SidebarFilters = () => {
           </button>
 
           {openSections.includes("lease") && (
-            <div className="pl-9 space-y-4">
+            <div className="space-y-4 pl-9">
               <div className="flex items-center">
                 <input
                   type="checkbox"
