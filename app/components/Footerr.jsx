@@ -561,7 +561,26 @@ const Footerr = () => {
           <div className="mb-3 mt-8 border-t border-gray-200 pt-6 dark:border-gray-700 sm:mb-2">
             <div className="flex flex-col items-center justify-center space-y-2 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                &copy; {new Date().getFullYear()} {t("copyright")} by Sysfoc.
+                &copy; {new Date().getFullYear()} 
+                <Link
+                href="https://automotivewebsolutions.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+                >
+                {" "}{t("copyright")} 
+                </Link>
+                {" "}
+                by 
+                <Link
+                href="https://sysfoc.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+                >{" "}
+                Sysfoc.
+                </Link>
+                {" "}
                 All Rights Reserved.
               </p>
             </div>
