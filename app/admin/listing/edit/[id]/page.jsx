@@ -20,6 +20,10 @@ const CarEditPage = ({ params }) => {
   const router = useRouter();
   const { id } = useParams();
   const [car, setCar] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletedImageUrls, setDeletedImageUrls] = useState([]);
   const [formData, setFormData] = useState({
     make: "",
     model: "",
@@ -82,6 +86,15 @@ const CarEditPage = ({ params }) => {
         const res = await fetch(`/api/cars/${id}`, { method: "GET" });
         if (res.ok) {
           const data = await res.json();
+
+          if (data.car.imageUrls && data.car.imageUrls.length > 0) {
+            const previewsWithIds = data.car.imageUrls.map((url) => ({
+              id: `existing-${url}`,
+              url,
+              isNew: false,
+            }));
+            setImagePreviews(previewsWithIds);
+          }
 
           setFormData({
             ...data.car,
@@ -245,41 +258,53 @@ const CarEditPage = ({ params }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+
+    const remainingImages = imagePreviews.length;
+    const newImages = selectedImages.length;
+
+    if (remainingImages === 0 && newImages === 0) {
+      alert("Please add at least one image before updating the car.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
     const formDataToSend = new FormData();
 
+    formDataToSend.append("deletedImageUrls", JSON.stringify(deletedImageUrls));
+
+    // Append all form fields
     for (const key in formData) {
       if (key === "_id") continue;
 
-      if (key === "images" && formData.images && formData.images.length > 0) {
-        formData.images.forEach((image, index) => {
-          if (image instanceof File) {
-            formDataToSend.append("images", image);
-          }
+      if (key === "images") {
+        // Handle image uploads - append newly selected images
+        selectedImages.forEach((image) => {
+          formDataToSend.append("images", image.file);
         });
-      } else if (key === "video" && formData.video) {
-        if (formData.video instanceof File) {
-          formDataToSend.append("video", formData.video);
-        }
+      } else if (key === "video" && formData.video instanceof File) {
+        formDataToSend.append("video", formData.video);
       } else if (key === "features") {
         formDataToSend.append(key, JSON.stringify(formData[key]));
-      } else if (key === "description") {
-        formDataToSend.append(key, formData[key] || "");
-      } else if (key === "isLease") {
-        // Handle boolean field properly
-        formDataToSend.append(key, formData[key] ? "true" : "false");
-      } else if (key === "description") {
-        formDataToSend.append(key, formData[key] || "");
-      } else if (key === "sold") {
-        // Handle boolean field properly
+      } else if (key === "isLease" || key === "sold") {
+        // Handle boolean fields
         formDataToSend.append(key, formData[key] ? "true" : "false");
       } else {
-        // Handle all other fields, including numeric ones
+        // Handle all other fields
         const value = formData[key];
         if (value !== null && value !== undefined) {
           formDataToSend.append(key, value.toString());
         }
       }
     }
+
+    imagePreviews.forEach((preview) => {
+      if (!preview.isNew) {
+        formDataToSend.append("existingImages", preview.url);
+      }
+    });
 
     try {
       const res = await fetch(`/api/cars/${id}`, {
@@ -299,8 +324,86 @@ const CarEditPage = ({ params }) => {
     } catch (error) {
       console.error("Error updating car:", error);
       alert("An error occurred while updating the car.");
+    } finally {
+      // Re-enable the submit button
+      setIsSubmitting(false);
     }
   };
+
+  // When adding new images
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files && files.length > 0) {
+      const newImages = files.map((file) => {
+        const uniqueId = `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        return {
+          id: uniqueId,
+          file,
+          preview: URL.createObjectURL(file),
+          isNew: true,
+        };
+      });
+
+      setSelectedImages([...selectedImages, ...newImages]);
+      setImagePreviews([
+        ...imagePreviews,
+        ...newImages.map((img) => ({
+          id: img.id,
+          url: img.preview,
+          isNew: true,
+        })),
+      ]);
+    }
+  };
+
+  const handleImageDelete = (id) => {
+    const imageToDelete = imagePreviews.find((img) => img.id === id);
+
+    if (!imageToDelete.isNew) {
+      // Existing image - add to deleted list
+      setDeletedImageUrls((prev) => [...prev, imageToDelete.url]);
+    } else {
+      // New image - remove from selectedImages and revoke object URL
+      const newSelected = selectedImages.filter((img) => img.id !== id);
+      const imageToRevoke = selectedImages.find((img) => img.id === id);
+      if (imageToRevoke) {
+        URL.revokeObjectURL(imageToRevoke.preview);
+      }
+      setSelectedImages(newSelected);
+    }
+
+    // Remove from previews
+    setImagePreviews((prev) => prev.filter((img) => img.id !== id));
+  };
+
+  // Cleanup function for object URLs
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((preview) => {
+        if (preview.url && preview.url.startsWith("blob:")) {
+          URL.revokeObjectURL(preview.url);
+        }
+      });
+    };
+  }, [imagePreviews]);
+
+  useEffect(() => {
+    return () => {
+      // Clean up object URLs for new images
+      selectedImages.forEach((image) => {
+        if (image.preview && image.preview.startsWith("blob:")) {
+          URL.revokeObjectURL(image.preview);
+        }
+      });
+
+      // Clean up any blob URLs in imagePreviews
+      imagePreviews.forEach((preview) => {
+        if (preview.isNew && preview.url && preview.url.startsWith("blob:")) {
+          URL.revokeObjectURL(preview.url);
+        }
+      });
+    };
+  }, [selectedImages, imagePreviews]);
 
   if (!car) {
     return <div>Loading...</div>;
@@ -810,24 +913,26 @@ const CarEditPage = ({ params }) => {
           </div>
         </div>
         <div className="mt-5">
-          <Label>Existing Images:</Label>
-          <div className="flex gap-2">
-            {formData.images &&
-            Array.isArray(formData.images) &&
-            formData.images.length > 0 ? (
-              formData.images.map((image, index) => (
-                <Image
-                  key={index}
-                  src={
-                    typeof image === "string"
-                      ? image
-                      : URL.createObjectURL(image)
-                  }
-                  alt={`Car Image ${index}`}
-                  width={100}
-                  height={100}
-                  className="rounded-md"
-                />
+          <Label>Images:</Label>
+          <div className="mt-2 flex flex-wrap gap-4">
+            {imagePreviews.length > 0 ? (
+              imagePreviews.map((image) => (
+                <div key={image.id} className="relative h-24 w-24">
+                  <Image
+                    src={image.url}
+                    alt="Car Image"
+                    width={96}
+                    height={96}
+                    className="h-full w-full rounded-md object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleImageDelete(image.id)}
+                    className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white"
+                  >
+                    {/* Add your delete icon here */}✕
+                  </button>
+                </div>
               ))
             ) : (
               <p>No images available.</p>
@@ -849,10 +954,7 @@ const CarEditPage = ({ params }) => {
             id="images"
             name="images"
             multiple
-            onChange={(e) => {
-              const files = Array.from(e.target.files);
-              setFormData((prev) => ({ ...prev, images: files }));
-            }}
+            onChange={handleImageChange}
           />
         </div>
         <div className="mt-5">
@@ -867,7 +969,13 @@ const CarEditPage = ({ params }) => {
           />
         </div>
         <div className="mt-5">
-          <Button type="submit">Update Car</Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className={isSubmitting ? "cursor-not-allowed opacity-70" : ""}
+          >
+            {isSubmitting ? "Updating..." : "Update Car"}
+          </Button>
         </div>
       </form>
     </section>
