@@ -81,136 +81,137 @@ const DrawerSidebar = () => {
     );
   }
 
-  return (
-    <div>
-      <Button
-        className="mx-3 mt-3"
-        color={"dark"}
-        size={"sm"}
-        onClick={() => setIsDrawerOpen(true)}
+  // ... (previous imports and component code remain the same)
+
+return (
+  <div>
+    <Button
+      className="mx-3 mt-3"
+      color={"dark"}
+      size={"sm"}
+      onClick={() => setIsDrawerOpen(true)}
+    >
+      <RiMenu2Fill fontSize={20} />
+    </Button>
+
+    {isDrawerOpen && (
+      <div
+        className="fixed inset-0 z-50 flex justify-start bg-black/50"
+        onClick={handleCloseDrawer}
       >
-        <RiMenu2Fill fontSize={20} />
-      </Button>
-
-      {isDrawerOpen && (
         <div
-          className="fixed inset-0 z-50 flex justify-start bg-black/50"
-          onClick={handleCloseDrawer}
+          className="w-fit max-w-xs max-h-screen overflow-y-auto bg-white shadow-lg dark:bg-gray-800 scrollbar-hide"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="w-fit max-w-xs max-h-screen overflow-y-auto bg-white shadow-lg dark:bg-gray-800 scrollbar-hide"
-            onClick={(e) => e.stopPropagation()}
+          <Button
+            className="absolute right-3 top-3"
+            color={"none"}
+            onClick={handleCloseDrawer}
           >
-            <Button
-              className="absolute right-3 top-3"
-              color={"none"}
-              onClick={handleCloseDrawer}
-            >
-              <IoMdClose fontSize={20} />
-            </Button>
-            <Sidebar aria-label="Sidebar for the dashboard to control and manage the overall functionality">
-              <SidebarItems>
-                <SidebarItemGroup>
-                  {/* Single Items */}
-                  <SidebarItem href="/admin/dashboard" icon={HiChartPie}>
-                    Dashboard
-                  </SidebarItem>
-                  <SidebarItem href="/admin/contact" icon={IoIosContact}>
-                    Contact Submissions
-                  </SidebarItem>
-                  <SidebarItem href="/admin/valuation" icon={BiMessageSquareEdit}>
-                    Value Submissions
-                  </SidebarItem>
-                  <SidebarItem href="/admin/enquiries" icon={TbCalendarSearch}>
-                    Car Enquiry
-                  </SidebarItem>
-                  <SidebarItem href="/admin/meta-editor" icon={MdOutlineSubtitles}>
-                    Meta Editor
-                  </SidebarItem>
-                  <SidebarItem href="/admin/blog" icon={FaPencilAlt}>
-                    Manage Blogs
-                  </SidebarItem>
+            <IoMdClose fontSize={20} />
+          </Button>
+          <Sidebar aria-label="Sidebar for the dashboard to control and manage the overall functionality">
+            <SidebarItems>
+              <SidebarItemGroup>
+                <SidebarItem href="/admin/dashboard" icon={HiChartPie}>
+    Dashboard
+  </SidebarItem>
+                {/* Collapsible Groups - MOVED TO TOP */}
+                {userRole === "superadmin" && (
+                  <>
+                    <SidebarCollapse icon={FaUser} label="Manage Users">
+                      <SidebarItem href="/admin/manage-users">
+                        All users
+                      </SidebarItem>
+                      <SidebarItem href="/admin/createUser">
+                        Create User
+                      </SidebarItem>
+                    </SidebarCollapse>
+                    <SidebarCollapse icon={FaIdeal} label="Manage Dealers">
+                      <SidebarItem href="/admin/view-dealer">
+                        All Dealers
+                      </SidebarItem>
+                      <SidebarItem href="/admin/create-dealer">
+                        Create Dealers
+                      </SidebarItem>
+                    </SidebarCollapse>
+                  </>
+                )}
 
-                  {/* Collapsible Groups - Only show user management for superadmin */}
-                  {userRole === "superadmin" && (
-                    <>
-                      <SidebarCollapse icon={FaUser} label="Manage Users">
-                        <SidebarItem href="/admin/manage-users">
-                          All users
-                        </SidebarItem>
-                        <SidebarItem href="/admin/createUser">
-                          Create User
-                        </SidebarItem>
-                      </SidebarCollapse>
-                      <SidebarCollapse icon={FaIdeal} label="Manage Dealers">
-                        <SidebarItem href="/admin/view-dealer">
-                          All Dealers
-                        </SidebarItem>
-                        <SidebarItem href="/admin/create-dealer">
-                          Create Dealers
-                        </SidebarItem>
-                      </SidebarCollapse>
-                    </>
-                  )}
+                <SidebarCollapse icon={FaList} label="Manage Listings">
+                  <SidebarItem href="/admin/listing/brand">
+                    Listing Brands
+                  </SidebarItem>
+                  <SidebarItem href="/admin/listing/add">
+                    Add Listings
+                  </SidebarItem>
+                  <SidebarItem href="/admin/listing/view">
+                    Listings
+                  </SidebarItem>
+                  <SidebarItem href="/admin/listing/approved">
+                    Pending Listings
+                  </SidebarItem>
+                </SidebarCollapse>
 
-                  <SidebarCollapse icon={FaList} label="Manage Listings">
-                    <SidebarItem href="/admin/listing/brand">
-                      Listing Brands
-                    </SidebarItem>
-                    <SidebarItem href="/admin/listing/add">
-                      Add Listings
-                    </SidebarItem>
-                    <SidebarItem href="/admin/listing/view">
-                      Listings
-                    </SidebarItem>
-                    <SidebarItem href="/admin/listing/approved">
-                      Pending Listings
-                    </SidebarItem>
-                  </SidebarCollapse>
+                <SidebarCollapse icon={TiWorld} label="Manage Website">
+                  <SidebarItem href="/admin/manage-website/faq">
+                    FAQ
+                  </SidebarItem>
+                  <SidebarItem href="/admin/manage-website/testimonial">
+                    Testimonial
+                  </SidebarItem>
+                </SidebarCollapse>
 
-                  <SidebarCollapse icon={TiWorld} label="Manage Website">
-                    <SidebarItem href="/admin/manage-website/faq">
-                      FAQ
-                    </SidebarItem>
-                    <SidebarItem href="/admin/manage-website/testimonial">
-                      Testimonial
-                    </SidebarItem>
-                  </SidebarCollapse>
+                <SidebarCollapse icon={IoSettingsSharp} label="Settings">
+                  <SidebarItem href="/admin/setting/general">
+                    General Settings
+                  </SidebarItem>
+                  <SidebarItem href="/admin/setting/default">
+                    Default Settings
+                  </SidebarItem>
+                  <SidebarItem href="/admin/setting/currency">
+                    Currency
+                  </SidebarItem>
+                  <SidebarItem href="/admin/setting/social">
+                    Social Media
+                  </SidebarItem>
+                </SidebarCollapse>
 
-                  <SidebarCollapse icon={IoSettingsSharp} label="Settings">
-                    <SidebarItem href="/admin/setting/general">
-                      General Settings
-                    </SidebarItem>
-                    <SidebarItem href="/admin/setting/default">
-                      Default Settings
-                    </SidebarItem>
-                    <SidebarItem href="/admin/setting/currency">
-                      Currency
-                    </SidebarItem>
-                    <SidebarItem href="/admin/setting/social">
-                      Social Media
-                    </SidebarItem>
-                  </SidebarCollapse>
+                <SidebarCollapse icon={MdAppSettingsAlt} label="Page Settings">
+                  <SidebarItem href="/admin/setting/page/home">
+                    Home
+                  </SidebarItem>
+                  <SidebarItem href="/admin/setting/page/contact">
+                    Contact
+                  </SidebarItem>
+                  <SidebarItem href="/admin/setting/page/about">
+                    Utility pages
+                  </SidebarItem>
+                </SidebarCollapse>
 
-                  <SidebarCollapse icon={MdAppSettingsAlt} label="Page Settings">
-                    <SidebarItem href="/admin/setting/page/home">
-                      Home
-                    </SidebarItem>
-                    <SidebarItem href="/admin/setting/page/contact">
-                      Contact
-                    </SidebarItem>
-                    <SidebarItem href="/admin/setting/page/about">
-                      Utility pages
-                    </SidebarItem>
-                  </SidebarCollapse>
-                </SidebarItemGroup>
-              </SidebarItems>
-            </Sidebar>
-          </div>
+                {/* Single Items - MOVED TO BOTTOM */}
+                <SidebarItem href="/admin/contact" icon={IoIosContact}>
+                  Contact Submissions
+                </SidebarItem>
+                <SidebarItem href="/admin/valuation" icon={BiMessageSquareEdit}>
+                  Value Submissions
+                </SidebarItem>
+                <SidebarItem href="/admin/enquiries" icon={TbCalendarSearch}>
+                  Car Enquiry
+                </SidebarItem>
+                <SidebarItem href="/admin/meta-editor" icon={MdOutlineSubtitles}>
+                  Meta Editor
+                </SidebarItem>
+                <SidebarItem href="/admin/blog" icon={FaPencilAlt}>
+                  Manage Blogs
+                </SidebarItem>
+              </SidebarItemGroup>
+            </SidebarItems>
+          </Sidebar>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
 };
-
 export default DrawerSidebar;

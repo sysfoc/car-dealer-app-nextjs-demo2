@@ -100,7 +100,7 @@ const AdminSidebar = () => {
   };
 
   const sidebarItems = [
-    { label: "Dashboard", href: "/admin/dashboard", icon: HiChartPie },
+    // { label: "Dashboard", href: "/admin/dashboard", icon: HiChartPie },
     { label: "Contact Submissions", href: "/admin/contact", icon: IoIosContact },
     { label: "Value Submissions", href: "/admin/valuation", icon: BiMessageSquareEdit },
     { label: "Car Enquiry", href: "/admin/enquiries", icon: TbCalendarSearch },
@@ -130,7 +130,7 @@ const AdminSidebar = () => {
           },
         ]
       : []),
-    {
+       {
       label: "Manage Listings",
       icon: FaList,
       links: [
@@ -184,92 +184,99 @@ const AdminSidebar = () => {
     );
   }
 
-  return (
-    <div className="flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
-      {/* Header */}
-      <div className="flex-shrink-0 border-b border-slate-200 p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700">
-            <HiChartPie className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-slate-800">Admin Panel</h2>
-            <p className="text-xs capitalize text-slate-500">
-              {userRole || "Loading..."}
-            </p>
-          </div>
+ // ... (previous imports and component code remain the same)
+
+return (
+  <div className="flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
+    {/* Header */}
+    <div className="flex-shrink-0 border-b border-slate-200 p-6">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700">
+          <HiChartPie className="h-5 w-5 text-white" />
         </div>
-      </div>
-
-      {/* Navigation - Now with proper flex and min-height */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto py-4 custom-div">
-
-          <nav className="space-y-2 px-4">
-            {/* Single Items */}
-            {sidebarItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
-              >
-                <item.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
-                <span className="text-sm font-medium">{item.label}</span>
-              </a>
-            ))}
-
-            {/* Collapsible Groups */}
-            {collapsibleItems.map((group) => (
-              <div key={group.label} className="space-y-1">
-                <button
-                  onClick={() => toggleGroup(group.label)}
-                  className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
-                >
-                  <group.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
-                  <span className="flex-1 text-left text-sm font-medium">
-                    {group.label}
-                  </span>
-                  {expandedGroups[group.label] ? (
-                    <ChevronDown className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
-                  )}
-                </button>
-
-                {expandedGroups[group.label] && (
-                  <div className="ml-4 space-y-1 border-l border-slate-200 pl-4">
-                    {group.links.map((link) => (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        className="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
-        </div>
-
-        {/* Logout Button - Always visible at bottom */}
-        <div className="flex-shrink-0 border-t border-slate-200 p-4">
-          <button
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <MdLogout className="h-5 w-5" />
-            <span className="text-sm font-medium">
-              {isLoggingOut ? "Logging Out..." : "Logout"}
-            </span>
-          </button>
+        <div>
+          <h2 className="text-lg font-bold text-slate-800">Admin Panel</h2>
+          <p className="text-xs capitalize text-slate-500">
+            {userRole || "Loading..."}
+          </p>
         </div>
       </div>
     </div>
-  );
-};
 
+    {/* Navigation - Now with proper flex and min-height */}
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto py-4 custom-div">
+        <nav className="space-y-2 px-4">
+          <a
+    href="/admin/dashboard"
+    className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
+  >
+    <HiChartPie className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
+    <span className="text-sm font-medium">Dashboard</span>
+  </a>
+          {/* Collapsible Groups - MOVED TO TOP */}
+          {collapsibleItems.map((group) => (
+            <div key={group.label} className="space-y-1">
+              <button
+                onClick={() => toggleGroup(group.label)}
+                className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
+              >
+                <group.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
+                <span className="flex-1 text-left text-sm font-medium">
+                  {group.label}
+                </span>
+                {expandedGroups[group.label] ? (
+                  <ChevronDown className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-slate-400 transition-colors duration-200 group-hover:text-blue-600" />
+                )}
+              </button>
+
+              {expandedGroups[group.label] && (
+                <div className="ml-4 space-y-1 border-l border-slate-200 pl-4">
+                  {group.links.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      className="block rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Single Items - MOVED TO BOTTOM */}
+          {sidebarItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50 hover:text-blue-600"
+            >
+              <item.icon className="h-5 w-5 text-slate-500 transition-colors duration-200 group-hover:text-blue-600" />
+              <span className="text-sm font-medium">{item.label}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      {/* Logout Button - Always visible at bottom */}
+      <div className="flex-shrink-0 border-t border-slate-200 p-4">
+        <button
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <MdLogout className="h-5 w-5" />
+          <span className="text-sm font-medium">
+            {isLoggingOut ? "Logging Out..." : "Logout"}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+);
+};
 export default AdminSidebar;
