@@ -115,6 +115,7 @@ const Page = () => {
   const [jsonData, setJsonData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { currency, selectedCurrency } = useCurrency();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchJsonData = async () => {
@@ -219,6 +220,12 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Prevent multiple submissions
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formElement = e.target;
     const formData = new FormData(formElement);
 
@@ -296,6 +303,9 @@ const Page = () => {
       }
     } catch (error) {
       Swal.fire("Error!", "Server error occurred.", "error");
+    } finally {
+      // Re-enable the submit button whether successful or not
+      setIsSubmitting(false);
     }
   };
 
@@ -896,8 +906,14 @@ const Page = () => {
             </div>
           </div>
           <div className="my-8">
-            <Button type="submit" size={"md"} color={"dark"} className="w-full">
-              Submit
+            <Button
+              type="submit"
+              size="md"
+              color="dark"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
             <div className="mt-5 text-sm text-gray-600">
               By submitting this form, you agree to the Car Dealer App{" "}
