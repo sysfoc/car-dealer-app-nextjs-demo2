@@ -1195,7 +1195,7 @@ const Page = () => {
                 >
                   Battery Range:
                 </Label>
-                <Input
+                <TextInput
                   id="batteryRange"
                   name="batteryRange"
                   type="text"
