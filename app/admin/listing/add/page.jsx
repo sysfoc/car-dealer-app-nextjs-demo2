@@ -13,8 +13,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useCurrency } from "../../../context/CurrencyContext";
-import {BODY_TYPE_MAPPING} from "../../../../constants/vehicle-mappings"
-
+import { BODY_TYPE_MAPPING } from "../../../../constants/vehicle-mappings";
 
 const Page = () => {
   const [dealers, setDealers] = useState([]);
@@ -51,31 +50,6 @@ const Page = () => {
     { id: "valid-mot", label: "Valid MOT" },
     { id: "road-tax-paid", label: "Road Tax Paid" },
   ];
-
-  const batteryRangeOptions = {
-    km: [
-      "Up to 100 km",
-      "101–200 km",
-      "201–300 km",
-      "301–400 km",
-      "401–500 km",
-      "501–600 km",
-      "601–700 km",
-      "701–800 km",
-      "800+ km",
-    ],
-    miles: [
-      "Up to 62 miles",
-      "63–124 miles",
-      "125–186 miles",
-      "187–249 miles",
-      "250–311 miles",
-      "312–373 miles",
-      "374–435 miles",
-      "436–497 miles",
-      "497+ miles",
-    ],
-  };
 
   const [formData, setFormData] = useState({
     make: "",
@@ -134,7 +108,9 @@ const Page = () => {
     if (!apiMake || !jsonData.length) return "";
 
     // Try exact match first
-    const exactMatch = jsonData.find((item) => item.Maker.toLowerCase() === apiMake.toLowerCase());
+    const exactMatch = jsonData.find(
+      (item) => item.Maker.toLowerCase() === apiMake.toLowerCase(),
+    );
     if (exactMatch) return exactMatch.Maker;
 
     // Try partial match
@@ -149,10 +125,14 @@ const Page = () => {
   const findMatchingModel = (apiModel, makeData) => {
     if (!apiModel || !makeData || !makeData["model "]) return "";
 
-    const modelArray = makeData["model "].split(",").map((model) => model.trim());
+    const modelArray = makeData["model "]
+      .split(",")
+      .map((model) => model.trim());
 
     // Try exact match first
-    const exactMatch = modelArray.find((model) => model.toLowerCase() === apiModel.toLowerCase());
+    const exactMatch = modelArray.find(
+      (model) => model.toLowerCase() === apiModel.toLowerCase(),
+    );
     if (exactMatch) return exactMatch;
 
     // Try partial match and handle format variations (F-150 vs F150)
@@ -171,7 +151,11 @@ const Page = () => {
 
   const fetchVehicleData = async () => {
     if (!vehicleIdentifier.trim() || !selectedCountry) {
-      Swal.fire("Error!", "Please enter a VIN/Registration number and select a country.", "error");
+      Swal.fire(
+        "Error!",
+        "Please enter a VIN/Registration number and select a country.",
+        "error",
+      );
       return;
     }
 
@@ -190,7 +174,10 @@ const Page = () => {
 
       const result = await response.json();
 
-      console.log("[v0] Complete Raw API Response:", JSON.stringify(result, null, 2));
+      console.log(
+        "[v0] Complete Raw API Response:",
+        JSON.stringify(result, null, 2),
+      );
 
       if (result.data) {
         console.group("🚗 Vehicle API Debug Information");
@@ -213,16 +200,31 @@ const Page = () => {
 
         if (result.data.make) {
           const matchedMake = findMatchingMake(result.data.make);
-          console.log("[v0] API Make:", result.data.make, "-> Matched Make:", matchedMake);
+          console.log(
+            "[v0] API Make:",
+            result.data.make,
+            "-> Matched Make:",
+            matchedMake,
+          );
 
           if (matchedMake) {
             setSelectedMake(matchedMake);
 
             // Find matching model after make is set
             if (result.data.model) {
-              const makeData = jsonData.find((item) => item.Maker === matchedMake);
-              const matchedModel = findMatchingModel(result.data.model, makeData);
-              console.log("[v0] API Model:", result.data.model, "-> Matched Model:", matchedModel);
+              const makeData = jsonData.find(
+                (item) => item.Maker === matchedMake,
+              );
+              const matchedModel = findMatchingModel(
+                result.data.model,
+                makeData,
+              );
+              console.log(
+                "[v0] API Model:",
+                result.data.model,
+                "-> Matched Model:",
+                matchedModel,
+              );
 
               if (matchedModel) {
                 // Set model after a brief delay to ensure make dropdown updates first
@@ -234,13 +236,26 @@ const Page = () => {
           }
         }
 
-        Swal.fire("Success!", "Vehicle data fetched and form auto-filled successfully!", "success");
+        Swal.fire(
+          "Success!",
+          "Vehicle data fetched and form auto-filled successfully!",
+          "success",
+        );
       } else {
-        Swal.fire("Error!", result.error || "No vehicle data found. Please complete the form manually.", "error");
+        Swal.fire(
+          "Error!",
+          result.error ||
+            "No vehicle data found. Please complete the form manually.",
+          "error",
+        );
       }
     } catch (error) {
       console.error("Error fetching vehicle data:", error);
-      Swal.fire("Error!", "Failed to fetch vehicle data. Please complete the form manually.", "error");
+      Swal.fire(
+        "Error!",
+        "Failed to fetch vehicle data. Please complete the form manually.",
+        "error",
+      );
     } finally {
       setIsFetching(false);
     }
@@ -289,7 +304,7 @@ const Page = () => {
     // Convert feature array to feature object for form checkboxes
     if (apiData.features && Array.isArray(apiData.features)) {
       mapped.features = {};
-      apiData.features.forEach(featureId => {
+      apiData.features.forEach((featureId) => {
         mapped.features[featureId] = true;
       });
     }
@@ -362,7 +377,9 @@ const Page = () => {
         const response = await fetch("/api/users/api-access");
         if (response.ok) {
           const data = await response.json();
-          setUserApiAccess(data.apiAccess || { uk: false, usa: false, au: false });
+          setUserApiAccess(
+            data.apiAccess || { uk: false, usa: false, au: false },
+          );
         }
       } catch (error) {
         console.error("Error fetching user API access:", error);
@@ -395,7 +412,9 @@ const Page = () => {
       const makeData = jsonData.find((item) => item.Maker === selectedMake);
       if (makeData && makeData["model "]) {
         // Split models string into array and trim whitespace
-        const modelArray = makeData["model "].split(",").map((model) => model.trim());
+        const modelArray = makeData["model "]
+          .split(",")
+          .map((model) => model.trim());
         setModels(modelArray);
       } else {
         setModels([]);
@@ -569,17 +588,25 @@ const Page = () => {
 
   return (
     <section className="my-10">
-      <h2 className="text-xl font-semibold text-blue-950 dark:text-red-500">Add Listing</h2>
+      <h2 className="text-xl font-semibold text-blue-950 dark:text-red-500">
+        Add Listing
+      </h2>
 
       <div className="mb-8 mt-5 rounded-lg border border-gray-300 bg-gray-50 p-4">
-        <h3 className="text-lg font-semibold text-blue-950 dark:text-red-500">Auto-Fill Vehicle Data</h3>
+        <h3 className="text-lg font-semibold text-blue-950 dark:text-red-500">
+          Auto-Fill Vehicle Data
+        </h3>
         <p className="mb-4 text-sm text-gray-600">
-          Enter a VIN (USA) or Registration Number (UK/AU) to automatically fetch and fill vehicle details.
+          Enter a VIN (USA) or Registration Number (UK/AU) to automatically
+          fetch and fill vehicle details.
         </p>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <Label htmlFor="vehicleIdentifier" className="text-blue-950 dark:text-red-500">
+            <Label
+              htmlFor="vehicleIdentifier"
+              className="text-blue-950 dark:text-red-500"
+            >
               VIN / Registration Number:
             </Label>
             <TextInput
@@ -592,7 +619,10 @@ const Page = () => {
           </div>
 
           <div>
-            <Label htmlFor="country" className="text-blue-950 dark:text-red-500">
+            <Label
+              htmlFor="country"
+              className="text-blue-950 dark:text-red-500"
+            >
               Country:
             </Label>
             <Select
@@ -610,7 +640,9 @@ const Page = () => {
           <div className="flex items-end">
             <Button
               onClick={fetchVehicleData}
-              disabled={isFetching || !vehicleIdentifier.trim() || !selectedCountry}
+              disabled={
+                isFetching || !vehicleIdentifier.trim() || !selectedCountry
+              }
               color="dark"
               className="w-full"
             >
@@ -621,7 +653,8 @@ const Page = () => {
 
         {Object.values(userApiAccess).every((access) => !access) && (
           <div className="mt-4 rounded border border-yellow-400 bg-yellow-100 p-3 text-sm text-yellow-800">
-            No API access enabled. Contact your administrator to enable vehicle data fetching for specific countries.
+            No API access enabled. Contact your administrator to enable vehicle
+            data fetching for specific countries.
           </div>
         )}
       </div>
@@ -635,12 +668,17 @@ const Page = () => {
             <FileInput type="file" name="images" multiple className="mt-1" />
           </div>
           <div>
-            <h3 className="mt-3 text-sm font-semibold text-blue-950 dark:text-red-500">General Details:</h3>
+            <h3 className="mt-3 text-sm font-semibold text-blue-950 dark:text-red-500">
+              General Details:
+            </h3>
             <div className="mb-3 mt-1 border border-gray-300"></div>
           </div>
           <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
             <div>
-              <Label htmlFor="brand-make" className="text-blue-950 dark:text-red-500">
+              <Label
+                htmlFor="brand-make"
+                className="text-blue-950 dark:text-red-500"
+              >
                 Vehicle Make:
               </Label>
               <Select
@@ -659,7 +697,10 @@ const Page = () => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="brand-Model" className="text-blue-950 dark:text-red-500">
+              <Label
+                htmlFor="brand-Model"
+                className="text-blue-950 dark:text-red-500"
+              >
                 Brand Model:
               </Label>
               <Select
@@ -679,7 +720,10 @@ const Page = () => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="price" className="text-blue-950 dark:text-red-500">
+              <Label
+                htmlFor="price"
+                className="text-blue-950 dark:text-red-500"
+              >
                 Price:
               </Label>
               <TextInput
@@ -716,7 +760,10 @@ const Page = () => {
                     }))
                   }
                 />
-                <Label htmlFor="isLease" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="isLease"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Available for Lease
                 </Label>
               </div>
@@ -737,7 +784,10 @@ const Page = () => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="description" className="text-blue-950 dark:text-red-500">
+              <Label
+                htmlFor="description"
+                className="text-blue-950 dark:text-red-500"
+              >
                 Description:
               </Label>
               <Textarea
@@ -752,12 +802,17 @@ const Page = () => {
           </div>
           <div className="mt-5">
             <div>
-              <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">Driving Details:</h3>
+              <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">
+                Driving Details:
+              </h3>
               <div className="mb-3 mt-1 border border-gray-300"></div>
             </div>
             <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
               <div>
-                <Label htmlFor="total-driven" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="total-driven"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Total Driven (in km):
                 </Label>
                 <TextInput
@@ -769,7 +824,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="fuel-type" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="fuel-type"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Fuel Type:
                 </Label>
                 <Select
@@ -781,16 +839,29 @@ const Page = () => {
                   <option value="petrol"> Petrol (Gasoline)</option>
                   <option value="diesel">Diesel</option>
                   <option value="Electric">Electric</option>
-                  <option value="Hybrid (Petrol/Electric)">Hybrid (Petrol/Electric)</option>
-                  <option value="Plug-in Hybrid (PHEV)">Plug-in Hybrid (PHEV)</option>
-                  <option value="CNG (Compressed Natural Gas)">CNG (Compressed Natural Gas)</option>
-                  <option value="LPG (Liquefied Petroleum Gas)">LPG (Liquefied Petroleum Gas)</option>
+                  <option value="Hybrid (Petrol/Electric)">
+                    Hybrid (Petrol/Electric)
+                  </option>
+                  <option value="Plug-in Hybrid (PHEV)">
+                    Plug-in Hybrid (PHEV)
+                  </option>
+                  <option value="CNG (Compressed Natural Gas)">
+                    CNG (Compressed Natural Gas)
+                  </option>
+                  <option value="LPG (Liquefied Petroleum Gas)">
+                    LPG (Liquefied Petroleum Gas)
+                  </option>
                   <option value="Hydrogen Fuel Cell">Hydrogen Fuel Cell</option>
-                  <option value="Ethanol (Flex-Fuel)">Ethanol (Flex-Fuel)</option>
+                  <option value="Ethanol (Flex-Fuel)">
+                    Ethanol (Flex-Fuel)
+                  </option>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="fuel-capacity" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="fuel-capacity"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Fuel Capacity Per Tank:
                 </Label>
                 <TextInput
@@ -803,7 +874,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="filling-cost" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="filling-cost"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Fuel Tank Fill Price:
                 </Label>
                 <TextInput
@@ -817,7 +891,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="gearbox" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="gearbox"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Gear Box:
                 </Label>
                 <Select
@@ -832,7 +909,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="noOfGears" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="noOfGears"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   No of Gears:
                 </Label>
                 <Select
@@ -857,7 +937,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="doors" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="doors"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   No of Doors:
                 </Label>
                 <Select
@@ -876,7 +959,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="seats" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="seats"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   No of Seats:
                 </Label>
                 <Select
@@ -900,7 +986,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="cylinder" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="cylinder"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Cylinders:
                 </Label>
                 <Select
@@ -922,7 +1011,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="condition" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="condition"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Condition:
                 </Label>
                 <Select
@@ -937,7 +1029,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="BodyType" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="BodyType"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Body Type:
                 </Label>
                 <Select
@@ -949,10 +1044,14 @@ const Page = () => {
                   <option value="">Select Body Type</option>
                   <option value="Sedan">Sedan</option>
                   <option value="Hatchback">Hatchback</option>
-                  <option value="SUV (Sports Utility Vehicle)">SUV (Sports Utility Vehicle)</option>
+                  <option value="SUV (Sports Utility Vehicle)">
+                    SUV (Sports Utility Vehicle)
+                  </option>
                   <option value="Coupe">Coupe</option>
                   <option value="Convertible">Convertible</option>
-                  <option value="Wagon (Station Wagon)">Wagon (Station Wagon)</option>
+                  <option value="Wagon (Station Wagon)">
+                    Wagon (Station Wagon)
+                  </option>
                   <option value="Minivan">Minivan</option>
                   <option value="Roadster">Roadster</option>
                   <option value="Supercar">Supercar</option>
@@ -967,7 +1066,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="color" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="color"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Color:
                 </Label>
                 <TextInput
@@ -979,7 +1081,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="location" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="location"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Location:
                 </Label>
                 <TextInput
@@ -991,7 +1096,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="year" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="year"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Build Date:
                 </Label>
                 <TextInput
@@ -1003,7 +1111,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="modelYear" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="modelYear"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Model Year:
                 </Label>
                 <TextInput
@@ -1015,7 +1126,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="registerationPlate" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="registerationPlate"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Registeration Plate:
                 </Label>
                 <TextInput
@@ -1027,7 +1141,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="registerationExpire" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="registerationExpire"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Registeration Expiry Date:
                 </Label>
                 <TextInput
@@ -1039,7 +1156,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="mileage" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="mileage"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Mileage:
                 </Label>
                 <TextInput
@@ -1051,7 +1171,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="unit" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="unit"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Select Default Unit:
                 </Label>
                 <Select
@@ -1065,27 +1188,28 @@ const Page = () => {
                   <option value="miles">Miles</option>
                 </Select>
               </div>
-            <div>
-  <Label htmlFor="batteryRange" className="text-blue-950 dark:text-red-500">
-    Battery Range:
-  </Label>
-  <Select
-    id="batteryRange"
-    name="batteryRange"
-    value={formData.batteryRange}
-    onChange={handleChange}
-    className="mt-1"
-  >
-    <option value="">Select Battery Range</option>
-    {batteryRangeOptions[formData.unit]?.map((range, index) => (
-      <option key={index} value={range}>
-        {range}
-      </option>
-    ))}
-  </Select>
-</div>
               <div>
-                <Label htmlFor="chargingTime" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="batteryRange"
+                  className="text-blue-950 dark:text-red-500"
+                >
+                  Battery Range:
+                </Label>
+                <Input
+                  id="batteryRange"
+                  name="batteryRange"
+                  type="text"
+                  value={formData.batteryRange}
+                  onChange={handleChange}
+                  placeholder="e.g., 200km, 300 miles, 200-400km"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="chargingTime"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Charging Time:
                 </Label>
                 <TextInput
@@ -1097,7 +1221,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="engineSize" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="engineSize"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Engine Size:
                 </Label>
                 <TextInput
@@ -1109,7 +1236,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="enginePower" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="enginePower"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Engine Power:
                 </Label>
                 <TextInput
@@ -1121,7 +1251,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="fuelConsumption" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="fuelConsumption"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Fuel Consumption:
                 </Label>
                 <TextInput
@@ -1133,7 +1266,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="isFinance" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="isFinance"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Select Finance status:
                 </Label>
                 <Select
@@ -1148,7 +1284,10 @@ const Page = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="co2Emission" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="co2Emission"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Co2 Emission
                 </Label>
                 <TextInput
@@ -1160,7 +1299,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="driveType" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="driveType"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   drive Type
                 </Label>
                 <TextInput
@@ -1172,7 +1314,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="engineCapacity" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="engineCapacity"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Engine Capacity:
                 </Label>
                 <TextInput
@@ -1184,7 +1329,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="video" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="video"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Video URL:
                 </Label>
                 <TextInput
@@ -1196,7 +1344,10 @@ const Page = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="slug" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="slug"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Slug (Optional):
                 </Label>
                 <TextInput
@@ -1210,7 +1361,9 @@ const Page = () => {
             </div>
           </div>
           <div className="mt-5">
-            <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">Vehicle Features:</h3>
+            <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">
+              Vehicle Features:
+            </h3>
             <div className="mb-3 mt-1 border border-gray-300"></div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
               {featuresList.map((feature) => (
@@ -1221,7 +1374,10 @@ const Page = () => {
                     checked={formData.features[feature.id] || false}
                     onChange={handleChange}
                   />
-                  <Label htmlFor={feature.id} className="text-blue-950 dark:text-red-500">
+                  <Label
+                    htmlFor={feature.id}
+                    className="text-blue-950 dark:text-red-500"
+                  >
                     {feature.label}
                   </Label>
                 </div>
@@ -1229,7 +1385,9 @@ const Page = () => {
             </div>
           </div>
           <div className="mt-5">
-            <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">Dealor Comments:</h3>
+            <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">
+              Dealor Comments:
+            </h3>
             <div className="mb-3 mt-1 border border-gray-300"></div>
             <div>
               <Label htmlFor="comment" className="sr-only">
@@ -1245,11 +1403,16 @@ const Page = () => {
             </div>
           </div>
           <div className="mt-8">
-            <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">Contact Details</h3>
+            <h3 className="text-sm font-semibold text-blue-950 dark:text-red-500">
+              Contact Details
+            </h3>
             <div className="mb-3 mt-1 border border-gray-300"></div>
             <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
               <div>
-                <Label htmlFor="dealerId" className="text-blue-950 dark:text-red-500">
+                <Label
+                  htmlFor="dealerId"
+                  className="text-blue-950 dark:text-red-500"
+                >
                   Select Dealer
                 </Label>
                 <Select

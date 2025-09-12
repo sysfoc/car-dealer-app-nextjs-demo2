@@ -35,7 +35,7 @@ export async function PATCH(req, { params }) {
     }
 
     const formData = await req.formData();
-    
+
     // Parse deleted image URLs
     let deletedImageUrls = [];
     if (formData.has("deletedImageUrls")) {
@@ -57,7 +57,7 @@ export async function PATCH(req, { params }) {
 
     // Filter out deleted images from existing imageUrls
     const filteredImageUrls = (existingCar.imageUrls || []).filter(
-      url => !deletedImageUrls.includes(url)
+      (url) => !deletedImageUrls.includes(url),
     );
 
     let features = existingCar.features || [];
@@ -66,7 +66,10 @@ export async function PATCH(req, { params }) {
         features = JSON.parse(formData.get("features"));
       } catch (error) {
         console.error("Failed to parse features:", error);
-        return NextResponse.json({ error: "Invalid features format" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Invalid features format" },
+          { status: 400 },
+        );
       }
     }
 
@@ -84,7 +87,13 @@ export async function PATCH(req, { params }) {
             );
           }
 
-          const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+          const allowedTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+          ];
           if (!allowedTypes.includes(image.type)) {
             return NextResponse.json(
               {
@@ -116,14 +125,20 @@ export async function PATCH(req, { params }) {
     if (newVideo && newVideo.name && newVideo.size > 0) {
       // Validate video file size (50MB limit for videos)
       if (newVideo.size > 50 * 1024 * 1024) {
-        return NextResponse.json({ error: "Video file is too large. Maximum size is 50MB." }, { status: 400 });
+        return NextResponse.json(
+          { error: "Video file is too large. Maximum size is 50MB." },
+          { status: 400 },
+        );
       }
 
       try {
         videoUrl = await uploadImageToR2(newVideo);
       } catch (fileError) {
         console.error(`Error saving video ${newVideo.name}:`, fileError);
-        return NextResponse.json({ error: `Failed to save video: ${fileError.message}` }, { status: 500 });
+        return NextResponse.json(
+          { error: `Failed to save video: ${fileError.message}` },
+          { status: 500 },
+        );
       }
     }
 
@@ -136,7 +151,8 @@ export async function PATCH(req, { params }) {
 
     let slug = existingCar.slug;
     if (formData.has("make") && formData.get("make") !== existingCar.make) {
-      const userId = existingCar.userId?.toString() || existingCar._id.toString();
+      const userId =
+        existingCar.userId?.toString() || existingCar._id.toString();
       slug = `${formData.get("make").toLowerCase().replace(/\s+/g, "-")}-${userId}`;
     }
 
@@ -147,10 +163,19 @@ export async function PATCH(req, { params }) {
       type: safeParseString(formEntries.type, existingCar.type),
       kms: safeParseString(formEntries.kms, existingCar.kms),
       fuelType: safeParseString(formEntries.fuelType, existingCar.fuelType),
-      fuelTankFillPrice: safeParseString(formEntries.fuelTankFillPrice, existingCar.fuelTankFillPrice),
-      fuelCapacityPerTank: safeParseString(formEntries.fuelCapacityPerTank, existingCar.fuelCapacityPerTank),
+      fuelTankFillPrice: safeParseString(
+        formEntries.fuelTankFillPrice,
+        existingCar.fuelTankFillPrice,
+      ),
+      fuelCapacityPerTank: safeParseString(
+        formEntries.fuelCapacityPerTank,
+        existingCar.fuelCapacityPerTank,
+      ),
       gearbox: safeParseString(formEntries.gearbox, existingCar.gearbox),
-      sellerComments: safeParseString(formEntries.sellerComments, existingCar.sellerComments),
+      sellerComments: safeParseString(
+        formEntries.sellerComments,
+        existingCar.sellerComments,
+      ),
       condition: safeParseString(formEntries.condition, existingCar.condition),
       location: safeParseString(formEntries.location, existingCar.location),
       modelYear: safeParseString(formEntries.modelYear, existingCar.modelYear),
@@ -159,22 +184,52 @@ export async function PATCH(req, { params }) {
       color: safeParseString(formEntries.color, existingCar.color),
       isFinance: safeParseString(formEntries.isFinance, existingCar.isFinance),
       driveType: safeParseString(formEntries.driveType, existingCar.driveType),
-      registerationPlate: safeParseString(formEntries.registerationPlate, existingCar.registerationPlate),
-      registerationExpire: safeParseString(formEntries.registerationExpire, existingCar.registerationExpire),
+      registerationPlate: safeParseString(
+        formEntries.registerationPlate,
+        existingCar.registerationPlate,
+      ),
+      registerationExpire: safeParseString(
+        formEntries.registerationExpire,
+        existingCar.registerationExpire,
+      ),
       unit: safeParseString(formEntries.unit, existingCar.unit) || "km",
-      description: safeParseString(formEntries.description, existingCar.description),
+      description: safeParseString(
+        formEntries.description,
+        existingCar.description,
+      ),
       price: safeParseNumber(formEntries.price, existingCar.price),
       noOfGears: safeParseNumber(formEntries.noOfGears, existingCar.noOfGears),
       cylinder: safeParseNumber(formEntries.cylinder, existingCar.cylinder),
       doors: safeParseNumber(formEntries.doors, existingCar.doors),
       seats: safeParseNumber(formEntries.seats, existingCar.seats),
-      batteryRange: safeParseNumber(formEntries.batteryRange, existingCar.batteryRange),
-      chargingTime: safeParseNumber(formEntries.chargingTime, existingCar.chargingTime),
-      engineSize: safeParseNumber(formEntries.engineSize, existingCar.engineSize),
-      enginePower: safeParseNumber(formEntries.enginePower, existingCar.enginePower),
-      fuelConsumption: safeParseNumber(formEntries.fuelConsumption, existingCar.fuelConsumption),
-      co2Emission: safeParseNumber(formEntries.co2Emission, existingCar.co2Emission),
-      engineCapacity: safeParseString(formEntries.engineCapacity, existingCar.engineCapacity),
+      batteryRange: safeParseString(
+        formEntries.batteryRange,
+        existingCar.batteryRange,
+      ),
+      chargingTime: safeParseNumber(
+        formEntries.chargingTime,
+        existingCar.chargingTime,
+      ),
+      engineSize: safeParseNumber(
+        formEntries.engineSize,
+        existingCar.engineSize,
+      ),
+      enginePower: safeParseNumber(
+        formEntries.enginePower,
+        existingCar.enginePower,
+      ),
+      fuelConsumption: safeParseNumber(
+        formEntries.fuelConsumption,
+        existingCar.fuelConsumption,
+      ),
+      co2Emission: safeParseNumber(
+        formEntries.co2Emission,
+        existingCar.co2Emission,
+      ),
+      engineCapacity: safeParseString(
+        formEntries.engineCapacity,
+        existingCar.engineCapacity,
+      ),
       dealerId: formEntries.dealerId
         ? safeParseNumber(formEntries.dealerId, existingCar.dealerId)
         : existingCar.dealerId,
@@ -189,16 +244,28 @@ export async function PATCH(req, { params }) {
     };
 
     delete updatedData._id;
-    const result = await Car.updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
+    const result = await Car.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updatedData },
+    );
 
     if (result.modifiedCount === 0) {
-      return NextResponse.json({ error: "No changes made or car not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No changes made or car not found" },
+        { status: 404 },
+      );
     }
 
-    return NextResponse.json({ message: "Car updated successfully", updatedData }, { status: 200 });
+    return NextResponse.json(
+      { message: "Car updated successfully", updatedData },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error occurred:", error);
-    return NextResponse.json({ error: "Failed to update car", details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update car", details: error.message },
+      { status: 500 },
+    );
   }
 }
 
@@ -240,10 +307,16 @@ export async function DELETE(req, { params }) {
     }
 
     await Car.deleteOne({ _id: new ObjectId(id) });
-    return NextResponse.json({ message: "Car deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Car deleted successfully" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error occurred:", error);
-    return NextResponse.json({ error: "Failed to delete car", details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete car", details: error.message },
+      { status: 500 },
+    );
   }
 }
 
@@ -271,6 +344,9 @@ export async function GET(req, { params }) {
     return NextResponse.json({ car: enrichedCar }, { status: 200 });
   } catch (error) {
     console.error("Error occurred:", error);
-    return NextResponse.json({ error: "Failed to fetch car", details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch car", details: error.message },
+      { status: 500 },
+    );
   }
 }
