@@ -775,7 +775,7 @@ const Page = () => {
           <div className="mt-8 flex justify-end px-4 pb-4">
             <Button
               gradientDuoTone="purpleToBlue"
-              className="font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
+              className="rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
               onClick={handleSubmit}
             >
               Save Settings
