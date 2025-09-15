@@ -180,7 +180,7 @@ const BrandsList = () => {
                     className="group"
                   >
                     <div
-                      className="relative flex flex-col items-center justify-center rounded-lg sm:rounded-xl border border-gray-300 bg-white p-2 sm:p-3 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
+                      className="relative flex flex-col items-center justify-center rounded-lg sm:rounded-xl border border-gray-300 bg-white p-2 sm:p-3 shadow-md transition-all duration-300 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
                     >
                       <div className="relative h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 overflow-hidden rounded-md sm:rounded-lg bg-gray-100 p-2 sm:p-3 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:shadow-md dark:bg-gray-700">
                         <Icon className="h-full w-full text-gray-500 dark:text-gray-300" />
