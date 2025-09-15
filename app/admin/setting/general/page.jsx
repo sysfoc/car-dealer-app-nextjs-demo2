@@ -157,15 +157,6 @@ const Page = () => {
                   Manage your website global settings and configurations
                 </p>
               </div>
-              <div className="flex-shrink-0">
-                <Button
-                  gradientDuoTone="purpleToBlue"
-                  className="font-semibold px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base w-full sm:w-auto"
-                  onClick={handleSubmit}
-                >
-                  Save Settings
-                </Button>
-              </div>
             </div>
           </div>
         </div>
@@ -781,8 +772,17 @@ const Page = () => {
               </div>
             </div>
           </div>
+          <div className="mt-8 flex justify-end px-4 pb-4">
+            <Button
+              gradientDuoTone="purpleToBlue"
+              className="font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
+              onClick={handleSubmit}
+            >
+              Save Settings
+            </Button>
+          </div>
         </div>
-      </div>
+      </div> 
     </div>
   );
 };
