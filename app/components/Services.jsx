@@ -183,6 +183,7 @@ const Services = () => {
               {/* CTA Button */}
               <a href={service.href}>
                 <button
+                aria-label="Open service details"
                   className={`${service.color} ${service.hoverColor} flex items-center rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 group-hover:shadow-lg`}
                 >
                   {service.buttonText}

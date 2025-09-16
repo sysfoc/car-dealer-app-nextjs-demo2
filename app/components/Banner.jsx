@@ -152,6 +152,7 @@ const websiteOptions = [
                 href="https://www.automotivewebsolutions.com/pricing"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Subscribe to pricing plans"
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 transition-colors duration-200 hover:bg-purple-700 sm:h-9 sm:w-9 lg:hidden"
               >
                 <Bell className="h-3.5 w-3.5 text-white sm:h-4 sm:w-4" />

@@ -482,8 +482,8 @@ const Footerr = () => {
             <span
               className={`text-sm font-medium ${
                 schedule.hours === t("closedHours")
-                  ? "text-red-500 dark:text-red-400"
-                  : "text-green-600 dark:text-green-400"
+                  ? "text-red-700 dark:text-red-500"
+                  : "text-green-800 dark:text-green-500"
               }`}
             >
               {schedule.hours}
