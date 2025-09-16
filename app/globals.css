@@ -179,8 +179,8 @@ footer {
 }
 
 .div-style-15 {
-  height: 90px;
-  width: 180px;
+  height: 120px;
+  width: 200px;
 }
 
 .div-style-16 {
@@ -218,3 +218,8 @@ footer {
                     radial-gradient(circle at 75% 75%, #8b5cf6 2px, transparent 2px);
   background-size: 50px 50px;
 }
+
+.link-skeleton-about { width: 62px; }
+.link-skeleton-contact { width: 77px; }
+.link-skeleton-terms { width: 136px; }
+.link-skeleton-privacy { width: 95px; }
