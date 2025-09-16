@@ -360,7 +360,7 @@ const HeroSection = () => {
           <div className="relative flex items-center justify-center lg:pl-8">
             <div className="relative mx-auto w-full max-w-2xl aspect-[4/3]">
               {/* Professional image container with proper aspect ratio and containment */}
-              <div className="relative overflow-hidden rounded-xl pb-[75%] min-h-[280px] sm:min-h-[350px]">
+              <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
                           {/* div-style-10  Loading placeholder with professional styling */}
                 {!imageLoaded && (
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800">
