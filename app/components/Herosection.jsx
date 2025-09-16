@@ -330,14 +330,9 @@ const HeroSection = () => {
     >
       {/* Optimized background effects */}
       <div className="absolute inset-0 opacity-50 will-change-transform">
-        <div
-  className="absolute right-0 top-0 h-96 w-96 rounded-full bg-gradient-to-bl from-blue-100 to-transparent blur-3xl dark:from-blue-900/20 div-style-8"
-/>
+        <div className="div-style-8 absolute right-0 top-0 h-96 w-96 rounded-full bg-gradient-to-bl from-blue-100 to-transparent blur-3xl dark:from-blue-900/20" />
 
-       <div
-  className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-gradient-to-tr from-purple-100 to-transparent blur-3xl dark:from-purple-900/20 div-style-9"
-/>
-
+        <div className="div-style-9 absolute bottom-0 left-0 h-64 w-64 rounded-full bg-gradient-to-tr from-purple-100 to-transparent blur-3xl dark:from-purple-900/20" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 pb-0 pt-28 sm:px-6 lg:px-8">
@@ -363,11 +358,10 @@ const HeroSection = () => {
           </div>
 
           <div className="relative flex items-center justify-center lg:pl-8">
-            <div className="relative mx-auto w-full max-w-2xl">
+            <div className="relative mx-auto w-full max-w-2xl aspect-[4/3]">
               {/* Professional image container with proper aspect ratio and containment */}
-             <div className="relative overflow-hidden rounded-xl div-style-10">
-
-                {/* Loading placeholder with professional styling */}
+              <div className="aspect-[4/3] relative overflow-hidden rounded-xl">
+                          {/* div-style-10  Loading placeholder with professional styling */}
                 {!imageLoaded && (
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800">
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -381,22 +375,21 @@ const HeroSection = () => {
                 )}
 
                 <Image
-  src="/sysfoc1.webp"
-  alt="Automotive Web Solutions - Professional Dealer Websites"
-  fill
-  priority
-  fetchPriority="high"
-  className={`
-    object-cover 
-    transition-all duration-500 ease-out
-    ${imageLoaded ? "scale-100 opacity-100" : "scale-105 opacity-0"}
-    image-style-1
-  `}
-  sizes="(max-width: 640px) 95vw, (max-width: 1024px) 45vw, 600px"
-  onLoad={handleImageLoad}
-  quality={90}
-/>
-
+                  src="/sysfoc1.webp"
+                  alt="Automotive Web Solutions - Professional Dealer Websites"
+                  fill
+                  priority
+                  fetchPriority="high"
+                  className={`
+                    object-cover 
+                    transition-all duration-500 ease-out
+                    ${imageLoaded ? "scale-100 opacity-100" : "scale-105 opacity-0"}
+                    image-style-1
+                  `}
+                  sizes="(max-width: 640px) 95vw, (max-width: 1024px) 45vw, 600px"
+                  onLoad={handleImageLoad}
+                  quality={90}
+                />
 
                 {/* Professional overlay gradient for better text contrast if needed */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent" />
