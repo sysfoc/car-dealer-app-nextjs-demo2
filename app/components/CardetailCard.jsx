@@ -39,7 +39,7 @@ const CardetailCard = () => {
   const [sortOption, setSortOption] = useState("default");
   const [sortedAndFilteredCars, setSortedAndFilteredCars] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
   const [formData, setFormData] = useState({
@@ -801,7 +801,7 @@ const CardetailCard = () => {
             {/* Image Section */}
             <div
               className={`relative flex-shrink-0 ${
-                isGridView ? "h-44 w-full" : "h-60 sm:h-64 sm:w-64 md:w-72"
+                isGridView ? "h-56 w-full" : "h-60 sm:h-64 sm:w-64 md:w-72"
               }`}
             >
               <Carousel

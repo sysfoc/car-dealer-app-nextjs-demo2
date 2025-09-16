@@ -168,8 +168,14 @@
   align-items: center;
 }
 
-.footer-style-1 {
+footer {
   min-height: 400px;
+}
+
+@media (max-width: 768px) {
+  footer {
+    min-height: 930px;
+  }
 }
 
 .div-style-15 {

@@ -513,7 +513,7 @@ const Footerr = () => {
       </div>
 
       {/* Footer Content with fixed layout to prevent CLS */}
-     <footer className="relative rounded-t-3xl bg-gray-200 pb-3 pt-8 shadow-inner dark:bg-gray-800 footer-style-1">
+     <footer className="relative rounded-t-3xl bg-gray-200 pb-3 pt-8 shadow-inner dark:bg-gray-800">
         <div className="mx-auto w-full max-w-7xl px-4">
           <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {/* Logo Column */}
