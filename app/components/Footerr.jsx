@@ -410,27 +410,8 @@ const Footerr = () => {
     );
   }, [fetchedSocials, isDataLoaded]);
 
-  // Memoized quick links with loading states
+  // Memoized quick links - Now loads immediately (static content)
   const QuickLinks = useMemo(() => {
-    if (!isDataLoaded) {
-      return (
-        <ul className="space-y-2">
-          <li>
-            <div className="link-skeleton-about h-5 rounded bg-gray-300 dark:bg-gray-600" />
-          </li>
-          <li>
-            <div className="link-skeleton-contact h-5 rounded bg-gray-300 dark:bg-gray-600" />
-          </li>
-          <li>
-            <div className="link-skeleton-terms h-5 rounded bg-gray-300 dark:bg-gray-600" />
-          </li>
-          <li>
-            <div className="link-skeleton-privacy h-5 rounded bg-gray-300 dark:bg-gray-600" />
-          </li>
-        </ul>
-      );
-    }
-
     return (
       <ul className="space-y-2">
         <li>
@@ -467,23 +448,10 @@ const Footerr = () => {
         </li>
       </ul>
     );
-  }, [t, isDataLoaded]);
+  }, [t]);
 
-  // Memoized trading hours display with loading state
+  // Memoized trading hours display - Days load immediately, hours show skeleton
   const TradingHoursDisplay = useMemo(() => {
-    if (!isDataLoaded) {
-      return (
-        <div className="space-y-2">
-          {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-            <div key={i} className="flex items-center justify-between py-1">
-              <div className="h-5 w-24 rounded bg-gray-300 dark:bg-gray-600" />
-              <div className="h-5 w-40 rounded bg-gray-300 dark:bg-gray-600" />
-            </div>
-          ))}
-        </div>
-      );
-    }
-
     return (
       <div className="space-y-2">
         {tradingHours.map((schedule, index) => (
@@ -491,15 +459,19 @@ const Footerr = () => {
             <span className="text-sm text-gray-700 dark:text-gray-300">
               {schedule.day}
             </span>
-            <span
-              className={`text-sm font-medium ${
-                schedule.hours === t("closedHours")
-                  ? "text-red-700 dark:text-red-500"
-                  : "text-green-800 dark:text-green-500"
-              }`}
-            >
-              {schedule.hours}
-            </span>
+            {!isDataLoaded ? (
+              <div className="h-5 w-40 rounded bg-gray-300 dark:bg-gray-600" />
+            ) : (
+              <span
+                className={`text-sm font-medium ${
+                  schedule.hours === t("closedHours")
+                    ? "text-red-700 dark:text-red-500"
+                    : "text-green-800 dark:text-green-500"
+                }`}
+              >
+                {schedule.hours}
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -524,7 +496,6 @@ const Footerr = () => {
         </svg>
       </div>
 
-      {/* Footer Content with fixed layout to prevent CLS */}
       <footer className="relative rounded-t-3xl bg-gray-200 pb-3 pt-8 shadow-inner dark:bg-gray-800">
         <div className="mx-auto w-full max-w-7xl px-4">
           <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
