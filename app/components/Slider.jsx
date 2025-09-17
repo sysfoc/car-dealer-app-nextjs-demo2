@@ -31,8 +31,9 @@ const Slider = ({ loadingState, carData }) => {
   ].filter(Boolean);
 
   return (
-    <div className="mt-3 h-56 sm:h-72 xl:h-80 2xl:h-96">
-      <Carousel slideInterval={3000}>
+    <div className="h-56 sm:h-72 xl:h-80 2xl:h-96">
+      <Carousel slide={false}
+      >
         {mediaItems.map((media, index) => {
           if (loading) {
             return <Skeleton key={index} width="100%" height="100%" />;
@@ -44,7 +45,12 @@ const Slider = ({ loadingState, carData }) => {
                 <video
                   src={media.src}
                   controls
-                  className="size-full object-cover"
+                  muted
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  className="size-full object-contain z-99"
+                  onError={(e) => console.error("Video error:", e)}
                 />
               </div>
             );

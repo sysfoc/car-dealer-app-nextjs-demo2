@@ -269,7 +269,7 @@ export default function Home() {
             {/* Image Slider */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
               <Slider loadingState={loading} carData={car} />
-            </div>
+            </div> 
 
             {/* Vehicle Info & Actions */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">

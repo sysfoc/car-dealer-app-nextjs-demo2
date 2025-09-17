@@ -406,9 +406,9 @@ const VehicalsList = ({ loadingState }) => {
   }
 
   return (
-    <section className="my-7 rounded-xl bg-slate-50 py-7 dark:bg-slate-900 sm:mx-8 md:my-10 md:py-10">
+    <section className="my-7 rounded-xl bg-slate-50 py-7 dark:bg-slate-900 sm:mx-4 md:my-0 md:py-0">
       {/* Header section with fixed min-height to prevent CLS */}
-      <div className="mb-16 min-h-[320px] flex flex-col justify-center">
+      <div className="min-h-[320px] flex flex-col justify-center">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
             <BiTachometer className="h-4 w-4" />

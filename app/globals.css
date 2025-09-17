@@ -223,3 +223,17 @@ footer {
 .link-skeleton-contact { width: 77px; }
 .link-skeleton-terms { width: 136px; }
 .link-skeleton-privacy { width: 95px; }
+
+
+video {
+  z-index: 10;
+}
+
+.carousel button {
+  z-index: 5000;
+  pointer-events: none;
+}
+
+.carousel button svg {
+  pointer-events: auto;
+}
