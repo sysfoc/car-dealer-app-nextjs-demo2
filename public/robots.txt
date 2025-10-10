@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://theme1.automotivewebsolutions.com
+
+# Sitemaps
+Sitemap: https://theme1.automotivewebsolutions.com/sitemap.xml
